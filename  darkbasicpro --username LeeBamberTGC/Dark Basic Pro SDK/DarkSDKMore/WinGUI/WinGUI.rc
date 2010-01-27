@@ -1,0 +1,228 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "WinGUIMFCDLL DLL\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "WinGUIMFCDLL\0"
+            VALUE "LegalCopyright", "Copyright (C) 2004\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "WinGUIMFCDLL.DLL\0"
+            VALUE "ProductName", "WinGUIMFCDLL Dynamic Link Library\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\WinGUIMFCDLL.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING1             "MAKE CONTROL BUTTON%LLLSLLLL%MakeControlButton%Control Number, Style, Extended Style, String, X, Y, Width, Height"
+    IDS_STRING2             "UPDATE WINGUI%0%UpdateWinGUI"
+    IDS_STRING3             "GET CONTROL CLICK[%LL%GetControlClick%Control Number"
+    IDS_STRING4             "MAKE CONTROL TEXT%LLLSLLLL%MakeControlText%Control Number, Style, Extended Style, String, X, Y, Width, Height"
+    IDS_STRING5             "MAKE CONTROL PROGRESS%LLLLLLLLL%MakeControlProgress%Control Number, Style, Extended Style, Start Range, End Range, X, Y, Width, Height"
+    IDS_STRING6             "SET CONTROL RANGE%LLL%SetControlRange%Control Number, Start Range, End Range"
+    IDS_STRING7             "SET CONTROL POSITION%LL%SetControlPosition%Control Number, Position"
+    IDS_STRING8             "SET CONTROL FONT%LSLLLL%SetControlFont%Control Number, Font Name, Size, Weight, Italic, International Code"
+    IDS_STRING9             "SET CONTROL BACK COLOR%LLLL%SetControlBackColor%Control Number, Red, Green, Blue"
+    IDS_STRING10            "SET CONTROL FORE COLOR%LLLL%SetControlForeColor%Control Number, Red, Green, Blue"
+    IDS_STRING11            "SET WINGUI COLORS%LLLL%SetWinGUIColors%System Color Index, Red, Green, Blue"
+    IDS_STRING12            "RESTORE WINGUI COLORS%0%RestoreWinGUIColors"
+    IDS_STRING13            "SET CONTROL TEXT%LS%SetControlText%Control Number, String"
+    IDS_STRING14            "MAKE CONTROL TABS%LLLLLLL%MakeControlTabs%Control Number, Style, Extended Style, X, Y, Width, Height"
+    IDS_STRING15            "ADD CONTROL ITEM%LLS%AddControlItem%Control Number, Index, String"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING16            "LINK CONTROL%LLL%LinkControl%Child Control Number, Parent Control Number, Parent Index"
+    IDS_STRING17            "MAKE CONTROL LISTVIEW%LLLLLLL%MakeControlListView%Control Number, Style, Extended Style, X, Y, Width, Height"
+    IDS_STRING18            "MAKE CONTROL SCROLLBAR%LLLLLLL%MakeControlScrollbar%Control Number, Style, Extended Style, X, Y, Width, Height"
+    IDS_STRING19            "MAKE CONTROL COMBOBOX%LLLLLLL%MakeControlComboBox%Control Number, Style, Extended Style, X, Y, Width, Height"
+    IDS_STRING20            "CLEAR CONTROL AREA%LLLLL%ClearControlArea%Control Number, X, Y, Width, Height"
+    IDS_STRING21            "MAKE CONTROL SLIDER%LLLLLLLLL%MakeControlSlider%Control Number, Style, Extended Style, Start Range, End Range, X, Y, Width, Height"
+    IDS_STRING22            "MAKE CONTROL EDIT%LLLSLLLL%MakeControlEdit%Control Number, Style, Extended Style, String, X, Y, Width, Height"
+    IDS_STRING23            "SET CONTROL ALIGNMENT%LL%SetControlAlignment%Control Number, Alignment Style"
+    IDS_STRING24            "MAKE CONTROL UPDOWN%LLLLLLLLL%MakeControlUpDown%Control Number, Style, Extended Style, Start Range, End Range, X, Y, Width, Height"
+    IDS_STRING25            "ADD MENU ITEM%LLLS%AddMenuItem%Menu Number, Target Menu Number, Style, String"
+    IDS_STRING26            "GET MENU SELECTED[%LL%GetMenuSelected%Menu Number"
+    IDS_STRING27            "INSERT MENU ITEM%LLLLS%InsertAMenuItem%Menu Number, Target Menu Number, Position, Style, String"
+    IDS_STRING28            "DELETE MENU ITEM%L%DeleteMenuItem%Menu Number"
+    IDS_STRING30            "GET CONTROL VALUE[%LL%GetControlValue%Control Number"
+    IDS_STRING31            "DIALOG PRINT START[%L%DialogPrintBox"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING32            "DIALOG PRINT TEXT%SLLL%DialogAddTextToPage%String, X, Y, Alignment"
+    IDS_STRING33            "DIALOG PRINT END%0%DialogEndPrinting"
+    IDS_STRING35            "DIALOG OPEN FILE$[%S%DialogOpenFileBox"
+    IDS_STRING36            "DIALOG SAVE FILE$[%S%DialogSaveFileBox"
+    IDS_STRING37            "DIALOG BROWSER%S%DialogBrowserBox%URL String"
+    IDS_STRING38            "DIALOG BROWSER CLOSE%0%DialogBrowserBoxClose"
+    IDS_STRING39            "DELETE CONTROL%L%DeleteControl%Control Number"
+    IDS_STRING40            "DELETE CONTROL ITEM%LL%DeleteControlItem%Control Number, Index"
+    IDS_STRING41            "GET CONTROL SELECTED[%DL%GetControlSelected%Control Number"
+    IDS_STRING43            "SET CONTROL ITEM%LLS%SetControlItem%Control Number, Index, String"
+    IDS_STRING44            "GET CONTROL COUNT[%LL%GetControlSelectionCount%Control Number"
+    IDS_STRING45            "DELETE ALL CONTROL ITEMS%L%DeleteAllControlItems%Control Number"
+    IDS_STRING46            "SET CONTROL SELECTION%LD%SetControlSelection%Control Number, Selection"
+    IDS_STRING47            "HIDE CONTROL%L%HideTheControl%Control Number"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING48            "SHOW CONTROL%L%ShowTheControl%Control Number"
+    IDS_STRING49            "SET CONTROL ITEM ICON%LLD%SetControlItemIcon%Control Number, Index, Icon Icon Handle"
+    IDS_STRING50            "MAKE CONTROL TREEVIEW%LLLLLLL%MakeControlTreeView%Control Number, Style, Extended Style, X, Y, Width, Height"
+    IDS_STRING51            "GET CONTROL STRING$[%SL%GetControlString%Control Number"
+    IDS_STRING52            "SET CONTROL ICON%LD%SetControlIcon%Control Number, Icon Handle"
+    IDS_STRING53            "GET CONTROL ITEM VALUE[%LL%GetTheControlItemValue%Control Number"
+    IDS_STRING54            "GET CONTROL ITEM ICON[%LL%GetTheControlItemIcon%Control Number"
+    IDS_STRING55            "MOVE CONTROL%LLL%MoveControl%Control Number, X, Y"
+    IDS_STRING56            "SIZE CONTROL%LLL%MoveControl%Control Number, Width, Height"
+    IDS_STRING57            "MAKE CONTROL TOOLBAR%LLLSL%MakeControlToolBar%Control Number, Style, Extended Style, Filename, Image Count"
+    IDS_STRING58            "SET MENU FONT%SLLLL%SetMenuFont%Font Name, Size, Weight, Italic, International Code"
+    IDS_STRING59            "GET CONTROL MOUSEX[%LL%GetTheControlMouseX%Control Number"
+    IDS_STRING60            "GET CONTROL MOUSEY[%LL%GetTheControlMouseY%Control Number"
+    IDS_STRING61            "SET CONTROL PAGESIZE%LL%SetControlPageSize%Control Number, Page Size"
+    IDS_STRING62            "SET CONTROL ICON%LLD%SetControlIconEx%Control Number, Index, Icon Handle"
+    IDS_STRING63            "MAKE CONTROL POPUP%LSLLLL%MakeControlPopup%Control Number, String, X, Y, Width, Height"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING64            "SET MENU ITEM STATE%LLL%SetAMenuItemState%Menu Number, Position, State"
+END
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

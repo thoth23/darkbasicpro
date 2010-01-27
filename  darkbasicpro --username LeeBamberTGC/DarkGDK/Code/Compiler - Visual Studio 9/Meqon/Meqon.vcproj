@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="Meqon"
+	ProjectGUID="{01CDAEB4-C267-4BFA-92F0-410081CC4262}"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;MEQ_STATIC;DARKSDK_COMPILE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\Debug/Meqon.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\..\Lib\VS8Debug\Meqon.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;MEQ_STATIC;DARKSDK_COMPILE"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\Release/Meqon.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\..\Lib\VS8\Meqon.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="General"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\General.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\General.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Types"
+			>
+			<Filter
+				Name="Frame"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Frame.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Frame.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Material"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Material.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Material.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Point"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Point.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Point.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Rigid Body"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBody.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBody.h"
+				>
+			</File>
+			<Filter
+				Name="Setup"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodySetup.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodySetup.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Creation"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyCreation.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyCreation.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Properties"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyProperties.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyProperties.h"
+					>
+				</File>
+				<Filter
+					Name="Box"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyBoxProperties.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyBoxProperties.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Sphere"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodySphereProperties.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodySphereProperties.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Capsule"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyCapsuleProperties.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyCapsuleProperties.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Movement"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyMovement.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RigidBodyMovement.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Joints"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Joints.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Joints.h"
+					>
+				</File>
+				<Filter
+					Name="Ball"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Ball.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Ball.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Hinge"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Hinge.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Hinge.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Sliding"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Sliding.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Sliding.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Prismatic"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Primsatic.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Prismatic.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Fixed"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Fixed.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Fixed.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Fixed Orientation"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\FixedOrientation.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\FixedOrientation.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Linear Limit"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\LinearLimit.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\LinearLimit.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Angular Limit"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AngularLimit.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AngularLimit.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Linear Motor"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\LinearMotor.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\LinearMotor.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Angular Motor"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AngularMotor.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AngularMotor.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Spring Damper"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\SpringDamper.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\SpringDamper.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Angular Spring Damper"
+					>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AngularSpringDamper.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AngularSpringDamper.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Cloth"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Cloth.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Cloth.h"
+				>
+			</File>
+			<Filter
+				Name="Internal Cloth"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothmodule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothmodule.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothsystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothsystem.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothsystem_config.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothsystemelement.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothsystemelement.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothsystemrigidbodyinteraction.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\cloth\meq_clothystemrigidbodyinteraction.cpp"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Liquid Surfaces"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\LiquidSurfaces.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\LiquidSurfaces.h"
+				>
+			</File>
+			<Filter
+				Name="Internal Liquid"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurface.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurface_config.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurface_headers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfaceelement.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfaceelement.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfacemodule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfacemodule.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfacerbconvexpolyhedroninteraction.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfacerbconvexpolyhedroninteraction.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfacerbsphereinteraction.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfacerbsphereinteraction.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\liquidsurface\meq_liquidsurfacetagreader.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Particles"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Particles.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Particles.h"
+				>
+			</File>
+			<Filter
+				Name="Internal Particles"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlemodule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlemodule.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlesystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlesystem.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlesystem_config.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlesystemelement.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlesystemelement.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlesystemrigidbodyinteraction.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\particlesystem\meq_particlesystemrigidbodyinteraction.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Vehicles"
+			>
+			<Filter
+				Name="Car"
+				>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AutomaticGearBox.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\AutomaticGearBox.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Car.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Car.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\CarFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\CarFile.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Character"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Character.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Character.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Meqon"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Globals.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Globals.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Meqon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\MeqonData.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\MeqonDLL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\MeqonEngine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\MeqonEngine.h"
+				>
+			</File>
+			<Filter
+				Name="DBO"
+				>
+				<File
+					RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Dboformat\DBOBlock.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Dboformat\DBOBlock.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Dboformat\DBOData.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Dboformat\DBOData.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Dboformat\DBOFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Dboformat\DBOFile.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Error"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RuntimeError.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\RuntimeError.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Sensor"
+			>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Sensor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Projects\Expansion Packs\Meqon\Code\Sensor.h"
+				>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

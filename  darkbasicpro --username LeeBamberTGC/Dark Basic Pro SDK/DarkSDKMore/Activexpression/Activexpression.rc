@@ -1,0 +1,140 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "Dark Basic Professional DLL"
+            VALUE "CompanyName", "Dark Basic Software Ltd"
+            VALUE "FileDescription", "Dark Basic Professional DLL"
+            VALUE "FileVersion", "V1.0"
+            VALUE "InternalName", "Dark Basic Professional DLL"
+            VALUE "LegalCopyright", "Copyright © 2002"
+            VALUE "LegalTrademarks", "DarkBASIC"
+            VALUE "OriginalFilename", "MakeGame.dll"
+            VALUE "ProductName", "Dark Basic Professional DLL"
+            VALUE "ProductVersion", "V1.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING1             "ACT INIT[%L%?ACTInit@@YAHXZ%"
+    IDS_STRING2             "ACT UPDATE%0%?ACTUpdate@@YAXXZ%"
+    IDS_STRING3             "ACT CLOSE%0%?ACTClose@@YAXXZ%"
+    IDS_STRING4             "ACT SESSION STOP%0%?ACTSessionStop@@YAXXZ%"
+    IDS_STRING5             "ACT GET ERROR MESSAGE$[%S%?ACTGetErrorMessage@@YAKK@Z%"
+    IDS_STRING6             "ACT SESSION START TEXT[%LLS%?ACTSessionStartText@@YAHHK@Z%Question ID, Question$"
+    IDS_STRING7             "ACT PERFORM CHECKLIST FOR SESSION%0%?ACTPerformChecklistForSession@@YAXXZ%"
+    IDS_STRING8             "ACT SESSION START MULTICHOICE[%LLLLL%?ACTSessionStartMultichoice@@YAHHHHH@Z%Question ID, Display Option, Options, Responses"
+    IDS_STRING9             "ACT SESSION START YESNO[%LLL%?ACTSessionStartYesNo@@YAHHH@Z%Question ID, Use Don't Know"
+    IDS_STRING10            "ACT SESSION START TRUEFALSE[%LLL%?ACTSessionStartTrueFalse@@YAHHH@Z%Question ID, Use Don't Know"
+    IDS_STRING11            "ACT SESSION START LIKERT[%LLL%?ACTSessionStartLikert@@YAHHH@Z%Question ID, Max Scale Value"
+    IDS_STRING12            "ACT SESSION START NUMERIC[%LLS%?ACTSessionStartNumeric@@YAHHK@Z%Question ID, Question$"
+    IDS_STRING13            "ACT SESSION START SORTINORDER[%LLLLL%?ACTSessionStartSortInOrder@@YAHHHHH@Z%Question ID, Display Option, Options, Responses"
+    IDS_STRING14            "ACT SESSION START MESSAGE[%LLS%?ACTSessionStartMessage@@YAHHK@Z%Question ID, Message$"
+END
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
