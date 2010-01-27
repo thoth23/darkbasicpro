@@ -1,0 +1,99 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING1             "P5 UPDATE%0%MotionProcess"
+    IDS_STRING2             "P5 GET X[%F%GetX"
+    IDS_STRING6             "P5 GET Y[%F%GetY"
+    IDS_STRING7             "P5 GET Z[%F%GetZ"
+    IDS_STRING8             "P5 GET ABS YAW[%F%GetAbsYaw"
+    IDS_STRING9             "P5 GET ABS PITCH[%F%GetAbsPitch"
+    IDS_STRING10            "P5 GET ABS ROLL[%F%GetAbsRoll"
+    IDS_STRING11            "P5 GET REL YAW[%F%GetRelYaw"
+    IDS_STRING12            "P5 GET REL PITCH[%F%GetRelPitch"
+    IDS_STRING13            "P5 GET REL ROLL[%F%GetRelRoll"
+    IDS_STRING14            "P5 GET THUMB CLICK[%L%GetClickThumb"
+    IDS_STRING15            "P5 GET INDEX CLICK[%L%GetClickIndex"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING16            "P5 GET MIDDLE CLICK[%L%GetClickMiddle"
+    IDS_STRING17            "P5 GET RING CLICK[%L%GetClickRing"
+    IDS_STRING18            "P5 GET PINKY CLICK[%L%GetClickPinky"
+    IDS_STRING19            "P5 GET THUMB BEND[%L%GetBendThumb"
+    IDS_STRING20            "P5 GET INDEX BEND[%L%GetBendIndex"
+    IDS_STRING21            "P5 GET MIDDLE BEND[%L%GetBendMiddle"
+    IDS_STRING22            "P5 GET RING BEND[%L%GetBendRing"
+    IDS_STRING23            "P5 GET PINKY BEND[%L%GetBendPinky"
+    IDS_STRING24            "P5 RESET%0%Reset"
+    IDS_STRING25            "P5 PRESENT[%L%IsPresent"
+END
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

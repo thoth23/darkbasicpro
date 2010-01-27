@@ -1,0 +1,94 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    1                       "SET TERRAIN SCALE%LFFF%?SetTerrainScale@@YAXHMMM@Z"
+    2                       "SET TERRAIN SPLIT%LL%?SetTerrainSplit@@YAXHH@Z"
+    3                       "SET TERRAIN TILING%LL%?SetTerrainTiling@@YAXHH@Z"
+    4                       "SET TERRAIN HEIGHTMAP%LS%?SetTerrainHeightMap@@YAXHK@Z"
+    5                       "SET TERRAIN LIGHT%LFFFFFFF%?SetTerrainLight@@YAXHMMMMMMM@Z"
+    6                       "BUILD TERRAIN%L%?BuildTerrain@@YAXH@Z"
+    7                       "UPDATE TERRAIN%0%?UpdateTerrain@@YAXXZ"
+    8                       "SET TERRAIN TEXTURE%LLL%?SetTerrainTexture@@YAXHHH@Z"
+    9                       "MAKE OBJECT TERRAIN%L%?MakeObjectTerrain@@YAXH@Z"
+    10                      "GET TERRAIN GROUND HEIGHT[%FLFF%?GetTerrainGroundHeight@@YAKHMM@Z"
+    11                      "LOAD TERRAIN%SL%?LoadTerrain@@YAXKH@Z"
+    12                      "SAVE TERRAIN%SL%?SaveTerrain@@YAXKH@Z"
+    13                      "GET TERRAIN X SIZE[%FL%?GetTerrainXSize@@YAKH@Z"
+    14                      "GET TERRAIN Z SIZE[%FL%?GetTerrainZSize@@YAKH@Z"
+    IDS_STRING15            "DESTROY TERRAIN%L%?DeleteTerrain@@YAXH@Z"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING16            "UPDATE TERRAIN%L%?UpdateTerrainNoCull@@YAXH@Z%No Culling Mode"
+    IDS_STRING17            "BUILD TERRAIN%LL%?BuildTerrainEx@@YAXHH@Z"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
