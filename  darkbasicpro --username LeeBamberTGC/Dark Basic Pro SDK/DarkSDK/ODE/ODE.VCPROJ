@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="ODE"
 	ProjectGUID="{3F5EF078-6C44-4D81-B1BC-E3077C778334}"
 	RootNamespace="ODE"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -86,6 +87,8 @@
 				IgnoreDefaultLibraryNames="libc.lib"
 				ProgramDatabaseFile=".\Release/DBProODEDebug.pdb"
 				StackReserveSize="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -106,9 +109,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -186,6 +186,8 @@
 				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProODEDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -206,9 +208,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -286,6 +285,8 @@
 				IgnoreDefaultLibraryNames="libc.lib"
 				ProgramDatabaseFile=".\Release/DBProODEDebug.pdb"
 				StackReserveSize="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -306,9 +307,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -353,6 +351,8 @@
 				AdditionalDependencies=" ode.lib D3dx9.lib winmm.lib"
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins-user\DBProODEDebug.dll"
 				AdditionalLibraryDirectories="&quot;.\..\..\ode\lib&quot;"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -371,9 +371,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -451,6 +448,8 @@
 				IgnoreDefaultLibraryNames="LIBCMT.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProODEDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -471,9 +470,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -551,6 +547,8 @@
 				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProODEDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -571,9 +569,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -651,6 +646,8 @@
 				IgnoreDefaultLibraryNames="libc.lib"
 				ProgramDatabaseFile=".\Release/DBProODEDebug.pdb"
 				StackReserveSize="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -671,9 +668,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -751,6 +745,8 @@
 				IgnoreDefaultLibraryNames="libc.lib"
 				ProgramDatabaseFile=".\Release/DBProODEDebug.pdb"
 				StackReserveSize="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -771,9 +767,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -851,6 +844,8 @@
 				IgnoreDefaultLibraryNames="libc.lib"
 				ProgramDatabaseFile=".\Release/DBProODEDebug.pdb"
 				StackReserveSize="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProODEDebug.lib"
 				TargetMachine="1"
 			/>
@@ -871,9 +866,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

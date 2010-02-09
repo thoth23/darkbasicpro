@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Activexpression"
 	ProjectGUID="{80153D27-B4DC-419C-8234-11EAB5E47A9A}"
 	RootNamespace="Activexpression"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -82,6 +83,8 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\TGC\SDK\ActivexpressionSDK\1.0\lib"
 				ProgramDatabaseFile=".\Release/dbproplugin.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/dbproplugin.lib"
 				TargetMachine="1"
 			/>
@@ -102,9 +105,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -180,6 +180,8 @@
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/dbproplugin.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/dbproplugin.lib"
 				TargetMachine="1"
 			/>
@@ -200,9 +202,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

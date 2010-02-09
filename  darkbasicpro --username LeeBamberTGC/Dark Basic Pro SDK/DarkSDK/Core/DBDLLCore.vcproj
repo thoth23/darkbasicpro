@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="DBDLLCore"
 	ProjectGUID="{B81553CC-39BB-4542-A379-F49D2F3A73A3}"
 	RootNamespace="DBDLLCore"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -48,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -79,9 +80,11 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProCore.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\DBDLLCore___Win32_Debug_FPSC/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\DBDLLCore___Win32_Debug_FPSC/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -102,9 +105,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -144,7 +144,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="4"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -172,8 +172,10 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProCore.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=".\Release/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -194,9 +196,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -236,7 +235,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -267,9 +266,11 @@
 				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProCore.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -290,9 +291,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -332,7 +330,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -363,9 +361,11 @@
 				OutputFile="C:\Program Files\The Game Creators\FPS Creator\DBProCore.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -386,9 +386,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -416,7 +413,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -429,7 +426,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -448,9 +447,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -490,7 +486,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -521,9 +517,11 @@
 				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProCore.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -544,9 +542,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -586,7 +581,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="4"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -614,8 +609,10 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProCore.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=".\Release/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -636,9 +633,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -678,7 +672,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="4"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -706,9 +700,11 @@
 				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProCore.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Release/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -729,9 +725,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -771,7 +764,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="4"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DBDLLCORE_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -799,8 +792,10 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProCore.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=".\Release/DBProCore.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProCore.lib"
 				TargetMachine="1"
 			/>
@@ -821,9 +816,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
