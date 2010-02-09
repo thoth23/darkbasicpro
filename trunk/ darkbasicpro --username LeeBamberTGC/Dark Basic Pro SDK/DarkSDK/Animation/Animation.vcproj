@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\TGC\SDK\BaseClasses"
+				AdditionalIncludeDirectories="..\..\..\Shared\BaseClasses"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ANIMATION_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -81,7 +81,7 @@
 				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProAnimationDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="C:\TGC\SDK\BaseClasses"
+				AdditionalLibraryDirectories="..\..\..\Shared\BaseClasses"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProAnimationDebug.pdb"
 				RandomizedBaseAddress="1"
@@ -146,7 +146,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="C:\TGC\SDK\BaseClasses"
+				AdditionalIncludeDirectories="..\..\Shared\BaseClasses"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ANIMATION_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -177,7 +177,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProAnimationDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="C:\TGC\SDK\BaseClasses"
+				AdditionalLibraryDirectories="..\..\Shared\BaseClasses"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -240,6 +240,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\Shared\BaseClasses"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ANIMATION_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -271,6 +272,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProAnimationDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\Shared\BaseClasses"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProAnimationDebug.pdb"
 				RandomizedBaseAddress="1"
@@ -322,6 +324,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\..\Shared\BaseClasses"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -334,6 +337,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalLibraryDirectories="..\..\..\Shared\BaseClasses"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>
@@ -393,6 +397,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\Shared\BaseClasses"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ANIMATION_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -424,6 +429,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProAnimationDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\Shared\BaseClasses"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProAnimationDebug.pdb"
 				RandomizedBaseAddress="1"
@@ -488,6 +494,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\Shared\BaseClasses"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ANIMATION_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -518,6 +525,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProAnimationDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\Shared\BaseClasses"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -581,6 +589,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\Shared\BaseClasses"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ANIMATION_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -611,6 +620,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProAnimationDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\Shared\BaseClasses"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -674,7 +684,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="C:\TGC\SDK\BaseClasses"
+				AdditionalIncludeDirectories="..\..\..\Shared\BaseClasses"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ANIMATION_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -705,7 +715,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProAnimationDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="C:\TGC\SDK\BaseClasses"
+				AdditionalLibraryDirectories="..\..\..\Shared\BaseClasses"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
