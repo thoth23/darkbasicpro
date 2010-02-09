@@ -25,7 +25,7 @@
 #include <ode/ode.h>
 #include <vector>
 #include <Shlobj.h>
-#include <Shfolder.h>
+//#include <Shfolder.h>
 
 #define DARKSDK	__declspec ( dllexport )
 #define WIN32_LEAN_AND_MEAN

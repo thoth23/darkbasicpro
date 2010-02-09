@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Basic2D", "Basic2D\Basic2D.vcproj", "{6F7FC773-D0E4-4FC4-BB3F-2FF5DC3EA495}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AdvancedMatrix", "AdvancedMatrix\AdvancedMatrix.vcproj", "{3095B9E1-F0B0-4F5F-8E7E-3A362E1F4BCF}"

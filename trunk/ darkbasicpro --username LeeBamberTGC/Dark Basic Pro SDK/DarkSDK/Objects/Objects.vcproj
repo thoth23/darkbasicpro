@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Objects"
 	ProjectGUID="{5EC29E1C-8C20-4C9C-9C2D-71493CE16D73}"
 	RootNamespace="Objects"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -48,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -83,10 +84,12 @@
 				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -107,9 +110,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa "
 				Optimization="2"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -185,8 +185,10 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=".\Objects___Win32_NewCommandsPreview_Release/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Objects___Win32_NewCommandsPreview_Release/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -207,9 +209,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -251,7 +250,7 @@
 				AdditionalOptions="/EHa "
 				Optimization="1"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				StringPooling="true"
@@ -286,10 +285,12 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=".\Release/DBProBasic3DDebug.pdb"
 				GenerateMapFile="false"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -310,9 +311,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -352,7 +350,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -387,9 +385,11 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Objects___Win32_NewCommandsDebug/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Objects___Win32_NewCommandsDebug/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -410,9 +410,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -453,7 +450,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa "
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -488,9 +485,11 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Objects___Win32_FPSC_Segment_Debug/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Objects___Win32_FPSC_Segment_Debug/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -511,9 +510,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -553,7 +549,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -588,9 +584,11 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Objects___Win32_DebugLAUNCH/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Objects___Win32_DebugLAUNCH/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -611,9 +609,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -654,7 +649,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa "
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -689,9 +684,11 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Objects___Win32_FPSC_Game_Debug/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Objects___Win32_FPSC_Game_Debug/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -712,9 +709,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -755,7 +749,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa "
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -790,9 +784,11 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Objects___Win32_NewCommandsPreview_Remote_Debug/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Objects___Win32_NewCommandsPreview_Remote_Debug/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -813,9 +809,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -855,7 +848,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -890,12 +883,14 @@
 				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProBasic3DDebug.pdb"
 				GenerateMapFile="false"
 				MapExports="false"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 				ErrorReporting="1"
@@ -917,9 +912,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -947,7 +939,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -960,7 +952,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -979,9 +973,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1021,7 +1012,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="3"
@@ -1056,10 +1047,12 @@
 				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -1080,9 +1073,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1124,7 +1114,7 @@
 				AdditionalOptions="/EHa "
 				Optimization="1"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				StringPooling="true"
@@ -1158,8 +1148,10 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=".\Release/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -1180,9 +1172,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1224,7 +1213,7 @@
 				AdditionalOptions="/EHa "
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				StringPooling="true"
@@ -1260,9 +1249,11 @@
 				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Release/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -1283,9 +1274,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1327,7 +1315,7 @@
 				AdditionalOptions="/EHa "
 				Optimization="1"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
 				GeneratePreprocessedFile="0"
 				StringPooling="true"
@@ -1362,10 +1350,12 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic3DDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=".\Release/DBProBasic3DDebug.pdb"
 				GenerateMapFile="false"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/DBProBasic3DDebug.lib"
 				TargetMachine="1"
 			/>
@@ -1386,9 +1376,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
