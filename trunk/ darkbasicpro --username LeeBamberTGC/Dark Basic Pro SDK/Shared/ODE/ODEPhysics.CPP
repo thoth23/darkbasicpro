@@ -1441,7 +1441,9 @@ void ODE_SetWorldCFM ( float fValue )
 
 void ODE_SetWorldStep ( float fStep )
 {
-	static bool bWarned = false;
+	//U75 - 150210 - interferes with FPSC compile process
+	//static bool bWarned = false;
+	static bool bWarned = true;
 	if ( !bWarned ) MessageBox( NULL, "The command 'ODE Set World Step' is no longer supported, use 'ODE Update <step value>' instead", "Warning", 0 );
 	bWarned = true;
 

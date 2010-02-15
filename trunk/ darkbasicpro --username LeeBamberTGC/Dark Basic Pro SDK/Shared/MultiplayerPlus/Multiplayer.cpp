@@ -1025,7 +1025,8 @@ HRESULT SendDestroyPlayerMsgToAll ( APP_PLAYER_INFO* pPlayerInfo )
 	{
 		if ( g_PlayerList [ i ].dpnidPlayer == pPlayerInfo->dpnidPlayer )
 		{
-			g_PlayerList.erase ( &g_PlayerList [ i ] );
+			//g_PlayerList.erase ( &g_PlayerList [ i ] );
+			g_PlayerList.erase ( g_PlayerList.begin ( ) + i );
 			break;
 		}
 	}
@@ -1126,7 +1127,8 @@ HRESULT WINAPI DirectPlayMessageHandler ( PVOID pvUserContext, DWORD dwMessageId
 					{
 						if ( g_PlayerList [ i ].dpnidPlayer == dwID )
 						{
-							g_PlayerList.erase ( &g_PlayerList [ i ] );
+							//g_PlayerList.erase ( &g_PlayerList [ i ] );
+							g_PlayerList.erase ( g_PlayerList.begin ( ) + i );
 							break;
 						}
 					}
