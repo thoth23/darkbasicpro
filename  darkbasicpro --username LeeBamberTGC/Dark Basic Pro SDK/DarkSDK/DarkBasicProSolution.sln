@@ -67,6 +67,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConvX", "ConvX\ConvX.vcproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ODE", "ODE\ODE.VCPROJ", "{3F5EF078-6C44-4D81-B1BC-E3077C778334}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiplayerPlus", "MultiplayerPlus\MultiplayerPlus.vcproj", "{67B540E6-516C-42C0-969A-23067F571732}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -272,6 +274,12 @@ Global
 		{3F5EF078-6C44-4D81-B1BC-E3077C778334}.Release|Win32.Build.0 = ReleaseX9|Win32
 		{3F5EF078-6C44-4D81-B1BC-E3077C778334}.ReleaseVR920|Win32.ActiveCfg = ReleaseVR920|Win32
 		{3F5EF078-6C44-4D81-B1BC-E3077C778334}.ReleaseVR920|Win32.Build.0 = ReleaseVR920|Win32
+		{67B540E6-516C-42C0-969A-23067F571732}.Debug|Win32.ActiveCfg = Debug|Win32
+		{67B540E6-516C-42C0-969A-23067F571732}.Debug|Win32.Build.0 = Debug|Win32
+		{67B540E6-516C-42C0-969A-23067F571732}.Release|Win32.ActiveCfg = Release|Win32
+		{67B540E6-516C-42C0-969A-23067F571732}.Release|Win32.Build.0 = Release|Win32
+		{67B540E6-516C-42C0-969A-23067F571732}.ReleaseVR920|Win32.ActiveCfg = Release|Win32
+		{67B540E6-516C-42C0-969A-23067F571732}.ReleaseVR920|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

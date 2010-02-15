@@ -4956,7 +4956,7 @@ bool cUniverse::BuildPortals ( void )
 	CreateNodesForScene        ( false );	// now create the nodes
 	LinkMeshesToNodes          ( );			// link meshes to the newly created nodes
 	FindNeighbouringNodes      ( );			// find neighbours for all nodes
-	
+
 	// stage 2 - building portals
 	for ( int iNode = 0; iNode < m_iNodeListSize; iNode++ )
 	{
