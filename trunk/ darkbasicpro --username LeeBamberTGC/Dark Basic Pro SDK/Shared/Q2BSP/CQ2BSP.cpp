@@ -984,7 +984,7 @@ D3DXVECTOR3 ConvertVectorFromQ3 ( float src [ 3 ] )
 
 D3DXVECTOR3 ConvertVectorFromQ3 ( int src [ 3 ] )
 {
-	return ConvertVectorFromQ3 ( D3DXVECTOR3 ( src [ 0 ], src [ 1 ], src [ 2 ] ) );
+	return ConvertVectorFromQ3 ( D3DXVECTOR3 ( (float) src [ 0 ], (float) src [ 1 ], (float) src [ 2 ] ) );
 }
 
 D3DXVECTOR3 ConvertVectorFromQ3 ( short src [ 3 ] )
@@ -1425,7 +1425,7 @@ void Update ( void )
 		int_vec& v = leaf_visibility [ idx ];
 
 		// go through leaf visibility list
-		for ( int i = 0; i < v.size ( ); i++ )
+        for ( std::vector<int>::size_type i = 0; i < v.size ( ); i++ )
 		{
 			bsp_leaf1 leaf1;
 			bsp_leaf2 leaf2;

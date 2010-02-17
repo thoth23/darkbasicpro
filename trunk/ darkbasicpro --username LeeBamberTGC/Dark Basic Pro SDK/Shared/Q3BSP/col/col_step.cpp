@@ -63,7 +63,7 @@ bool checkPointInTriangle(VECTOR point,VECTOR pa,VECTOR pb,VECTOR pc)
 	float x = (d*c)-(e*b);
 	float y = (e*a)-(d*b);
 	float z = x+y-ac_bb;
-	return (( in(z)& ~(in(x)|in(y)) ) & 0x80000000);
+	return (( in(z)& ~(in(x)|in(y)) ) & 0x80000000) != 0;
 }
 
 /*

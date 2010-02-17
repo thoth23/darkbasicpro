@@ -1211,7 +1211,7 @@ BOOL Q3ARenderTextureFaces ( int stex )
 				if ( s->stage [ st ].ani_freq > 0 )
 				{
 					int texs = s->stage [ st ].tex_count;
-					int pic  = s->stage [ st ].ani_freq * texs * Timer ( ) / 10;
+					int pic  = (int) (s->stage [ st ].ani_freq * texs * Timer ( ) / 10);
 					
 					pic %= texs;
 					a = pic;

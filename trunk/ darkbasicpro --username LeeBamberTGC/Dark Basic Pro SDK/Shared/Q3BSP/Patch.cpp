@@ -135,10 +135,12 @@ int create_patch ( int face_idx )
 
     vector < D3DXVECTOR3 > cpoints;
 
-    for ( int i = 0; i < f.vert_count; i++ )
-	{
-        D3DXVECTOR3 p = vertices3 [ f.vert_start + i ].point;
-        cpoints.push_back ( p );
+    {
+        for ( int i = 0; i < f.vert_count; i++ )
+	    {
+            D3DXVECTOR3 p = vertices3 [ f.vert_start + i ].point;
+            cpoints.push_back ( p );
+        }
     }
 
     int u, v;

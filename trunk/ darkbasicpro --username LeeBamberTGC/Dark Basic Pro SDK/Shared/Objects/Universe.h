@@ -67,6 +67,14 @@ struct sShadowLight
 	float fX, fY, fZ, fRange;			// light controls its own shadowmeshes
 	vector < sShadowCaster* > pCasterRefList;
 	vector < sMesh* > pShadowMeshList;
+
+    sShadowLight()
+    {
+        fX = 0.0;
+        fY = 0.0;
+        fZ = 0.0;
+        fRange = 0.0;
+    }
 };
 
 class cUniverse
@@ -264,6 +272,8 @@ class cUniverse
 			vector < sNode* >			nodes;
 			sNode*						pDebugRegion;
 			bool						bRenderedThisCycle;
+
+            sArea();
 		};
 
 		// Scorch Data

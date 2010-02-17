@@ -59,14 +59,14 @@ int _Textures::Load_By_FileName ( LPSTR FileName, BOOL forceload )
 
 	char RootDir [ MAX_PATH ];
 	sprintf ( RootDir, "%s\\Textures", "" );
-	chdir ( RootDir );
+	_chdir ( RootDir );
 
 	byte* data = NULL; 
 	int length;
 
 	for ( int x = 0; x < Textures.cache.entry_count; x++ )
 	{
-		if ( stricmp ( Textures.cache.entry [ x ].filename, FileName ) == 0 )
+		if ( _stricmp ( Textures.cache.entry [ x ].filename, FileName ) == 0 )
 		{
 			if ( file_loader::Load::Direct ( Textures.cache.entry [ x ].fullname, &data, &length ) )
 			{
@@ -156,7 +156,7 @@ int _Textures::Get_ID_For_FileName ( LPSTR FileName, BOOL forceload )
 {
 	for ( int x = 0; x < Textures.Tex_count; x++ )
 	{
-		if ( stricmp ( Textures.Tex [ x ].FileName, FileName ) == 0 )
+		if ( _stricmp ( Textures.Tex [ x ].FileName, FileName ) == 0 )
 			return x;
 	}
 
@@ -165,7 +165,7 @@ int _Textures::Get_ID_For_FileName ( LPSTR FileName, BOOL forceload )
 		
 	for ( x = 0; x < Textures.NotFound_count; x++ )
 	{
-		if ( stricmp ( Textures.NotFound_FileName [ x ], FileName ) == 0 )
+		if ( _stricmp ( Textures.NotFound_FileName [ x ], FileName ) == 0 )
 			return -1;
 	}
 	
@@ -225,7 +225,7 @@ void InitOptions ( )
 			pos += 4;
 			option_cache.Options[n].ColorKey = 0;
 
-			if ( strnicmp ( temp + pos, "ColorKey", 8 ) == 0 )
+			if ( _strnicmp ( temp + pos, "ColorKey", 8 ) == 0 )
 				option_cache.Options [ n ].ColorKey = D3DCOLOR_XRGB ( 255, 0, 255 );
 
 			option_cache.count++;
@@ -264,7 +264,7 @@ TexOptions _Textures::GetTexOptions ( LPSTR FileName )
 				temp2 [ y ] = '\\';
 		}
 		
-		if ( stricmp ( temp1, temp2 ) == 0 )
+		if ( _stricmp ( temp1, temp2 ) == 0 )
 			opt = option_cache.Options [ x ];
 	}
 
@@ -494,7 +494,7 @@ int _Textures::Load_LightMap_By_Data_Q2 ( byte* data, UINT width, UINT height, i
 	*/
 
 	char szFilename [ 256 ];
-	itoa ( iNum++, szFilename, 10 );
+	_itoa ( iNum++, szFilename, 10 );
 	//strcat ( szFilename, ".bmp" );
 
 	GetTempPath ( 256, szFilename );
@@ -773,10 +773,10 @@ int _Textures::Load_By_FileName_Q2 ( LPSTR FileName, BOOL forceload )
 		char lname [ _MAX_PATH ];
 		
 		strcpy ( lname, Q2_Resources.files [ x ].fullname );
-		strcpy ( lname, strlwr ( lname ) );
+		strcpy ( lname, _strlwr ( lname ) );
 		
 		// is current resource a PAK file?
-		if ( strnicmp ( lname + strlen ( lname ) - 4, ".pak", 4 ) == 0 )
+		if ( _strnicmp ( lname + strlen ( lname ) - 4, ".pak", 4 ) == 0 )
 		{
 			// try to load a file with exactly the same name ( should not work )
 			if ( file_loader::Load::From_PAK ( lname, fn, &data, &length ) )
@@ -821,7 +821,7 @@ int _Textures::Load_By_FileName_Q2 ( LPSTR FileName, BOOL forceload )
 			
 			strcpy ( fn2, fn );
 
-			if ( strnicmp ( fn2 + strlen ( fn2 ) - 4, ".wal", 4 ) != 0 )
+			if ( _strnicmp ( fn2 + strlen ( fn2 ) - 4, ".wal", 4 ) != 0 )
 				strcat ( fn2, ".wal" );
 
 			if ( file_loader::Load::From_PAK ( lname, fn2, &data, &length ) )
@@ -834,11 +834,11 @@ int _Textures::Load_By_FileName_Q2 ( LPSTR FileName, BOOL forceload )
 		}
 		
 		// is current resource a WAD file?
-		if ( strnicmp ( lname + strlen ( lname ) - 4, ".wad", 4 ) == 0 )
+		if ( _strnicmp ( lname + strlen ( lname ) - 4, ".wad", 4 ) == 0 )
 		{
 			if ( file_loader::Load::From_WAD ( lname, fn, &data, &length ) )
 			{
-				if ( strnicmp ( fn + strlen ( fn ) - 7, ".wadtex", 7 ) != 0 )
+				if ( _strnicmp ( fn + strlen ( fn ) - 7, ".wadtex", 7 ) != 0 )
 					strcat ( fn, ".wadtex" );
 
 				files_cache.AddFile ( fn, fn, lname );
@@ -850,9 +850,9 @@ int _Textures::Load_By_FileName_Q2 ( LPSTR FileName, BOOL forceload )
 		
 		// it's not a PAK or WAD... maybe it's another format?
 		if (
-				strnicmp ( lname + strlen ( lname ) - 4, ".tga", 4 ) == 0 ||
-				strnicmp ( lname + strlen ( lname ) - 4, ".jpg", 4 ) == 0 ||
-				strnicmp ( lname + strlen ( lname ) - 4, ".bmp", 4 ) == 0
+				_strnicmp ( lname + strlen ( lname ) - 4, ".tga", 4 ) == 0 ||
+				_strnicmp ( lname + strlen ( lname ) - 4, ".jpg", 4 ) == 0 ||
+				_strnicmp ( lname + strlen ( lname ) - 4, ".bmp", 4 ) == 0
 		   )
 		{
 			// check filename
@@ -1060,34 +1060,34 @@ int _Textures::Get_ID_For_FileNameQ3A ( LPSTR FileName, BOOL forceload )
 		char name [ 256 ];
 		strcpy ( name, FileName );
 
-		if ( stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
+		if ( _stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
 			return x;
 
-		if ( strnicmp ( name + strlen ( name ) - 4, ".tga", 4 ) == 0 )
+		if ( _strnicmp ( name + strlen ( name ) - 4, ".tga", 4 ) == 0 )
 		{
 			strncpy ( name + strlen ( name ) - 4, ".jpg", 4 );
 
-			if ( stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
+			if ( _stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
 				return x;
 
 		}
-		else if ( strnicmp ( name + strlen ( name ) - 4, ".jpg", 4 ) == 0 )
+		else if ( _strnicmp ( name + strlen ( name ) - 4, ".jpg", 4 ) == 0 )
 		{
 			strncpy ( name + strlen ( name ) - 4, ".tga", 4 );
 
-			if ( stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
+			if ( _stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
 				return x;
 		}
 		else
 		{
 			strcat ( name, ".tga" );
 
-			if ( stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
+			if ( _stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
 				return x;
 
 			strncpy ( name + strlen ( name ) - 4, ".jpg", 4 );
 
-			if ( stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
+			if ( _stricmp ( name, Textures.Tex [ x ].FileName ) == 0 )
 				return x;
 		}
 	}
@@ -1100,17 +1100,17 @@ int _Textures::Get_ID_For_FileNameQ3A ( LPSTR FileName, BOOL forceload )
 		char name [ 256 ];
 		strcpy ( name, FileName );
 
-		if ( stricmp ( name, Textures.NotFound_FileName [ x ] ) == 0 )
+		if ( _stricmp ( name, Textures.NotFound_FileName [ x ] ) == 0 )
 			return -1;
 
 		strcat ( name, ".tga" );
 		
-		if ( stricmp ( name, Textures.NotFound_FileName [ x ] ) == 0 )
+		if ( _stricmp ( name, Textures.NotFound_FileName [ x ] ) == 0 )
 			return -1;
 
 		strncpy ( name + strlen ( name ) - 4, ".jpg", 4 );
 
-		if ( stricmp ( name, Textures.NotFound_FileName [ x ] ) == 0 )
+		if ( _stricmp ( name, Textures.NotFound_FileName [ x ] ) == 0 )
 			return -1;
 	}
 	
