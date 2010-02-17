@@ -281,7 +281,7 @@ static char* SetupString ( char* szInput )
 
 DWORD MultiplayerGetPlayerName ( DWORD pDestStr, int iID )
 {
-	if ( iID >= g_PlayerList.size ( ) )
+	if ( iID >= (int) g_PlayerList.size ( ) )
 		return ( DWORD ) SetupString ( "" );
 
 	return ( DWORD ) SetupString ( g_PlayerList [ iID ].strPlayerName );
@@ -291,7 +291,7 @@ DWORD MultiplayerGetPlayerID ( int iID )
 {
 	// get the ID of a given player
 
-	if ( iID >= g_PlayerList.size ( ) )
+	if ( iID >= (int) g_PlayerList.size ( ) )
 		return 0;
 
 	return g_PlayerList [ iID ].dpnidPlayer;
@@ -1021,7 +1021,7 @@ HRESULT SendDestroyPlayerMsgToAll ( APP_PLAYER_INFO* pPlayerInfo )
 	g_SendData.dwDword = pPlayerInfo->dpnidPlayer;
 	g_SendData.dwFlags  = DPNSEND_NOLOOPBACK | DPNSEND_GUARANTEED | DPNSEND_PRIORITY_HIGH;
 	SendMessage ( eTypeDestroyPlayer );
-	for ( int i = 0; i < g_PlayerList.size ( ); i++ )
+	for ( DWORD i = 0; i < g_PlayerList.size ( ); i++ )
 	{
 		if ( g_PlayerList [ i ].dpnidPlayer == pPlayerInfo->dpnidPlayer )
 		{
@@ -1123,7 +1123,7 @@ HRESULT WINAPI DirectPlayMessageHandler ( PVOID pvUserContext, DWORD dwMessageId
 				{
 					DWORD dwID = 0;
 					memcpy ( &dwID, &pMessage->pData, sizeof ( DWORD ) );
-					for ( int i = 0; i < g_PlayerList.size ( ); i++ )
+					for ( DWORD i = 0; i < g_PlayerList.size ( ); i++ )
 					{
 						if ( g_PlayerList [ i ].dpnidPlayer == dwID )
 						{

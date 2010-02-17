@@ -106,7 +106,7 @@ DARKSDK bool Load ( char* szFilename )
 	RemoveRedundantTransforms ( );
 
 	// add all of the frames into the object
-	for ( int iFrame = 0; iFrame < g_pFrameList.size ( ); iFrame++ )
+    for ( std::vector< sFrame* >::size_type iFrame = 0; iFrame < g_pFrameList.size ( ); iFrame++ )
 	{
 		pFrame->pMesh       = g_pFrameList [ iFrame ]->pMesh;
 		pFrame->matOriginal = g_pFrameList [ iFrame ]->matOriginal;
@@ -187,7 +187,7 @@ DARKSDK bool RemoveRedundantTransforms ( void )
 	
 				D3DXMatrixIdentity ( &pSubFrame->matOriginal );
 
-				for ( int iSubFrameList = 0; iSubFrameList < pSubFrame->pMesh->dwSubMeshListCount; iSubFrameList++ )
+				for ( DWORD iSubFrameList = 0; iSubFrameList < pSubFrame->pMesh->dwSubMeshListCount; iSubFrameList++ )
 				{
 					D3DXMatrixIdentity ( &pSubFrame->pMesh->pSubFrameList [ iSubFrameList ].matOriginal );
 				}
@@ -415,7 +415,7 @@ DARKSDK bool Draw ( void )
 			if ( pFrame->pMesh->iNextFrame > 200 )
 				pFrame->pMesh->iNextFrame = 0;
 
-			if ( pFrame->pMesh->iNextFrame >= pFrame->pMesh->dwSubMeshListCount )
+			if ( (DWORD)pFrame->pMesh->iNextFrame >= pFrame->pMesh->dwSubMeshListCount )
 				pFrame->pMesh->iNextFrame = 0;
 
 
@@ -424,7 +424,7 @@ DARKSDK bool Draw ( void )
 			GetFVFOffsetMap ( pMesh, &offsetMap );
 
 			// copy the vertices across
-			if ( pFrame->pMesh->iCurrentFrame < pFrame->pMesh->dwSubMeshListCount )
+			if ( (DWORD)pFrame->pMesh->iCurrentFrame < pFrame->pMesh->dwSubMeshListCount )
 			{
 				for ( int iVertex = 0; iVertex < ( int ) pMesh->dwVertexCount; iVertex++ )
 				{

@@ -368,7 +368,7 @@ DARKSDK bool CreateDBO ( void )
 	// store the number of frames
 	pMesh->dwSubMeshListCount = g_MD2Header.iNumFrames;
 
-	for ( int iFrame = 0; iFrame < pMesh->dwSubMeshListCount; iFrame++ )
+	for ( DWORD iFrame = 0; iFrame < pMesh->dwSubMeshListCount; iFrame++ )
 	{
 		pMesh->pSubFrameList [ iFrame ].pMesh = new sMesh;
 		SetupFrame ( &pMesh->pSubFrameList [ iFrame ], iFrame );

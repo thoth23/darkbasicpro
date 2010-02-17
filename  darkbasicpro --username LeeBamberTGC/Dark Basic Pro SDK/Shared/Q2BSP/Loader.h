@@ -2,6 +2,8 @@
 #ifndef _FILE_LOADER
 #define _FILE_LOADER
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <windows.h>
 #include <stdio.h>
 #include "unzip.h"
@@ -116,7 +118,7 @@ struct files_found
 
 		for ( int x = 0; x < num_files; x++ )
 		{
-			if ( stricmp ( files [ x ].filename, filename ) == 0 )
+			if ( _stricmp ( files [ x ].filename, filename ) == 0 )
 			{
 				SAFE_DELETE ( filename );
 				SAFE_DELETE ( path );
@@ -142,7 +144,7 @@ struct files_found
 
 		for ( int x = 0; x < num_files; x++ )
 		{
-			if ( stricmp ( files [ x ].filename, filename ) == 0 ) 
+			if ( _stricmp ( files [ x ].filename, filename ) == 0 ) 
 				return;
 		}
 

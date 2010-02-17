@@ -6,6 +6,8 @@
 //////////////////////////////////////////////////////////////////////////
 // include files /////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
+#define _CRT_SECURE_NO_WARNINGS
+
 #include < d3d9.h >
 #include < Dxerr9.h >
 #include < D3dx9tex.h >
@@ -222,7 +224,7 @@ extern struct _Textures
 		{
 			for ( int x = 0; x < entry_count; x++ )
 			{
-				if ( strlen ( entry [ x ].filename ) == strlen ( filename ) && stricmp ( entry [ x ].filename, filename ) == 0 )
+				if ( strlen ( entry [ x ].filename ) == strlen ( filename ) && _stricmp ( entry [ x ].filename, filename ) == 0 )
 				{
 					strcpy2 ( cat, entry [ x ].path );
 					return TRUE;
@@ -236,7 +238,7 @@ extern struct _Textures
 		{
 			for ( int x = 0; x < entry_count; x++ )
 			{
-				if ( strlen ( entry [ x ].filename ) == strlen ( filename ) && stricmp ( entry [ x ].filename, filename ) == 0 )
+				if ( strlen ( entry [ x ].filename ) == strlen ( filename ) && _stricmp ( entry [ x ].filename, filename ) == 0 )
 					return x;
 			}
 		

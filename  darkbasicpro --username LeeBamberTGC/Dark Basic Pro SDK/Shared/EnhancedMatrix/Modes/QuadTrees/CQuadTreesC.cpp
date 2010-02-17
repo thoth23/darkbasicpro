@@ -84,9 +84,9 @@ float CQuadTreeNode::CalculateRoughness ( UINT32 NW_X, UINT32 NW_Y, UINT32 nQuad
 	{
 		UINT32 nRadius = nQuadWidth / 2;
 		
-		for ( int NW_X = 0; NW_X < MAP_SIZE; NW_X += nQuadWidth )
+		for ( UINT32 NW_X = 0; NW_X < MAP_SIZE; NW_X += nQuadWidth )
 		{
-			for ( int NW_Y = 0; NW_Y < MAP_SIZE; NW_Y += nQuadWidth )
+			for ( UINT32 NW_Y = 0; NW_Y < MAP_SIZE; NW_Y += nQuadWidth )
 			{
 				UINT32 nNode = ( NW_X + nRadius ) + ( ( NW_Y + nRadius ) * MAP_SIZE );
 
@@ -103,13 +103,13 @@ float CQuadTreeNode::CalculateRoughness ( UINT32 NW_X, UINT32 NW_Y, UINT32 nQuad
 				UINT32 nCenter   = HeightField ( NW_Y + nRadius,	NW_X + nRadius    );
 
 				// find the error for this node's edges and center
-				UINT32 nErrNorth = abs ( (float) HeightField ( NW_Y,				NW_X + nRadius	  ) - ( ( nNWCorner + nNECorner ) >> 1 ) );
-				UINT32 nErrSouth = abs ( (float) HeightField ( NW_Y + nQuadWidth,	NW_X + nRadius	  ) - ( ( nSWCorner + nSECorner ) >> 1 ) );
-				UINT32 nErrEast  = abs ( (float) HeightField ( NW_Y + nRadius,		NW_X + nQuadWidth ) - ( ( nNECorner + nSECorner ) >> 1 ) );
-				UINT32 nErrWest  = abs ( (float) HeightField ( NW_Y + nRadius,		NW_X			  ) - ( ( nNWCorner + nSWCorner ) >> 1 ) );
+				UINT32 nErrNorth = (UINT32) abs ( (float) HeightField ( NW_Y,				NW_X + nRadius	  ) - ( ( nNWCorner + nNECorner ) >> 1 ) );
+				UINT32 nErrSouth = (UINT32) abs ( (float) HeightField ( NW_Y + nQuadWidth,	NW_X + nRadius	  ) - ( ( nSWCorner + nSECorner ) >> 1 ) );
+				UINT32 nErrEast  = (UINT32) abs ( (float) HeightField ( NW_Y + nRadius,		NW_X + nQuadWidth ) - ( ( nNECorner + nSECorner ) >> 1 ) );
+				UINT32 nErrWest  = (UINT32) abs ( (float) HeightField ( NW_Y + nRadius,		NW_X			  ) - ( ( nNWCorner + nSWCorner ) >> 1 ) );
 
-				UINT32 nErrCtr1	 = abs ( (float) nCenter - ( ( nSECorner + nNECorner ) >> 1 ) );
-				UINT32 nErrCtr2	 = abs ( (float) nCenter - ( ( nNWCorner + nSWCorner ) >> 1 ) );
+				UINT32 nErrCtr1	 = (UINT32) abs ( (float) nCenter - ( ( nSECorner + nNECorner ) >> 1 ) );
+				UINT32 nErrCtr2	 = (UINT32) abs ( (float) nCenter - ( ( nNWCorner + nSWCorner ) >> 1 ) );
 
 				// find the largest error of this node...
 				float fMaxError = ( float ) nErrNorth;
@@ -216,7 +216,7 @@ BOOL CQuadTreeNode::SplitMetric ( UINT32 NW_X, UINT32 NW_Y, UINT32 nQuadWidth )
 	float distance = MAX ( A, MAX ( B, C ) );
 
 	// seems to mess up when get VERY close to the geo-
-	if(distance<MAP_SIZE) distance=MAP_SIZE;
+	if(distance<MAP_SIZE) distance=(float)MAP_SIZE;
 	
 	float	D2,
 			desiredRes = 0.15f;

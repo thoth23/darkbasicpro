@@ -18,8 +18,24 @@ extern void ComputeBoundValues ( int iPass, D3DXVECTOR3 vecXYZ, D3DXVECTOR3* pve
 
 cUniverse::sNode::sNode ( )
 {
-	memset ( this, 0, sizeof ( sNode ) );
-	iMaxPolygonCount = 2;
+    location = TopLeftFront;
+    ppMeshList = NULL;
+    pMeshPortalList = NULL;
+    iMeshCount = 0;
+    iMeshPortalCount = 0;
+    iPolygonCount = 0;
+    iMaxPolygonCount = 2;
+    bChecked = false;
+    bClear = false;
+    vecCentre = D3DXVECTOR3( 0.0, 0.0, 0.0 );
+    vecDimension = D3DXVECTOR3( 0.0, 0.0, 0.0 );
+
+    for (int i = 0; i < 6; ++i)
+        pNeighbours[i] = NULL;
+
+    vecColMin = D3DXVECTOR3( 0.0, 0.0, 0.0 );
+    vecColMax = D3DXVECTOR3( 0.0, 0.0, 0.0 );
+    dwNodeRefIndex = 0;
 }
 cUniverse::sNode::~sNode ( )
 {
@@ -34,6 +50,17 @@ cUniverse::sPortal::sPortal ( )
 	// set both visible flags to true
 	bVisible                 = true;
 	bVisibleInViewingFrustum = true;
+}
+
+cUniverse::sArea::sArea ( )
+{
+    vecMin = D3DXVECTOR3( 0.0, 0.0, 0.0 );
+    vecMax = D3DXVECTOR3( 0.0, 0.0, 0.0 );
+    vecCentre = D3DXVECTOR3( 0.0, 0.0, 0.0 );
+    iLinkMax = 0;
+    iCount = 0;
+    pDebugRegion = NULL;
+    bRenderedThisCycle = false;
 }
 
 cUniverse::cUniverse ( )
@@ -781,8 +808,7 @@ void cUniverse::LoadDBU ( LPSTR pDBUFilename )
 		{
 			// Get Area Box Ptr
 			sArea* pArea = new sArea;
-			memset ( pArea, 0, sizeof ( sArea ) );
-			m_pAreaList.push_back ( pArea );
+            m_pAreaList.push_back ( pArea );
 
 			// Area Box Dimensions
 			ReadFile(hreadfile, (LPSTR)&pArea->vecMin, sizeof(D3DXVECTOR3), &read, NULL); 
@@ -2273,7 +2299,6 @@ bool cUniverse::BuildAreaBoxes ( void )
 			// create a new area
 			sArea* pArea = new sArea;
 			if ( !pArea ) return false;
-			memset ( pArea, 0, sizeof(sArea) );
 
 			// set up initial area properties
 			pArea->nodes.clear ( );													// make sure node list is clear
@@ -5966,7 +5991,7 @@ void cUniverse::SetLight ( int iLightIndex, float fX, float fY, float fZ, float 
 	if ( iLightIndex >= (int)m_pShadowLightList.size ( ) )
 	{
 		sShadowLight shadowlight;
-		memset ( &shadowlight, 0, sizeof ( shadowlight ) );
+
 		while ( iLightIndex >= (int)m_pShadowLightList.size ( ) )
 			m_pShadowLightList.push_back ( shadowlight );
 	}

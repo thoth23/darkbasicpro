@@ -577,7 +577,7 @@ POLYGON* CCollisionManager::getAABBColliders ( VECTOR3 origin, VECTOR3 velocityV
 		// if PVS culling is turned OFF or this is a non 0 PVS byte
 		if ( outsideOfTree || *PVSPointer != 0 ) 
 		{
-			for ( int jj = 0; jj < 8 && currentLeaf < (int)NumberOfLeafs; ++jj ) 
+			for ( int jj = 0; jj < 8 && currentLeaf < (ULONG)NumberOfLeafs; ++jj ) 
 			{	
 
 				// if PVS culling is turned OFF or this BIT is set.

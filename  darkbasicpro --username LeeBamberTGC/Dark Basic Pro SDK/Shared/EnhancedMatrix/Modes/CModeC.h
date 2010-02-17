@@ -33,8 +33,8 @@
 */
 
 // these were defines before, you can now set the properties manually
-extern int					MAP_SIZE;
-extern int					POOL_SIZE;
+extern UINT32				MAP_SIZE;
+extern UINT32				POOL_SIZE;
 extern float				MIN_RESOLUTION;
 extern float				MULT_SCALE;
 

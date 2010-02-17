@@ -43,7 +43,7 @@ BOOL file_loader::GetRelativePath ( LPSTR fullpath, LPSTR start, LPSTR* out )
 	if ( start [ strlen ( start ) - 1 ] == '/' )
 		start [ strlen ( start ) - 1 ] = '\0';
 
-	if ( stricmp ( fullpath, start ) == 0 )
+	if ( _stricmp ( fullpath, start ) == 0 )
 	{
 		*out       = new char [ 1 ];
 		*out [ 0 ] = '\0';
@@ -91,8 +91,6 @@ BOOL file_loader::Load::From_PAK ( LPSTR pakname, LPSTR filename, byte** data, i
 {
 	if ( data != NULL )
 		*data = NULL;
-
-	char text [ 1024 ];
 
 	FILE* file = fopen ( pakname, "rb" );
 	
@@ -142,7 +140,7 @@ BOOL file_loader::Load::From_PAK ( LPSTR pakname, LPSTR filename, byte** data, i
 		free(pSeeData);
 		*/
 
-		if ( strnicmp ( filename, info [ x ].name + ( strlen ( info [ x ].name ) - strlen ( filename ) ), strlen ( filename ) ) == 0 )
+		if ( _strnicmp ( filename, info [ x ].name + ( strlen ( info [ x ].name ) - strlen ( filename ) ), strlen ( filename ) ) == 0 )
 		{
 			if ( length != NULL )
 				*length = info [ x ].filelen;
@@ -480,7 +478,7 @@ BOOL file_loader::Load::From_ZIP ( LPSTR zipname, LPSTR filename, byte** data, i
 			return FALSE;
 
 		// read header
-		fseek ( zip_optimize.file [ current_zip ], -sizeof ( zip_dir_t ), SEEK_END );
+		fseek ( zip_optimize.file [ current_zip ], 0 - sizeof ( zip_dir_t ), SEEK_END );
 
 		if ( fread ( &zip_optimize.dir [ current_zip ], 1, sizeof ( zip_dir_t ), zip_optimize.file [ current_zip ] ) != sizeof ( zip_dir_t ) )
 			return FALSE;
@@ -508,7 +506,7 @@ BOOL file_loader::Load::From_ZIP ( LPSTR zipname, LPSTR filename, byte** data, i
 			
 			fseek ( zip_optimize.file [ current_zip ], h.extra_len + h.comment_len, SEEK_CUR );
 					
-			strcpy(zip_optimize.files [ current_zip ] [ i ].name, strlwr ( name ) );
+			strcpy(zip_optimize.files [ current_zip ] [ i ].name, _strlwr ( name ) );
 
 			zip_optimize.files [ current_zip ] [ i ].offset = h.offset;
 			zip_optimize.files [ current_zip ] [ i ].size   = h.size;
@@ -522,7 +520,7 @@ BOOL file_loader::Load::From_ZIP ( LPSTR zipname, LPSTR filename, byte** data, i
 			if ( strlen ( zip_optimize.files [ current_zip ] [ i ].name ) < strlen ( filename ) )
 				continue;
 
-			if ( strnicmp (
+			if ( _strnicmp (
 							filename,
 							zip_optimize.files [ current_zip ] [ i ].name + ( strlen ( zip_optimize.files [ current_zip ] [ i ].name ) - strlen ( filename ) ),
 							strlen ( filename ) ) == 0
@@ -565,7 +563,7 @@ BOOL file_loader::Load::From_ZIP ( LPSTR zipname, LPSTR filename, byte** data, i
 		}
 
 		// back up a little and read the whole file
-		fseek ( zip_optimize.file [ current_zip ], -sizeof ( LF ), SEEK_CUR );
+		fseek ( zip_optimize.file [ current_zip ], 0 - sizeof ( LF ), SEEK_CUR );
 
 		if ( fread ( tmp, 1, size, zip_optimize.file [ current_zip ] ) != ( unsigned ) size )
 		{
@@ -626,7 +624,7 @@ BOOL file_loader::Q3A::Add_PK3 ( LPSTR filename )
 	// search in existing entries
 	for ( int x = 0; x < Q3A_Resources.num_files; x++ )
 	{
-		if ( stricmp ( Q3A_Resources.files [ x ].fullname, filename ) == 0 )
+		if ( _stricmp ( Q3A_Resources.files [ x ].fullname, filename ) == 0 )
 			return TRUE;
 	}
 
@@ -655,7 +653,7 @@ BOOL file_loader::Q2::Add_WAD ( LPSTR filename )
 	// search in existing entries
 	for ( int x = 0; x < Q2_Resources.num_files; x++ )
 	{
-		if ( stricmp ( Q2_Resources.files [ x ].fullname, filename ) == 0 )
+		if ( _stricmp ( Q2_Resources.files [ x ].fullname, filename ) == 0 )
 			return TRUE;
 	}
 
@@ -688,7 +686,7 @@ BOOL file_loader::Find::Files_in_ZIP ( LPSTR zipname, LPSTR common, files_found_
 		return FALSE;
 
 	// read header
-	fseek ( file, -sizeof ( zip_dir_t ), SEEK_END );
+	fseek ( file, 0 - sizeof ( zip_dir_t ), SEEK_END );
 
 	zip_dir_t dir;
 
@@ -718,7 +716,7 @@ BOOL file_loader::Find::Files_in_ZIP ( LPSTR zipname, LPSTR common, files_found_
 
         fseek ( file, h.extra_len+h.comment_len, SEEK_CUR );
 				
-		strcpy ( files [ i ].name, strlwr ( name ) );
+		strcpy ( files [ i ].name, _strlwr ( name ) );
 
         files [ i ].offset = h.offset;
         files [ i ].size   = h.size;
@@ -737,7 +735,7 @@ BOOL file_loader::Find::Files_in_ZIP ( LPSTR zipname, LPSTR common, files_found_
 	char fcommon [ 256 ];
 	
 	strcpy ( fcommon, common );
-	strcpy ( fcommon, strlwr ( fcommon ) );
+	strcpy ( fcommon, _strlwr ( fcommon ) );
 
 	for ( i = 0; i < dir.count; i++ )
 	{
@@ -837,7 +835,7 @@ BOOL file_loader::GetLength::File_in_ZIP ( LPSTR zipname, LPSTR filename, int* l
 		return FALSE;
 
 	// read header
-	fseek ( file, -sizeof ( zip_dir_t ), SEEK_END );
+	fseek ( file, 0 - sizeof ( zip_dir_t ), SEEK_END );
 
 	zip_dir_t dir;
 
@@ -868,7 +866,7 @@ BOOL file_loader::GetLength::File_in_ZIP ( LPSTR zipname, LPSTR filename, int* l
 
         fseek ( file, h.extra_len + h.comment_len, SEEK_CUR );
 				
-		strcpy ( files [ i ].name, strlwr ( name ) );
+		strcpy ( files [ i ].name, _strlwr ( name ) );
 
         files [ i ].offset = h.offset;
         files [ i ].size   = h.size;
@@ -880,7 +878,7 @@ BOOL file_loader::GetLength::File_in_ZIP ( LPSTR zipname, LPSTR filename, int* l
 	// search requested files
 	for ( i = 0; i < dir.count; i++ )
 	{
-		if ( strstr ( strlwr ( files [ i ].name ), strlwr ( filename ) ) != 0 )
+		if ( strstr ( _strlwr ( files [ i ].name ), _strlwr ( filename ) ) != 0 )
 		{
 			*length = files [ i ].size;
 
@@ -924,8 +922,6 @@ BOOL file_loader::Load::From_WAD ( LPSTR wadname, LPSTR filename, byte** data, i
 {
 	if ( data != NULL )
 		*data = NULL;
-
-	char text [ 1024 ];
 
 	FILE* file = fopen ( wadname, "rb" );
 
@@ -973,14 +969,14 @@ BOOL file_loader::Load::From_WAD ( LPSTR wadname, LPSTR filename, byte** data, i
 	
 	strcpy ( fn, filename );
 
-	if ( strnicmp ( fn + strlen ( fn ) - 7, ".wadtex", 7 ) == 0 )
+	if ( _strnicmp ( fn + strlen ( fn ) - 7, ".wadtex", 7 ) == 0 )
 	{
 		fn [ strlen ( fn ) - 7 ] = '\0';
 	}
 
 	for ( int i = 0; i < lump_count; i++ )
 	{
-		if ( strcmpi ( lumps [ i ].name, fn ) == 0 )
+		if ( _strcmpi ( lumps [ i ].name, fn ) == 0 )
 		{
 			if ( length != NULL )
 			{

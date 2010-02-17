@@ -825,7 +825,7 @@ D3DXVECTOR3 ConvertVectorFromQ3 ( int src [ 3 ] )
 {
 	//return D3DXVECTOR3 ( src [ 0 ], src [ 1 ], src [ 2 ] );
 
-	return ConvertVectorFromQ3 ( D3DXVECTOR3 ( src [ 0 ], src [ 1 ], src [ 2 ] ) );
+	return ConvertVectorFromQ3 ( D3DXVECTOR3 ( (float) src [ 0 ], (float) src [ 1 ], (float) src [ 2 ] ) );
 }
 
 D3DXVECTOR3 ConvertVectorFromQ3 ( short src [ 3 ] )
@@ -1324,24 +1324,26 @@ BOOL InitMapQ3A ( byte* data )
 	int* sort_face = new int [ face_count3 ];
 	int* sort_tex  = new int [ face_count3 ];
 
-	for ( int x = 0; x < face_count3; x++ )
-	{
-		sort_tex  [ x ] = Q3MAP.faces [ x ].tex_ref;
-		sort_face [ x ] = x;
-	}
+    {
+	    for ( int x = 0; x < face_count3; x++ )
+	    {
+		    sort_tex  [ x ] = Q3MAP.faces [ x ].tex_ref;
+		    sort_face [ x ] = x;
+	    }
 
-	// sort
-	for ( int x = 0; x < face_count3 - 1; x++ )
-	{
-		for ( int y = x + 1; y < face_count3; y++ )
-		{
-			if ( sort_tex [ x ] > sort_tex [ y ] )
-			{
-				swap ( &sort_tex  [ x ], &sort_tex  [ y ] );
-				swap ( &sort_face [ x ], &sort_face [ y ] );
-			}
-		}
-	}
+	    // sort
+	    for ( int x = 0; x < face_count3 - 1; x++ )
+	    {
+		    for ( int y = x + 1; y < face_count3; y++ )
+		    {
+			    if ( sort_tex [ x ] > sort_tex [ y ] )
+			    {
+				    swap ( &sort_tex  [ x ], &sort_tex  [ y ] );
+				    swap ( &sort_face [ x ], &sort_face [ y ] );
+			    }
+		    }
+	    }
+    }
 
 	// copy to Q3MAP data
 	Q3MAP.sort.tex = NULL;

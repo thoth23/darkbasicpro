@@ -416,7 +416,6 @@ void CalcPortalVis ( void )
 	PVSRECURSEDATA data;
 	ZeroMemory ( &data, sizeof ( PVSRECURSEDATA ) );
 
-	char ProgressBuffer [ 128 ];
 	int	 ProgressCount = 0;
 	RECT rect;
 	

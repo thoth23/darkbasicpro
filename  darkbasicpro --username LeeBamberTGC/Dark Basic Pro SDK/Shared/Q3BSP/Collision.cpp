@@ -856,13 +856,15 @@ static D3DXVECTOR3 closest_on_poly ( const D3DXVECTOR3& p, D3DXVECTOR3* line_dir
     D3DXVECTOR3 v [ 32 ];
     float d [ 32 ];
 
-    for ( int i = 0; i < cache.count - 1; i++ )
-	{
-        v [ i ] = closest_on_line ( cache.vertex [ i ], cache.vertex [ i + 1 ], p );
+    {
+        for ( int i = 0; i < cache.count - 1; i++ )
+	    {
+            v [ i ] = closest_on_line ( cache.vertex [ i ], cache.vertex [ i + 1 ], p );
 
-        D3DXVECTOR3 t = p - v [ i ];
-        
-		d [ i ] = D3DXVec3Length ( &t );
+            D3DXVECTOR3 t = p - v [ i ];
+            
+		    d [ i ] = D3DXVec3Length ( &t );
+        }
     }
 
     int i = cache.count-1;

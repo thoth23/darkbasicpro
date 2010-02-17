@@ -206,7 +206,7 @@ DARKSDK bool BuildAnimationData ( void )
 	{
 		SetupBones ( fFrame );
 
-		for ( int iBone = 0; iBone < g_pTempObject->pFrame->pMesh->dwBoneCount; iBone++ )
+		for ( DWORD iBone = 0; iBone < g_pTempObject->pFrame->pMesh->dwBoneCount; iBone++ )
 		{
 			D3DXMATRIX matrix;
 			
@@ -220,10 +220,10 @@ DARKSDK bool BuildAnimationData ( void )
 		}
 	}
 
-	g_ppBoneFrames = new D3DXMATRIX* [ pSequence->iNumFrames / 0.1 ];
+	g_ppBoneFrames = new D3DXMATRIX* [ (DWORD) (pSequence->iNumFrames / 0.1) ];
 	
-	g_iBoneFrameA = pSequence->iNumFrames / 0.1 - 10;
-	g_iBoneFrameB = pSequence->iNumFrames / 0.1 - 10;
+	g_iBoneFrameA = (int) (pSequence->iNumFrames / 0.1 ) - 10;
+	g_iBoneFrameB = (int) (pSequence->iNumFrames / 0.1 ) - 10;
 
 	// mike - 020206 - addition for vs8
 	//for ( iFrame = 0; iFrame < g_iBoneFrameA; iFrame++ )
@@ -309,7 +309,7 @@ DARKSDK bool SetupFrame ( sFrame* pFrame, int iFrame )
 	pMesh->pBones      = new sBone [ g_pHeader->iNumBones ];
 	pMesh->dwBoneCount = g_pHeader->iNumBones;
 	
-	for ( int iBone = 0; iBone < pMesh->dwBoneCount; iBone++ )
+	for ( DWORD iBone = 0; iBone < pMesh->dwBoneCount; iBone++ )
 	{
 		D3DXMATRIX matrix;
 		
@@ -398,8 +398,8 @@ DARKSDK bool BuildDrawList ( void )
 		int					iCheck  = 0;
 		D3DPRIMITIVETYPE	iType;
 
-		tu1 = 1.0 / ( float ) pTexture [ psSkin [ pMesh->iSkinRef ] ].iWidth;
-		tv1 = 1.0 / ( float ) pTexture [ psSkin [ pMesh->iSkinRef ] ].iHeight;
+		tu1 = 1.0f / ( float ) pTexture [ psSkin [ pMesh->iSkinRef ] ].iWidth;
+		tv1 = 1.0f / ( float ) pTexture [ psSkin [ pMesh->iSkinRef ] ].iHeight;
 
 		while ( iTriangle = *( psIndex++ ) )
 		{
@@ -442,7 +442,7 @@ DARKSDK bool BuildDrawList ( void )
 
 	g_piOffsetList = new int [ g_iOffsetList.size ( ) ];
 
-	for ( int iOffset = 0; iOffset < g_iOffsetList.size ( ); iOffset++ )
+    for ( std::vector<int>::size_type iOffset = 0; iOffset < g_iOffsetList.size ( ); iOffset++ )
 	{
 		g_piOffsetList [ iOffset ] = g_iOffsetList [ iOffset ];
 	}
@@ -452,7 +452,7 @@ DARKSDK bool BuildDrawList ( void )
 
 DARKSDK void UpdateBones ( void )
 {
-	static int iFrame = 0.0f;
+	static int iFrame = 0;
 
 	if ( iFrame < 999 )
 		iFrame++;
@@ -555,17 +555,17 @@ DARKSDK void R_ConcatTransforms ( const float in1 [ 3 ] [ 4 ], const float in2 [
 
 DARKSDK void QuaternionMatrix ( const vector4 quaternion, float ( *matrix ) [ 4 ] )
 {
-	matrix [ 0 ] [ 0 ] = 1.0 - 2.0 * quaternion [ 1 ] * quaternion [ 1 ] - 2.0 * quaternion [ 2 ] * quaternion [ 2 ];
-	matrix [ 1 ] [ 0 ] = 2.0 *       quaternion [ 0 ] * quaternion [ 1 ] + 2.0 * quaternion [ 3 ] * quaternion [ 2 ];
-	matrix [ 2 ] [ 0 ] = 2.0 *       quaternion [ 0 ] * quaternion [ 2 ] - 2.0 * quaternion [ 3 ] * quaternion [ 1 ];
+	matrix [ 0 ] [ 0 ] = (float) (1.0 - 2.0 * quaternion [ 1 ] * quaternion [ 1 ] - 2.0 * quaternion [ 2 ] * quaternion [ 2 ]);
+	matrix [ 1 ] [ 0 ] = (float) (2.0 *       quaternion [ 0 ] * quaternion [ 1 ] + 2.0 * quaternion [ 3 ] * quaternion [ 2 ]);
+	matrix [ 2 ] [ 0 ] = (float) (2.0 *       quaternion [ 0 ] * quaternion [ 2 ] - 2.0 * quaternion [ 3 ] * quaternion [ 1 ]);
 
-	matrix [ 0 ] [ 1 ] = 2.0 *       quaternion [ 0 ] * quaternion [ 1 ] - 2.0 * quaternion [ 3 ] * quaternion [ 2 ];
-	matrix [ 1 ] [ 1 ] = 1.0 - 2.0 * quaternion [ 0 ] * quaternion [ 0 ] - 2.0 * quaternion [ 2 ] * quaternion [ 2 ];
-	matrix [ 2 ] [ 1 ] = 2.0 *       quaternion [ 1 ] * quaternion [ 2 ] + 2.0 * quaternion [ 3 ] * quaternion [ 0 ];
+	matrix [ 0 ] [ 1 ] = (float) (2.0 *       quaternion [ 0 ] * quaternion [ 1 ] - 2.0 * quaternion [ 3 ] * quaternion [ 2 ]);
+	matrix [ 1 ] [ 1 ] = (float) (1.0 - 2.0 * quaternion [ 0 ] * quaternion [ 0 ] - 2.0 * quaternion [ 2 ] * quaternion [ 2 ]);
+	matrix [ 2 ] [ 1 ] = (float) (2.0 *       quaternion [ 1 ] * quaternion [ 2 ] + 2.0 * quaternion [ 3 ] * quaternion [ 0 ]);
 
-	matrix [ 0 ] [ 2 ] = 2.0 *       quaternion [ 0 ] * quaternion [ 2 ] + 2.0 * quaternion [ 3 ] * quaternion [ 1 ];
-	matrix [ 1 ] [ 2 ] = 2.0 *       quaternion [ 1 ] * quaternion [ 2 ] - 2.0 * quaternion [ 3 ] * quaternion [ 0 ];
-	matrix [ 2 ] [ 2 ] = 1.0 - 2.0 * quaternion [ 0 ] * quaternion [ 0 ] - 2.0 * quaternion [ 1 ] * quaternion [ 1 ];
+	matrix [ 0 ] [ 2 ] = (float) (2.0 *       quaternion [ 0 ] * quaternion [ 2 ] + 2.0 * quaternion [ 3 ] * quaternion [ 1 ]);
+	matrix [ 1 ] [ 2 ] = (float) (2.0 *       quaternion [ 1 ] * quaternion [ 2 ] - 2.0 * quaternion [ 3 ] * quaternion [ 0 ]);
+	matrix [ 2 ] [ 2 ] = (float) (1.0 - 2.0 * quaternion [ 0 ] * quaternion [ 0 ] - 2.0 * quaternion [ 1 ] * quaternion [ 1 ]);
 }
 
 DARKSDK void CalculateRotations ( vector3* pos, vector4 *q, sMDLSequence* pSequence, sMDLAnimation* pAnim, float fFrame )
@@ -674,15 +674,15 @@ DARKSDK void AngleQuaternion ( const vector3 angles, vector4 quaternion )
 	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
 
-	angle = angles [ 2 ] * 0.5;
+	angle = angles [ 2 ] * 0.5f;
 	sy    = sin ( angle );
 	cy    = cos ( angle );
 
-	angle = angles [ 1 ] * 0.5;
+	angle = angles [ 1 ] * 0.5f;
 	sp    = sin ( angle );
 	cp    = cos ( angle );
 
-	angle = angles [ 0 ] * 0.5;
+	angle = angles [ 0 ] * 0.5f;
 	sr    = sin ( angle );
 	cr    = cos ( angle );
 
@@ -720,12 +720,12 @@ DARKSDK void QuaternionSlerp ( const vector4 p, vector4 q, float t, vector4 qt )
 		{
 			omega = acos ( cosom );
 			sinom = sin  ( omega );
-			sclp  = sin  ( ( 1.0 - t ) * omega ) / sinom;
+			sclp  = sin  ( ( 1.0f - t ) * omega ) / sinom;
 			sclq  = sin  ( t * omega ) / sinom;
 		}
 		else
 		{
-			sclp = 1.0 - t;
+			sclp = 1.0f - t;
 			sclq = t;
 		}
 		
@@ -739,8 +739,8 @@ DARKSDK void QuaternionSlerp ( const vector4 p, vector4 q, float t, vector4 qt )
 		qt [ 2 ] = -p [ 3 ];
 		qt [ 3 ] =  p [ 2 ];
 
-		sclp = sin ( ( 1.0 - t ) * 0.5 * Q_PI );
-		sclq = sin ( t * 0.5 * Q_PI);
+		sclp = sin ( ( 1.0f - t ) * 0.5f * (float)Q_PI );
+		sclq = sin ( t * 0.5f * (float)Q_PI );
 
 		for ( i = 0; i < 3; i++ )
 			qt [ i ] = sclp * p [ i ] + sclq * qt [ i ];
@@ -770,14 +770,14 @@ DARKSDK void CalculateBonePosition ( int frame, float s, sMDLBone* pBone, sMDLAn
 			if ( pAnimValue->num.byValid > k )
 			{
 				if ( pAnimValue->num.byValid > k + 1)
-					pos [ j ] += ( pAnimValue [ k + 1 ].value * ( 1.0 - s ) + s * pAnimValue [ k + 2 ].value ) * pBone->fScale [ j ];
+					pos [ j ] += (float) (( pAnimValue [ k + 1 ].value * ( 1.0 - s ) + s * pAnimValue [ k + 2 ].value ) * pBone->fScale [ j ]);
 				else
 					pos [ j ] += pAnimValue [ k + 1 ].value * pBone->fScale [ j ];
 			}
 			else
 			{
 				if ( pAnimValue->num.byTotal <= k + 1 )
-					pos [ j ] += ( pAnimValue [ pAnimValue->num.byValid ].value * ( 1.0 - s ) + s * pAnimValue [ pAnimValue->num.byValid + 2 ].value ) * pBone->fScale [ j ];
+					pos [ j ] += (float) (( pAnimValue [ pAnimValue->num.byValid ].value * ( 1.0 - s ) + s * pAnimValue [ pAnimValue->num.byValid + 2 ].value ) * pBone->fScale [ j ]);
 				else
 					pos [ j ] += pAnimValue [ pAnimValue->num.byValid ].value * pBone->fScale [ j ];
 			}
@@ -900,8 +900,8 @@ DARKSDK bool UploadTexture ( sMDLTexture* pTexture, BYTE* pbData, BYTE* pbPal )
 
 	for ( i = 0; i < iOutWidth; i++ )
 	{
-		iCol1 [ i ] = ( i + 0.25 ) * ( pTexture->iWidth / ( float ) iOutWidth );
-		iCol2 [ i ] = ( i + 0.75 ) * ( pTexture->iWidth / ( float ) iOutWidth );
+		iCol1 [ i ] = (int) (( i + 0.25 ) * ( pTexture->iWidth / ( float ) iOutWidth ));
+		iCol2 [ i ] = (int) (( i + 0.75 ) * ( pTexture->iWidth / ( float ) iOutWidth ));
 	}
 
 	for ( i = 0; i < iOutHeight; i++ )
