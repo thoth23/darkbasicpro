@@ -2931,6 +2931,10 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 bool CObjectManager::DrawObject ( sObject* pObject )
 {
 	// draw an object
+	if ( pObject->dwObjectNumber==10101 )
+	{
+		int lee=42;
+	}
 
 	// check the object and array index value
 	SAFE_MEMORY ( pObject );

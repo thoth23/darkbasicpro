@@ -62,7 +62,11 @@ void sODEBone::CreateBone( const D3DXMATRIX *pObjMatrix, const sMesh *pMesh, int
 	
 	//create position matrix for ODE box, offset from bone ceneter of rotation
 	D3DXMatrixMultiply( &matWorld, &matOffset, pMesh->pFrameMatrices [ iBoneID ] );
-//paul210407	D3DXMatrixMultiply( &matWorld, &matWorld, pObjMatrix );
+
+	// paul210407	D3DXMatrixMultiply( &matWorld, &matWorld, pObjMatrix );
+	// U75 - 210210 - this was commented out for special X10-instancing hack, but
+	// has been returned as we want the bones at real world co-ordinates, not oriented at a 0,0,0 world position
+	D3DXMatrixMultiply( &matWorld, &matWorld, pObjMatrix );
 
 	float fPosX = matWorld._41;
 	float fPosY = matWorld._42;
@@ -109,6 +113,7 @@ void sODEBone::CreateBone( const D3DXMATRIX *pObjMatrix, const sMesh *pMesh, int
 	//copy original bone matrix back into local matrix
 	matWorld = *(pMesh->pFrameMatrices [ iBoneID ]);
 //paul210407	D3DXMatrixMultiply( &matWorld, &matWorld, pObjMatrix );
+	D3DXMatrixMultiply( &matWorld, &matWorld, pObjMatrix );
 
 	//replace bone matrix with local matrix
 	pMesh->pFrameMatrices [ iBoneID ] = &matWorld;
@@ -116,7 +121,7 @@ void sODEBone::CreateBone( const D3DXMATRIX *pObjMatrix, const sMesh *pMesh, int
 	iFrameOwner = pMesh->pFrameRef [ iBoneID ]->iID;
 }
 
-void sODEBone::UpdateBone( bool bRagdollMoving )
+void sODEBone::UpdateBone( bool bRagdollMoving, float fScaleY )
 {
 	// 130607 - dampen position and rotation of ragdoll
 	// does not stop jiggling, the jiggle is not cumilative, its instant from somewhere
@@ -163,6 +168,17 @@ void sODEBone::UpdateBone( bool bRagdollMoving )
 		matWorld._24 = 0;
 		matWorld._34 = 0;
 		matWorld._44 = 1;
+
+		// reduce scale here when updating bone matrix (scale not interfere with rotation)
+		matWorld._11 *= fScaleY;
+		matWorld._12 *= fScaleY;
+		matWorld._13 *= fScaleY;
+		matWorld._21 *= fScaleY;
+		matWorld._22 *= fScaleY;
+		matWorld._23 *= fScaleY;
+		matWorld._31 *= fScaleY;
+		matWorld._32 *= fScaleY;
+		matWorld._33 *= fScaleY;
 
 		D3DXMATRIX matOffset;
 		D3DXMatrixTranslation( &matOffset, -fOffsetX, -fOffsetY, -fOffsetZ );

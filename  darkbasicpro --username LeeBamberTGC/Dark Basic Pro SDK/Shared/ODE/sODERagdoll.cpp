@@ -144,13 +144,13 @@ sODERagdoll* sODERagdoll::AddRagdoll( int id, sObject *pObject, float fAdjust, i
 {
 	sODERagdoll *pRagdoll = new sODERagdoll( );
 
+	pRagdoll->fContactMU = 1000.0f;
+	pRagdoll->fContactSoftERP = 0.2f;
+	pRagdoll->fContactSoftCFM = 0.0002f;
 	pRagdoll->iResponseMode = 0;
 	pRagdoll->iFreezeDelay = 0;
-	pRagdoll->fContactMU = 0.0f;
 	pRagdoll->fContactBounce = 0.0f;
 	pRagdoll->fContactBounceVelocity = 0.0f;
-	pRagdoll->fContactSoftERP = 0.0f;
-	pRagdoll->fContactSoftCFM = 0.0f;
 	pRagdoll->fContactMotion1 = 0.0f;
 	pRagdoll->fContactMotion2 = 0.0f;
 	pRagdoll->fContactSlip1 = 0.0f;
@@ -188,17 +188,6 @@ sODERagdoll* sODERagdoll::AddRagdoll( int id, sObject *pObject, float fAdjust, i
 		{
 			sBone *pBone = pMesh->pBones + bone;
 
-			//if ( strstr( pObject->ppMeshList [ i ]->pBones [ bone ].szName, "Clavicle" ) ) continue;
-
-			//if ( !pBone->dwNumInfluences ) continue;
-
-			//if ( pMesh->pFrameRef )
-			//{
-			//	char str [ 256 ];
-			//	sprintf_s( str, 256, "Mesh: %d, Bone: %d, Name: %s, FrameID: %d, Frame Name: %s", i, bone, pBone->szName, pMesh->pFrameRef [ bone ]->iID, pMesh->pFrameRef [ bone ]->szName );
-			//	MessageBox( NULL, str, "Bone Info", 0 );	
-			//}
-
 			//values to store the bounds of the bone
 			float minx=0,miny=0,minz=0;
 			float maxx=0,maxy=0,maxz=0;
@@ -230,6 +219,14 @@ sODERagdoll* sODERagdoll::AddRagdoll( int id, sObject *pObject, float fAdjust, i
 					if ( vecFinal.z > maxz || vert == 0 ) maxz = vecFinal.z;
 				}
 			}
+
+			// V109 - 070109 - if bone too small, will corrupt ragdoll, so make minimum size!
+			if ( minx > - 5 ) minx = -5;
+			if ( miny > - 5 ) miny = -5;
+			if ( minz > - 5 ) minz = -5;
+			if ( maxx < 5 ) maxx = 5;
+			if ( maxy < 5 ) maxy = 5;
+			if ( maxz < 5 ) maxz = 5;
 
 			//calculate the center of the bounding box, this is the offset from te bone's center of rotation
 			float fCenterX = (minx+maxx) / 2.0f;
@@ -268,6 +265,30 @@ sODERagdoll* sODERagdoll::AddRagdoll( int id, sObject *pObject, float fAdjust, i
 			int iGroup = 0;
 			if ( bSpine || bClavicle || bPelvis || bNeck /*|| bUpperArm || bThigh*/ || bHead ) iGroup = 1;
 
+			/*
+			// V109 - 110209 - reduce the input bones by the objects scaling factor
+			D3DXVECTOR3 vecStorePos = D3DXVECTOR3 ( pMesh->pFrameMatrices [ bone ]->_41, pMesh->pFrameMatrices [ bone ]->_42, pMesh->pFrameMatrices [ bone ]->_43 );
+			vecStorePos.x -= pObject->position.matWorld._41;
+			vecStorePos.y -= pObject->position.matWorld._42;
+			vecStorePos.z -= pObject->position.matWorld._43;
+			vecStorePos.x *= pObject->position.vecScale.x;
+			vecStorePos.y *= pObject->position.vecScale.y;
+			vecStorePos.z *= pObject->position.vecScale.z;
+			vecStorePos.x += pObject->position.matWorld._41;
+			vecStorePos.y += pObject->position.matWorld._42;
+			vecStorePos.z += pObject->position.matWorld._43;
+			D3DXMatrixMultiply ( pMesh->pFrameMatrices [ bone ], pMesh->pFrameMatrices [ bone ], &pObject->position.matScale );
+			pMesh->pFrameMatrices [ bone ]->_41 = vecStorePos.x;
+			pMesh->pFrameMatrices [ bone ]->_42 = vecStorePos.y;
+			pMesh->pFrameMatrices [ bone ]->_43 = vecStorePos.z;
+			fCenterX *= pObject->position.vecScale.x;
+			fCenterY *= pObject->position.vecScale.y;
+			fCenterZ *= pObject->position.vecScale.z;
+			*/
+			fExtentX *= pObject->position.vecScale.x;
+			fExtentY *= pObject->position.vecScale.y;
+			fExtentZ *= pObject->position.vecScale.z;
+
 			pRagdoll->pODEBones [ iBoneCount ].CreateBone( &pObject->position.matWorld, pMesh, bone, fCenterX, fCenterY, fCenterZ, fExtentX, fExtentY, fExtentZ, iGroup, iDebugObject );
 			iBoneCount++;
 			if ( iDebugObject > 0 ) iDebugObject++;
@@ -278,9 +299,9 @@ sODERagdoll* sODERagdoll::AddRagdoll( int id, sObject *pObject, float fAdjust, i
 		pRagdoll->iCenterBone = 0;
 
 	//bones created, now make the joints, use frame structure
+	pRagdoll->pObject = pObject;
 	pRagdoll->AttachBones( NULL, pObject->pFrame );
 	
-	pRagdoll->pObject = pObject;
 	pRagdoll->iID = id;
 
 	// 040707 - assign ragdoll total count and increment it
@@ -299,15 +320,20 @@ void sODERagdoll::AttachBones( sFrame *pParentFrame, sFrame *pFrame )
 	if ( !pFrame ) return;
 
 	char szParentName [ 256 ];
-	if ( pParentFrame->szName ) 
+	if ( pParentFrame )
 	{
-		strcpy_s( szParentName, 256, pParentFrame->szName );
-		strlower( szParentName );
+		if ( pParentFrame->szName ) 
+		{
+			strcpy_s( szParentName, 256, pParentFrame->szName );
+			strlower( szParentName );
+		}
+		else
+		{
+			strcpy_s( szParentName, 256, "" );
+		}
 	}
 	else
-	{
 		strcpy_s( szParentName, 256, "" );
-	}
 
 	char szChildName [ 256 ];
 	if ( pFrame->szName ) 
@@ -316,9 +342,7 @@ void sODERagdoll::AttachBones( sFrame *pParentFrame, sFrame *pFrame )
 		strlower( szChildName );
 	}
 	else
-	{
 		strcpy_s( szChildName, 256, "" );
-	}
 
 	//bool bStop = (pFrame->szName && strstr( pFrame->szName, "Arm" )) || (pParentFrame->szName && strstr( pParentFrame->szName, "Arm" )) ? true : false;
 	bool bClavicle = strstr( szChildName, "clavicle" ) ? true : false;
@@ -338,8 +362,10 @@ void sODERagdoll::AttachBones( sFrame *pParentFrame, sFrame *pFrame )
 		if ( pSibling->pChild )
 		{
 			//skip over some bones, e.g. attach arms straight to body
-			if ( !bSkip ) AttachBones( pSibling, pSibling->pChild );
-			else AttachBones( pParentFrame, pSibling->pChild );
+			if ( !bSkip ) 
+				AttachBones( pSibling, pSibling->pChild );
+			else 
+				AttachBones( pParentFrame, pSibling->pChild );
 		}
 
 		pSibling = pSibling->pSibling;
@@ -358,15 +384,18 @@ void sODERagdoll::CreateJoint( sFrame *pParentLimb, sFrame *pChildLimb )
 	sODEBone *pChildBone = FindBoneFromOwner( iChild );
 
 	char szParentName [ 256 ];
-	if ( pParentLimb->szName )
+	if ( pParentLimb )
 	{
-		strcpy_s( szParentName, 256, pParentLimb->szName );
-		strlower( szParentName );
+		if ( pParentLimb->szName )
+		{
+			strcpy_s( szParentName, 256, pParentLimb->szName );
+			strlower( szParentName );
+		}
+		else
+			strcpy_s( szParentName, 256, "" );
 	}
 	else
-	{
 		strcpy_s( szParentName, 256, "" );
-	}
 
 	char szChildName [ 256 ];
 	if ( pChildLimb->szName )
@@ -452,9 +481,13 @@ void sODERagdoll::CreateJoint( sFrame *pParentLimb, sFrame *pChildLimb )
 			if ( bHead )
 			{
 				// allow the head to loll
+				D3DXVECTOR3 vecPos;
+				vecPos.x = pChildBone->fLastPositionX;
+				vecPos.y = pChildBone->fLastPositionY;
+				vecPos.z = pChildBone->fLastPositionZ;
 				pJoint = sODEJoint::AddHingeJoint( -1, pParentBone->GetBody( ), pChildBone->GetBody( ), 
 													   pChildBone->GetMatrix()->_21, pChildBone->GetMatrix()->_22, pChildBone->GetMatrix()->_23, //axis
-													   pChildBone->GetMatrix()->_41, pChildBone->GetMatrix()->_42, pChildBone->GetMatrix()->_43 ); //anchor
+													   vecPos.x, vecPos.y, vecPos.z ); //anchor
 				pJoint->SetHingeLimit( -0.8f - fAngle, 0.8f - fAngle );
 			}
 			else
@@ -473,35 +506,27 @@ void sODERagdoll::CreateJoint( sFrame *pParentLimb, sFrame *pChildLimb )
 			}
 			else
 			{
-				if ( bUpperArm )
-				{
-					pJoint = sODEJoint::AddHinge2Joint( -1, pParentBone->GetBody( ), pChildBone->GetBody( ), 
-															pChildBone->GetMatrix()->_21, pChildBone->GetMatrix()->_22, pChildBone->GetMatrix()->_23,	//axis 1
-															pChildBone->GetMatrix()->_31, pChildBone->GetMatrix()->_32, pChildBone->GetMatrix()->_33,	//axis 2
-															pChildBone->GetMatrix()->_41, pChildBone->GetMatrix()->_42, pChildBone->GetMatrix()->_43 ); //anchor
-
-					pJoint->SetHinge2Limit( -1.5f, 1.5f, -1.5f, 1.5f );
-				}
-				else
-				{
-					pJoint = sODEJoint::AddHingeJoint( -1, pParentBone->GetBody( ), pChildBone->GetBody( ), 
-														   pChildBone->GetMatrix()->_21, pChildBone->GetMatrix()->_22, pChildBone->GetMatrix()->_23, //axis
-														   pChildBone->GetMatrix()->_41, pChildBone->GetMatrix()->_42, pChildBone->GetMatrix()->_43 ); //anchor
-					if ( bFinger || bToe || bFoot )
-						pJoint->SetHingeLimit( -0.2f, 0.2f );
-					else if ( bHand )
-						pJoint->SetHingeLimit( -0.3f, 0.3f );
-					else if ( bCalf )
-						pJoint->SetMovingHingeLimit( -0.2f - fAngle, 0.01f - fAngle, -2.2f - fAngle, 0.01f - fAngle, 3.0f );
-					else if ( bForeArm )
-						pJoint->SetHingeLimit( -2.4f - fAngle, 0.1f - fAngle );
-					else if ( bThigh ) 
-						pJoint->SetMovingHingeLimit( -0.30f - fAngle, 0.30f - fAngle, -0.30f - fAngle, 1.50f - fAngle, 3.0f );
-					else if ( bHead ) 
-						pJoint->SetHingeLimit( -0.8f - fAngle, 0.8f - fAngle );
-					else 
-						pJoint->SetHingeLimit( -1.5f, 1.5f );
-				}
+				D3DXVECTOR3 vecHingePos;
+				vecHingePos.x = pChildBone->fLastPositionX;
+				vecHingePos.y = pChildBone->fLastPositionY;
+				vecHingePos.z = pChildBone->fLastPositionZ;
+				pJoint = sODEJoint::AddHingeJoint( -1, pParentBone->GetBody( ), pChildBone->GetBody( ), 
+													   pChildBone->GetMatrix()->_21, pChildBone->GetMatrix()->_22, pChildBone->GetMatrix()->_23, //axis
+													   vecHingePos.x, vecHingePos.y, vecHingePos.z ); //anchor
+				if ( bFinger || bToe || bFoot )
+					pJoint->SetHingeLimit( -0.2f, 0.2f );
+				else if ( bHand )
+					pJoint->SetHingeLimit( -0.3f, 0.3f );
+				else if ( bCalf )
+					pJoint->SetMovingHingeLimit( -0.2f - fAngle, 0.01f - fAngle, -2.2f - fAngle, 0.01f - fAngle, 3.0f );
+				else if ( bForeArm )
+					pJoint->SetHingeLimit( -2.4f - fAngle, 0.1f - fAngle );
+				else if ( bThigh ) 
+					pJoint->SetMovingHingeLimit( -0.30f - fAngle, 0.30f - fAngle, -0.30f - fAngle, 1.50f - fAngle, 3.0f );
+				else if ( bHead ) 
+					pJoint->SetHingeLimit( -0.8f - fAngle, 0.8f - fAngle );
+				else 
+					pJoint->SetHingeLimit( -1.5f, 1.5f );
 			}
 		}
 	}
@@ -603,14 +628,9 @@ void sODERagdoll::Update( float fTimeDelta )
 	float fTreshholdBeforeUpdateBones = 3.0f;
 	if ( fTravelDistancePerUpdateX + fTravelDistancePerUpdateY + fTravelDistancePerUpdateZ > fTreshholdBeforeUpdateBones ) 
 	{
-//		// when moving, only change animation if not a jitter artefact
-//		fTreshholdBeforeUpdateBones = 4.0f;
-//		if ( fTravelDistancePerUpdateX + fTravelDistancePerUpdateY + fTravelDistancePerUpdateZ > fTreshholdBeforeUpdateBones ) 
-//		{
-			// update visual of this ragdoll
-			pObject->bAnimUpdateOnce = true;
-			bRagdollMoving = true;
-//		}
+		// update visual of this ragdoll
+		pObject->bAnimUpdateOnce = true;
+		bRagdollMoving = true;
 	}
 	else
 	{
@@ -643,7 +663,7 @@ void sODERagdoll::Update( float fTimeDelta )
 	for ( DWORD i = 0; i < dwNumBones; i++ )
 	{
 		// 130607 - if moving, update bones of ragdoll (visible matrix update)
-		pODEBones [ i ].UpdateBone( bRagdollMoving );
+		pODEBones [ i ].UpdateBone( bRagdollMoving, pObject->position.vecScale.y );
 		AddTravelDistanceX ( pODEBones [ i ].GetTravelDistancePerUpdateX() );
 		AddTravelDistanceY ( pODEBones [ i ].GetTravelDistancePerUpdateY() );
 		AddTravelDistanceZ ( pODEBones [ i ].GetTravelDistancePerUpdateZ() );

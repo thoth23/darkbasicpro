@@ -833,15 +833,12 @@ void ODE_Update ( void )
 	i64LastTime = i64CurrentTime;
 
 	// if time step is too big objects will tunnel through each other.
-	// time step of 0.5 equilivant to app running at 2 fps
-	// pauls value if ( fTimeDelta > 0.5f ) fTimeDelta = 0.5f;
-	//if ( fTimeDelta > 0.3f ) fTimeDelta = 0.3f; // multiplier means the cap is 0.9f (near 1 fps)
-	// lee - 170407 - objects drop out at 20fps, let along 1fps - adjust min to Xfps
-	float fMinimumFPSForStableSimulation = 1.0f / 10.0f;
+	// lee - 170407 - objects drop out at 10fps, let alone 1fps - adjust max to Xfps
+	float fMaxForStableSimulation = 1.0f / 10.0f;
 	// multiplier because we multiply later on
-	fMinimumFPSForStableSimulation /= 3.0f;
+	fMaxForStableSimulation /= 3.0f;
 	// if time leap too great, bring it back to min
-	if ( fTimeDelta > fMinimumFPSForStableSimulation ) fTimeDelta = fMinimumFPSForStableSimulation;
+	if ( fTimeDelta > fMaxForStableSimulation ) fTimeDelta = fMaxForStableSimulation;
 	if ( fTimeDelta < 0.0001f ) fTimeDelta=0.0001f;
 
 	//on first update i64LastTime is undefined, step a fixed amount
@@ -857,17 +854,6 @@ void ODE_Update ( void )
 	else
 	{
 		fTimeDelta *= 3.0f;
-
-		//try looping over smaller steps
-		//doesn't work as expected, 5 steps of 0.05 != 1 step 0.25 (?)
-		/*
-		while( fTimeDelta > 0.05f )
-		{
-			Update( 0.05f );
-			fTimeDelta -= 0.05f;
-		}
-		*/
-
 		Update( fTimeDelta );
 	}	
 }
@@ -1219,14 +1205,16 @@ static void ODE_Callback ( void* data, dGeomID o1, dGeomID o2 )
 			}
 			else
 			{
-				//contacts [ i ].surface.mode		= pObject->iSurfaceMode;
 				contacts [ i ].surface.mode			= dContactSoftERP | dContactSoftCFM | 0x00000010;
-				contacts [ i ].surface.mu			= pRagdoll->fContactMU;
+				//contacts [ i ].surface.mu			= pRagdoll->fContactMU;
+				//contacts [ i ].surface.soft_erp	= pRagdoll->fContactSoftERP;
+				//contacts [ i ].surface.soft_cfm	= pRagdoll->fContactSoftCFM;
+				contacts [ i ].surface.mu			= 10000.0f;
+				contacts [ i ].surface.soft_erp		= 0.3f;
+				contacts [ i ].surface.soft_cfm		= 0.0001f;
 				contacts [ i ].surface.mu2			= 0.0f;
 				contacts [ i ].surface.bounce		= pRagdoll->fContactBounce;
 				contacts [ i ].surface.bounce_vel	= pRagdoll->fContactBounceVelocity;
-				contacts [ i ].surface.soft_erp		= 0.1f;//pRagdoll->fContactSoftERP;
-				contacts [ i ].surface.soft_cfm		= pRagdoll->fContactSoftCFM;
 				contacts [ i ].surface.motion1		= pRagdoll->fContactMotion1;
 				contacts [ i ].surface.motion2		= pRagdoll->fContactMotion2;
 				contacts [ i ].surface.slip1		= pRagdoll->fContactSlip1;
@@ -2587,6 +2575,11 @@ void ODE_CreateRagdollFromBoneModel( int iObjID, float fScale, int iDebugObject 
 	// and ensure object is set as ragdoll (this skips the matCombined calculation normally done to animating/animframe objects)
 	// 250607 - this also skips parts of the regular object processing for faster performance
 	pObject->position.bCustomBoneMatrix = true;
+
+	// U75 - 210210 - ensure cannot be culled
+	pObject->collision.fRadius = 0;
+	pObject->collision.fScaledRadius = 0;
+	pObject->collision.fScaledLargestRadius = 0;
 
 	// trigger an anim frame refresh (needed paul?)
 	pObject->bAnimUpdateOnce = true;
