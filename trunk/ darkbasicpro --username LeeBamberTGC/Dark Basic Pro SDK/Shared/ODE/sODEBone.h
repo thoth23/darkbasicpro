@@ -19,6 +19,8 @@ private:
 	float fTravelDistancePerUpdateX;
 	float fTravelDistancePerUpdateY;
 	float fTravelDistancePerUpdateZ;
+
+public:
 	float fLastPositionX;
 	float fLastPositionY;
 	float fLastPositionZ;
@@ -40,7 +42,7 @@ public:
 	float GetTravelDistancePerUpdateZ ( void ) { return fTravelDistancePerUpdateZ; }
 
 	void CreateBone( const D3DXMATRIX *pObjMatrix, const sMesh *pMesh, int iBoneID, float fCenterX, float fCenterY, float fCenterZ, float fExtentX, float fExtentY, float fExtentZ, int group, int iDebugObject );
-	void UpdateBone( bool bRagdollMoving );
+	void UpdateBone( bool bRagdollMoving, float fScale );
 
 	dBodyID GetBody( );
 	int GetOwner( );
