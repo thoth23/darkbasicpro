@@ -465,13 +465,40 @@ void sODERagdoll::CreateJoint( sFrame *pParentLimb, sFrame *pChildLimb )
 	if ( g_iODERagdollMode==1 ) bNoRagdollReactionForTEENRating = false;
 
 	sODEJoint* pJoint = 0;
-	if ( 0 )
+	if ( 1 )
 	{
-		// test ragdoll as fixed limbs, to find exactly where the jiggle comes from
-		// this makes the characters freeze like their limbs are rigid (but slightly flexible)
-		// 030707 - this only works if CFM is sufficiently small so joint can be adjusted quickly (0.000001)
-		// what would be ideal is a per-joint CFM value (perhaps the parameters are what we need?
-		pJoint = sODEJoint::AddFixedJoint( dwNumJoints, pParentBone->GetBody( ), pChildBone->GetBody( ) );
+		// U75 - 230210 - replaces legacy X10 ragdoll with more forgiving system for model not 'designed' with ragdoll in mind
+		D3DXVECTOR3 vecPos;
+		vecPos.x = pChildBone->fLastPositionX;
+		vecPos.y = pChildBone->fLastPositionY;
+		vecPos.z = pChildBone->fLastPositionZ;
+		if ( bCalf )
+		{
+			// knees bend 80 degrees or so, typical collapsing human legs
+			pJoint = sODEJoint::AddHingeJoint( -1, pParentBone->GetBody( ), pChildBone->GetBody( ), 
+												   pChildBone->GetMatrix()->_21, pChildBone->GetMatrix()->_22, pChildBone->GetMatrix()->_23, //axis
+												   vecPos.x, vecPos.y, vecPos.z ); //anchor
+			pJoint->SetMovingHingeLimit( 0.1f, 0, -0.6f, 0, 3.0f );
+		}
+		else if ( bForeArm )
+		{
+			pJoint = sODEJoint::AddHingeJoint( -1, pParentBone->GetBody( ), pChildBone->GetBody( ), 
+												   pChildBone->GetMatrix()->_21, pChildBone->GetMatrix()->_22, pChildBone->GetMatrix()->_23, //axis
+												   vecPos.x, vecPos.y, vecPos.z ); //anchor
+			pJoint->SetHingeLimit( 0.0f, 1.3f );
+		}
+		else if ( bHead || bNeck )
+		{
+			pJoint = sODEJoint::AddHingeJoint( -1, pParentBone->GetBody( ), pChildBone->GetBody( ), 
+												   pChildBone->GetMatrix()->_21, pChildBone->GetMatrix()->_22, pChildBone->GetMatrix()->_23, //axis
+												   vecPos.x, vecPos.y, vecPos.z ); //anchor
+			pJoint->SetHingeLimit( -1.5f, 0.0f );
+		}
+		else
+		{
+			// all other joints fixed and rigid to prevent ugly vertex tears
+			pJoint = sODEJoint::AddFixedJoint( dwNumJoints, pParentBone->GetBody( ), pChildBone->GetBody( ) );
+		}
 	}
 	else
 	{
@@ -530,6 +557,9 @@ void sODERagdoll::CreateJoint( sFrame *pParentLimb, sFrame *pChildLimb )
 			}
 		}
 	}
+
+	// U75 - 230210 - ensure no two bones are unconnected, it looks messy!
+	//hmmnotwork if ( pJoint==0 ) pJoint = sODEJoint::AddFixedJoint( dwNumJoints, pParentBone->GetBody( ), pChildBone->GetBody( ) );
 
 	if ( pJoint )
 	{
@@ -625,7 +655,7 @@ void sODERagdoll::Update( float fTimeDelta )
 	// this triggers the engine to update the ragdoll mesh (via CPU or GPU)
 	// ONLY if travel average is big enough
 	bool bRagdollMoving = false;
-	float fTreshholdBeforeUpdateBones = 3.0f;
+	float fTreshholdBeforeUpdateBones = 1.0f; // 220210 - fully rested instead (was 3.0f)
 	if ( fTravelDistancePerUpdateX + fTravelDistancePerUpdateY + fTravelDistancePerUpdateZ > fTreshholdBeforeUpdateBones ) 
 	{
 		// update visual of this ragdoll
@@ -679,6 +709,11 @@ void sODERagdoll::Update( float fTimeDelta )
 	pObject->position.matTranslation._41 = pODEBones [ 0 ].matWorld._41;
 	pObject->position.matTranslation._42 = pODEBones [ 0 ].matWorld._42;
 	pObject->position.matTranslation._43 = pODEBones [ 0 ].matWorld._43;
+
+	// U75 - 230210 - also need to get POSITION back from ragdoll (for dragging rag doll around)
+	pObject->position.vecPosition.x = pODEBones [ 0 ].matWorld._41;
+	pObject->position.vecPosition.y = pODEBones [ 0 ].matWorld._42;
+	pObject->position.vecPosition.z = pODEBones [ 0 ].matWorld._43;
 }
 
 sODERagdoll* sODERagdoll::GetRagdoll( dBodyID checkbody )
