@@ -4403,7 +4403,17 @@ void ObtainYawPitchRoll ( int g_Filtering )
 	}
 
 	// Always provide for a means to disable filtering;
-	if( g_Filtering == 1 ) IWRFilterTracking( &Yaw, &Pitch, &Roll );
+	if( g_Filtering == 1 )
+	{
+		// manual application filtering
+		IWRFilterTracking( &Yaw, &Pitch, &Roll );
+		if( IWRSetFilterState ) IWRSetFilterState(FALSE);
+	}
+	if( g_Filtering == 2 )
+	{
+		// internal driver filtering
+		if( IWRSetFilterState ) IWRSetFilterState(TRUE);
+	}
 
 	// return final values
 	g_fPitch =  (float)Pitch * IWR_RAWTODEG;
@@ -4417,6 +4427,9 @@ DARKSDK void ResetTracking ( void )
 	// reset to zero (forward facing set)
 	#ifdef VR920SUPPORT
 	IWRZeroSet();
+	// U75 - 250210 - also reset left/right toggle so the eyes are not inverted
+	// basically, after commands the engine presents left, then right, so reset
+	g_StereoEyeToggle=LEFT_EYE;
 	#endif
 }
 
