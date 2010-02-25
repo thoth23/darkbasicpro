@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="1"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
+				AdditionalIncludeDirectories="C:\IWEARSDK\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -80,7 +80,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
+				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
 				ProgramDatabaseFile=".\Release/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -788,8 +788,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="1"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
-				PreprocessorDefinitions="VR920SUPPORT;WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
+				AdditionalIncludeDirectories="C:\IWEARSDK\inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -818,7 +818,7 @@
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
+				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
 				ProgramDatabaseFile=".\Release/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -1037,6 +1037,18 @@
 			<Filter
 				Name="VR920"
 				>
+				<File
+					RelativePath="..\..\Shared\Setup\VR920\IWRFilterTracking.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Shared\Setup\VR920\IWRsdk.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Shared\Setup\VR920\IWRsdk.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
