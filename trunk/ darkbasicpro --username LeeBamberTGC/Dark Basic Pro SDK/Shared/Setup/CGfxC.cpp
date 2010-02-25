@@ -18,8 +18,8 @@ DWORD m_textureHeight = 0;
 #endif
 
 // U74 BETA9 - new code to support VR920 (for educational FPSC and other fun things)
-// U75 open sourcing means cannot depend on third party SDK (put in ReleaseVR920 instead)
-//#define VR920SUPPORT // static linking and small footprint means we can support this
+// U75 requires iWear VR920 SDK from VUZIX (free SDK)
+#define VR920SUPPORT // static linking and small footprint means we can support this
 #ifdef VR920SUPPORT
 // Includes
 #include <fcntl.h>
