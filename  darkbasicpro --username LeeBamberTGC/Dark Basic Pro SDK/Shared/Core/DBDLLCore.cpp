@@ -1471,6 +1471,18 @@ DARKSDK DWORD InitDisplayEx(DWORD dwDisplayType, DWORD dwWidth, DWORD dwHeight, 
 	g_Glob.dwWindowX = 0;
 	g_Glob.dwWindowY = 0;
 
+	// U75 - 260210 - to support Web Game Builder style ActiveX framing
+	// if pass in window mode width and height of 1,2, place window offscreen
+	bool bOverrideWindowCenteringToSupportActiveXFraming = false;
+	if ( dwWidth==1 && dwHeight==2 )
+	{
+		bOverrideWindowCenteringToSupportActiveXFraming = true;
+		g_Glob.dwWindowX = 5000;
+		g_Glob.dwWindowY = 5000;
+		dwWidth = 640;
+		dwHeight = 480;
+	}
+	
 	// Apply size of screen to global data
 	g_Glob.dwWindowWidth = dwWidth;
 	g_Glob.dwWindowHeight = dwHeight;
@@ -1478,7 +1490,6 @@ DARKSDK DWORD InitDisplayEx(DWORD dwDisplayType, DWORD dwWidth, DWORD dwHeight, 
 	g_Glob.iScreenHeight = dwHeight;
 	g_Glob.iScreenDepth = dwDepth;
 
-	
 	if(g_Glob.g_GFX==NULL)
 	{
 		// Using GDI for Display
@@ -1593,7 +1604,7 @@ DARKSDK DWORD InitDisplayEx(DWORD dwDisplayType, DWORD dwWidth, DWORD dwHeight, 
 	g_OldCursor = SetCursor ( g_ActiveCursor );
 
 	// If running in window mode, start in center of screen
-	if(dwDisplayType==1)
+	if ( dwDisplayType==1 && bOverrideWindowCenteringToSupportActiveXFraming==false )
 	{
 		g_Glob.dwWindowX=(GetSystemMetrics(SM_CXSCREEN)-g_Glob.dwWindowWidth)/2;
 		g_Glob.dwWindowY=(GetSystemMetrics(SM_CYSCREEN)-g_Glob.dwWindowHeight)/2;

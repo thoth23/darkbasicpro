@@ -263,7 +263,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib winmm.lib"
-				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProCore.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\MyGames\fpscgame\DBProCore.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
