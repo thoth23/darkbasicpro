@@ -29,7 +29,7 @@ class CTextureRenderer : public CBaseVideoRenderer
 {
 	public:
 		CTextureRenderer(LPUNKNOWN pUnk,HRESULT *phr);
-		~CTextureRenderer();
+		virtual ~CTextureRenderer();
 
 	public:
 		HRESULT CheckMediaType(const CMediaType *pmt );     // Format acceptable?

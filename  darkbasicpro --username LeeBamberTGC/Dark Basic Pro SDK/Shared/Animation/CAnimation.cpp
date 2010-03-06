@@ -536,7 +536,6 @@ DARKSDK int GetBitDepthFromFormat(D3DFORMAT Format)
 
 DARKSDK BOOL CoreLoadAnimation( int AnimIndex, char* Filename, bool bFromDVD )
 {
-// leefix - 011208 - U71 - changed from IFDEF WINKLE from GDK update
 #ifndef DARKSDK_COMPILE
     HRESULT hr = S_OK;
     CComPtr<IBaseFilter>    pFTR;           // Texture Renderer Filter
@@ -765,10 +764,7 @@ DARKSDK BOOL CoreLoadAnimation( int AnimIndex, char* Filename, bool bFromDVD )
 	Anim[AnimIndex].pGraph->QueryInterface(IID_IBasicVideo, (void **)&Anim[AnimIndex].pBasicVideo);
 	Anim[AnimIndex].pGraph->QueryInterface(IID_IBasicAudio, (void **)&Anim[AnimIndex].pBasicAudio);
 	Anim[AnimIndex].pGraph->QueryInterface(IID_IMediaPosition, (void **)&Anim[AnimIndex].pMediaPosition);
-
-	// mike - 130807 - obtain media seeking interface
 	Anim[AnimIndex].pGraph->QueryInterface(IID_IMediaSeeking, (void **)&Anim[AnimIndex].pMediaSeeking);
-
 	
 	if(Anim[AnimIndex].pMediaControl && Anim[AnimIndex].pEvent)
 	{
@@ -977,10 +973,9 @@ DARKSDK BOOL DB_LoadDVDAnimation(int AnimIndex)
 
 DARKSDK BOOL DB_FreeAnimation(int AnimIndex)
 {
-	//MessageBox ( NULL, "i got ya", "here", MB_OK );
-
 	// Shut down the graph
-	if(Anim[AnimIndex].pMediaControl) Anim[AnimIndex].pMediaControl->Stop();
+	if(Anim[AnimIndex].pMediaControl)
+        Anim[AnimIndex].pMediaControl->Stop();
 
 	// Restore Window if used
 	if(Anim[AnimIndex].pVideo)
@@ -996,7 +991,7 @@ DARKSDK BOOL DB_FreeAnimation(int AnimIndex)
 	}
 	
 	// Release all interfaces
-	SAFE_RELEASE(Anim[AnimIndex].pMediaControl);
+    SAFE_RELEASE(Anim[AnimIndex].pMediaControl);
 	SAFE_RELEASE(Anim[AnimIndex].pEvent);
 	SAFE_RELEASE(Anim[AnimIndex].pMediaPosition);
 	SAFE_RELEASE(Anim[AnimIndex].pBasicAudio);
@@ -1011,6 +1006,11 @@ DARKSDK BOOL DB_FreeAnimation(int AnimIndex)
 	SAFE_RELEASE(Anim[AnimIndex].pDVDInfo);
 	SAFE_RELEASE(Anim[AnimIndex].pDVDControl);
 	SAFE_RELEASE(Anim[AnimIndex].pVideo);
+    SAFE_RELEASE(Anim[AnimIndex].pMediaSeeking);
+    Anim[AnimIndex].pTexture = NULL;
+    Anim[AnimIndex].pOutputToTexture = NULL;
+
+    // TODO: Work out how to safely and cleanly delete Anim[AnimIndex].TextureRenderer
 
 	// Complete
 	return TRUE;

@@ -961,6 +961,16 @@ struct sObject : public sObjectData,
 	// constructor and destructor
 	sObject  ( );
 	~sObject ( );
+
+    // Ideally, these should go into sObjectInstance, but
+    // doing so would break internal and third-party plug-ins
+
+	// Set this to point to the object that this object is dependent upon.
+	// (ie, Instance, and clone with shared animation data)
+    sObject*                        pObjectDependency;
+
+	// Increment this when another object depends on this object.
+    DWORD                           dwDependencyCount;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////

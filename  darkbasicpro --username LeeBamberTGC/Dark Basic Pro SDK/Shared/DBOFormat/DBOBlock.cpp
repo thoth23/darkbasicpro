@@ -1640,7 +1640,13 @@ DARKSDK_DLL bool ConstructFrame ( sFrame** ppFrame, LPSTR* ppBlock )
 			case DBOBLOCK_FRAME_NAME :     ReadString     ( (*ppFrame)->szName, ppBlock );			break;
 			case DBOBLOCK_FRAME_MATRIX :   ReadMatrix     ( &(*ppFrame)->matOriginal, ppBlock );	break;
 			case DBOBLOCK_FRAME_MESH :     ConstructMesh  ( &(*ppFrame)->pMesh, ppBlock );			break;
-			case DBOBLOCK_FRAME_CHILD :    ConstructFrame ( &(*ppFrame)->pChild, ppBlock );			break;
+			case DBOBLOCK_FRAME_CHILD :
+                ConstructFrame ( &(*ppFrame)->pChild, ppBlock );
+                if ((*ppFrame)->pChild)
+                {
+                    (*ppFrame)->pChild->pParent = *ppFrame;
+                }
+                break;
 			case DBOBLOCK_FRAME_SIBLING :  ConstructFrame ( &(*ppFrame)->pSibling, ppBlock );		break;
 			case DBOBLOCK_FRAME_OFFSET :   ReadVector     ( &(*ppFrame)->vecOffset, ppBlock );		break;
 			case DBOBLOCK_FRAME_ROTATION : ReadVector     ( &(*ppFrame)->vecRotation, ppBlock );	break;
