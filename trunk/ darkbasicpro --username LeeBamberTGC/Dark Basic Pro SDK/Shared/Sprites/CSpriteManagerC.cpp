@@ -324,7 +324,11 @@ void CSpriteManager::RenderDrawList ( tagSpriteData** pList, int iListSize )
 	m_pD3D->SetRenderState  ( D3DRS_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL );
 	m_pD3D->SetRenderState  ( D3DRS_SPECULARENABLE, FALSE );
 	
-	m_pD3D->SetRenderState  ( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+    // Get the state of antialiasing, and disable if set
+    DWORD AAEnabled = FALSE;
+    m_pD3D->GetRenderState  ( D3DRS_MULTISAMPLEANTIALIAS, &AAEnabled );
+    if (AAEnabled)
+    	m_pD3D->SetRenderState  ( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
 
 	// turn alpha blending on
 	m_pD3D->SetRenderState ( D3DRS_ALPHABLENDENABLE, TRUE );
@@ -406,6 +410,10 @@ void CSpriteManager::RenderDrawList ( tagSpriteData** pList, int iListSize )
 	// switch alpha blending off and re-enable z buffering
 	m_pD3D->SetRenderState ( D3DRS_ALPHABLENDENABLE, FALSE );
     m_pD3D->SetRenderState ( D3DRS_ZENABLE, TRUE );
+
+    // Re-enable Antialias if it was disabled earlier
+	if (AAEnabled)
+		m_pD3D->SetRenderState ( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
 }
 
 

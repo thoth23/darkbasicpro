@@ -86,6 +86,58 @@ namespace
         return ContainsSphere(p_Plane, vecPoint, 0.0);
     }
     */
+
+    float ApplyPivot ( sObject* pObject, int iMode, D3DXVECTOR3 vecValue, float fValue )
+    {
+	    if ( pObject->position.bApplyPivot )
+	    {
+		    D3DXVec3TransformCoord ( &vecValue, &vecValue, &pObject->position.matPivot );
+
+		    if ( iMode == 0 ) return vecValue.x;
+		    if ( iMode == 1 ) return vecValue.y;
+		    if ( iMode == 2 ) return vecValue.z;
+	    }
+
+	    return fValue;
+    }
+
+    SDK_FLOAT GetAxisSizeFromVectorOffset ( int iID, int iActualSize, int iVectorOffset )
+    {
+        // iActualSize is 0 = unscaled, 1 = scaled
+        // iVectorOffset is 0 = x, 1 = y, 2 = z
+
+	    // Check the object exists
+	    if ( !ConfirmObjectInstance ( iID ) )
+		    return 0;
+
+        // Get the object pointer
+	    sObject* pObject = g_ObjectList [ iID ];
+
+        // If the object is an instance, grab the scaling from the instance (to be applied later)
+        // and move on to the object itself
+        float fAdjustScale = 1.0;
+	    if ( pObject->pInstanceOfObject )
+        {
+            fAdjustScale = pObject->position.vecScale[ iVectorOffset ];
+            pObject = pObject->pInstanceOfObject;
+        }
+
+        // Get the precomputed size of the objects x dimension
+        float fValue = (pObject->collision.vecMax[ iVectorOffset ] - pObject->collision.vecMin[ iVectorOffset ]);
+    	
+	    // Apply pivot if needed
+	    fValue = ApplyPivot ( pObject, 0, D3DXVECTOR3 ( pObject->collision.vecMax - pObject->collision.vecMin ), fValue );
+
+	    // Ensure size is reported as positive
+	    fValue = fabs ( fValue );
+
+	    // Adjusts to scale now
+	    if ( iActualSize==1 )
+            fValue = fValue * pObject->position.vecScale[ iVectorOffset ] * fAdjustScale;
+
+	    return *(DWORD*)&fValue;
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -1263,7 +1315,13 @@ DARKSDK_DLL void CloneShared ( int iDestinationID, int iSourceID, int iCloneShar
 	{
 		// work on cloned object (cut out potential huge anim data)
 		sObject* pNewObject = g_ObjectList [ iDestinationID ];
-		if ( pNewObject->pAnimationSet )
+
+        // Update dependency details
+        // Do this whether or not there is animation data, to ensure that is predictable
+        pObject->dwDependencyCount++;
+        pNewObject->pObjectDependency = pObject;
+
+        if ( pNewObject->pAnimationSet )
 		{
 			sAnimation* pOrigAnim = pObject->pAnimationSet->pAnimation;
 			sAnimation* pAnim = pNewObject->pAnimationSet->pAnimation;
@@ -1389,6 +1447,8 @@ DARKSDK_DLL void Instance ( int iDestinationID, int iSourceID )
 	// create pure instance of source object
 	g_ObjectList [ iDestinationID ] = new sObject;
 	g_ObjectList [ iDestinationID ]->pInstanceOfObject = g_ObjectList [ iActualSourceID ];
+    g_ObjectList [ iDestinationID ]->pObjectDependency = g_ObjectList [ iActualSourceID ];
+    g_ObjectList [ iActualSourceID ]->dwDependencyCount++;
 
 	// U72 - 100109 - flag parent so it knows to animate even if not visible (irreversable)
 	g_ObjectList [ iSourceID ]->position.bParentOfInstance = true;
@@ -5717,16 +5777,21 @@ DARKSDK_DLL void ConvertMeshToVertexData ( int iMeshID )
 DARKSDK_DLL void MakeMeshFromObject ( int iMeshID, int iObjectID, int iIgnoreMode )
 {
 	// check the object exists
-	if ( !ConfirmObject ( iObjectID ) )
+	if ( !ConfirmObjectInstance ( iObjectID ) )
 		return;
 
 	// check the mesh not exists
 	if ( !ConfirmNewMesh ( iMeshID ) )
 		return;
 
+    // Get a pointer to the object (or if an instance, that instances object)
+    sObject* pObject = g_ObjectList [ iObjectID ];
+    if (pObject->pInstanceOfObject)
+        pObject = pObject->pInstanceOfObject;
+
 	// create new mesh
 	sMesh* pNewMesh = NULL;
-	if ( !CreateSingleMeshFromObject ( &pNewMesh, g_ObjectList [ iObjectID ], iIgnoreMode ) )
+	if ( !CreateSingleMeshFromObject ( &pNewMesh, pObject, iIgnoreMode ) )
 		return;
 
 	// leeadd - 080405 - convert final mesh to vert only (for ODE trimesh support)
@@ -6547,28 +6612,10 @@ DARKSDK_DLL int GetVisible ( int iID )
 		return 0;		
 }
 
-// mike - 021005 - apply pivot if required
-float ApplyPivot ( sObject* pObject, int iMode, D3DXVECTOR3 vecValue, float fValue )
-{
-	if ( pObject->position.bApplyPivot )
-	{
-		D3DXVec3TransformCoord ( &vecValue, &vecValue, &pObject->position.matPivot );
-
-		if ( iMode == 0 ) return vecValue.x;
-		if ( iMode == 1 ) return vecValue.y;
-		if ( iMode == 2 ) return vecValue.z;
-	}
-
-	return fValue;
-}
 
 DARKSDK_DLL SDK_FLOAT GetSizeEx ( int iID, int iActualSize )
 {
-	// check the object exists
-	//if ( !ConfirmObject ( iID ) )
-	//	return 0;
-
-	// mike - 120307 - allow function to work on instanced objects as well
+    // check the object exists
 	if ( !ConfirmObjectInstance ( iID ) )
 		return 0;
 
@@ -6588,76 +6635,18 @@ DARKSDK_DLL SDK_FLOAT GetSizeEx ( int iID, int iActualSize )
 
 DARKSDK_DLL SDK_FLOAT GetXSizeEx ( int iID, int iActualSize )
 {
-	// check the object exists
-	if ( !ConfirmObjectInstance ( iID ) )
-		return 0;
-
-	// return object information
-	sObject* pObject = g_ObjectList [ iID ];
-	if ( pObject->pInstanceOfObject ) pObject = pObject->pInstanceOfObject;
-	float fValue = (pObject->collision.vecMax.x - pObject->collision.vecMin.x);
-	
-	// mike - 021005 - apply pivot if needed
-	fValue = ApplyPivot ( pObject, 0, D3DXVECTOR3 ( pObject->collision.vecMax - pObject->collision.vecMin ), fValue );
-
-	// 110406 - u6rc7 - ensure size is reported as positive
-	fValue = fabs ( fValue );
-
-	//240203 - adjusts to scale now
-	if ( iActualSize==1 ) fValue *= pObject->position.vecScale.x;
-
-	return *(DWORD*)&fValue;
+    return GetAxisSizeFromVectorOffset( iID, iActualSize, 0 /* 0 = x part of vector */);
 }
 
 DARKSDK_DLL SDK_FLOAT GetYSizeEx ( int iID, int iActualSize )
 {
-	// check the object exists
-	if ( !ConfirmObjectInstance ( iID ) )
-		return 0;
-
-	// return object information
-	sObject* pObject = g_ObjectList [ iID ];
-	if ( pObject->pInstanceOfObject ) pObject = pObject->pInstanceOfObject;
-	float fValue = (pObject->collision.vecMax.y - pObject->collision.vecMin.y);
-	
-	// mike - 021005 - apply pivot if needed
-	fValue = ApplyPivot ( pObject, 1, D3DXVECTOR3 ( pObject->collision.vecMax - pObject->collision.vecMin ), fValue );
-
-	// 110406 - u6rc7 - ensure size is reported as positive
-	fValue = fabs ( fValue );
-
-	//240203 - adjusts to scale now
-	if ( iActualSize==1 )
-		fValue *= pObject->position.vecScale.y;
-
-	return *(DWORD*)&fValue;
+    return GetAxisSizeFromVectorOffset( iID, iActualSize, 1 /* 1 = y part of vector */ );
 }
 
 DARKSDK_DLL SDK_FLOAT GetZSizeEx ( int iID, int iActualSize )
 {
-	// check the object exists
-	if ( !ConfirmObjectInstance ( iID ) )
-		return 0;
-
-	// return object information
-	sObject* pObject = g_ObjectList [ iID ];
-	if ( pObject->pInstanceOfObject ) pObject = pObject->pInstanceOfObject;
-	float fValue = (pObject->collision.vecMax.z - pObject->collision.vecMin.z);
-	
-	// mike - 021005 - apply pivot if needed
-	fValue = ApplyPivot ( pObject, 2, D3DXVECTOR3 ( pObject->collision.vecMax - pObject->collision.vecMin ), fValue );
-
-	// 110406 - u6rc7 - ensure size is reported as positive
-	fValue = fabs ( fValue );
-
-	//240203 - adjusts to scale now
-	if ( iActualSize==1 )
-		fValue *= pObject->position.vecScale.z;
-
-	return *(DWORD*)&fValue;
+    return GetAxisSizeFromVectorOffset ( iID, iActualSize, 2 /* 2 = z part of vector */ );
 }
-
-
 
 DARKSDK_DLL SDK_FLOAT GetSize ( int iID )
 {

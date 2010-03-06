@@ -457,7 +457,8 @@ DARKSDK LPDIRECT3DTEXTURE9 GetTextureCore ( char* szFilename, int iOneToOnePixel
 	// V109 BETA8 - 060508 - if cannot find file/get info, fail as this file is in error
 	// if( FAILED ( hRes )) return NULL;
 	// U74 BETA9 - 040709 - get info from physical file if not in image block (previous fix was flawed)
-	if ( hRes==0 || hRes!=D3D_OK ) hRes = D3DXGetImageInfoFromFile( szFilename, &info );
+	if ( hRes==0 || hRes!=D3D_OK )
+        hRes = D3DXGetImageInfoFromFile( szFilename, &info );
 
 	// if texture size needs diviing, do so now
 	if ( iDivideTextureSize>0 )
@@ -591,6 +592,10 @@ DARKSDK LPDIRECT3DTEXTURE9 GetTextureCore ( char* szFilename, int iOneToOnePixel
 					pSurface->Release();
 				}
 			}
+            // If any of the previous steps failed, release the target texture
+            // to signal a failure to load.
+            if ( FAILED ( hRes ) )
+                SAFE_RELEASE( lpTexture );
 		}
 		else
 		{
@@ -1873,27 +1878,6 @@ DARKSDK void Delete ( int iID )
 // Command Functions
 //
 
-DARKSDK void LoadEx	( LPSTR szFilename, int iID )
-{
-	int iKindOfTexture = 0; // U67 - zero, U69 - one (FPSC interference?), U70 BETA2 - zero again 
-	if(Load( szFilename, iID, iKindOfTexture, false, 0 )==false)
-	{
-		char pCWD[256]; _getcwd ( pCWD, 256 );
-		char pErr[256]; sprintf ( pErr, "CWD:%s\nLOAD IMAGE %s,%d", pCWD, szFilename, iID);
-		RunTimeError(RUNTIMEERROR_IMAGELOADFAILED,pErr);
-	}
-}
-
-DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iKindOfTexture )
-{
-	if(Load( szFilename, iID, iKindOfTexture, false, 0 )==false)
-	{
-		char pCWD[256]; _getcwd ( pCWD, 256 );
-		char pErr[256]; sprintf ( pErr, "CWD:%s\nLOAD IMAGE %s,%d,%d", pCWD, szFilename, iID, iKindOfTexture);
-		RunTimeError(RUNTIMEERROR_IMAGELOADFAILED,pErr);
-	}
-}
-
 DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iTextureFlag, int iDivideTextureSize )
 {
 	if(Load( szFilename, iID, iTextureFlag, false, iDivideTextureSize )==false)
@@ -1902,6 +1886,17 @@ DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iTextureFlag, int iDivideTe
 		char pErr[256]; sprintf ( pErr, "CWD:%s\nLOAD IMAGE %s,%d,%d,%d", pCWD, szFilename, iID, iTextureFlag, iDivideTextureSize);
 		RunTimeError(RUNTIMEERROR_IMAGELOADFAILED,pErr);
 	}
+}
+
+DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iKindOfTexture )
+{
+    LoadEx ( szFilename, iID, iKindOfTexture, 0 );
+}
+
+DARKSDK void LoadEx	( LPSTR szFilename, int iID )
+{
+	int iKindOfTexture = 0; // U67 - zero, U69 - one (FPSC interference?), U70 BETA2 - zero again 
+    LoadEx ( szFilename, iID, iKindOfTexture, 0 );
 }
 
 DARKSDK void SaveEx	( LPSTR szFilename, int iID )

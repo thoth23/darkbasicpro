@@ -1287,36 +1287,44 @@ DARKSDK_DLL bool DeleteObject ( int iID )
 	// remove object from buffers
 	sObject* pObject = g_ObjectList [ iID ];
 
-	// leefix - 010306 - u60 - no need to remove resource or further instances of an instanced object
+    // If this object is dependent on another, decrease the other objects dependency count
+    if (pObject->pObjectDependency)
+    {
+        pObject->pObjectDependency->dwDependencyCount--;
+        pObject->pObjectDependency = NULL;
+    }
+
+    // leefix - 010306 - u60 - no need to remove resource or further instances of an instanced object
 	sObject* pInstanceOf = pObject->pInstanceOfObject;
 	if ( pInstanceOf==NULL )
 	{
 		// remove resource of this object
 		m_ObjectManager.RemoveBuffersUsedByObject ( pObject );
 
-		// ensure all instances associated with this object are removed also
-		for ( int iShortList = 0; iShortList < g_iObjectListRefCount; iShortList++ )
-		{
-			// get index from shortlist
-			int iScanObjectID = g_ObjectListRef [ iShortList ];
+        // Only need to search for dependents if there are some for this object
+        if (pObject->dwDependencyCount)
+        {
+		    // ensure all instances associated with this object are removed also
+		    for ( int iShortList = 0; iShortList < g_iObjectListRefCount; iShortList++ )
+		    {
+			    // get index from shortlist
+			    int iScanObjectID = g_ObjectListRef [ iShortList ];
 
-			// see if we have a valid list
-			sObject* pScanObject = g_ObjectList [ iScanObjectID ];
-			if ( !pScanObject ) continue;
+			    // see if we have a valid list
+			    sObject* pScanObject = g_ObjectList [ iScanObjectID ];
+			    if ( !pScanObject ) continue;
 
-			// if not this object and an instance of it, delete it also
-			if ( pScanObject->pInstanceOfObject==pObject )
-			{
-				// delete instance of the master object (being deleted)
-				DeleteObject ( iScanObjectID );
+			    // if not this object and an instance of it, delete it also
+			    if ( pScanObject->pObjectDependency==pObject )
+			    {
+				    // delete instance/shared-clone of the master object (being deleted)
+				    DeleteObject ( iScanObjectID );
 
-				// as recursing through shortlist, we may have skipped one so backtracl
-				//iShortList--;
-
-				// mike - 281106 - make sure it is greater than 0
-				if ( iShortList > 0 )
-					iShortList--;
-			}
+				    // as recursing through shortlist, we may have skipped one so backtrack
+				    if ( iShortList >= 0 )
+					    iShortList--;
+			    }
+            }
 		}
 	}
 	else
