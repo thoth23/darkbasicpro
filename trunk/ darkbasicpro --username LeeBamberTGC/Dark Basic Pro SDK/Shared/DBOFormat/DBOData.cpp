@@ -344,6 +344,9 @@ sObject::sObject ( )
 	fLODTransition				= 0.0f;
 
 	dwCameraMaskBits			= 4294967295;	// lee - 211006 - u63 - for darkshader
+
+	pObjectDependency			= NULL; // lee - 110310 - initialise IamM's dependency vars
+	dwDependencyCount			= 0;
 }
 
 sObject::~sObject ( )
