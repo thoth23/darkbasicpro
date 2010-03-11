@@ -126,7 +126,8 @@ namespace
         float fValue = (pObject->collision.vecMax[ iVectorOffset ] - pObject->collision.vecMin[ iVectorOffset ]);
     	
 	    // Apply pivot if needed
-	    fValue = ApplyPivot ( pObject, 0, D3DXVECTOR3 ( pObject->collision.vecMax - pObject->collision.vecMin ), fValue );
+	    //fValue = ApplyPivot ( pObject, 0, D3DXVECTOR3 ( pObject->collision.vecMax - pObject->collision.vecMin ), fValue );
+	    fValue = ApplyPivot ( pObject, iVectorOffset, D3DXVECTOR3 ( pObject->collision.vecMax - pObject->collision.vecMin ), fValue );
 
 	    // Ensure size is reported as positive
 	    fValue = fabs ( fValue );
