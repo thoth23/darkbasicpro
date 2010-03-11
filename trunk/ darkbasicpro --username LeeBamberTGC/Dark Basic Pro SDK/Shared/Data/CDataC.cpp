@@ -214,10 +214,9 @@ void CData::Delete ( int iID )
 	{
 		get->prev->next = NULL;	// set next pointer to null
 
-		// FPGC - 220909 - fixes memory leak, should delete data ptr assigned inside node!
-		if ( get->data ) delete get->data;
-
+		// U75 - 110310 - note: data mem actually deleted externally of this delete function
 		delete get;				// delete the node
+
 		m_count--;				// decrement link count
 
 		/////////////////
@@ -246,7 +245,9 @@ void CData::Delete ( int iID )
 		get->next->prev = NULL;	// set the next link nodes prev to null
 		m_start = get->next;		// get the new start pos of list
 				
+		// U75 - 110310 - note: data mem actually deleted externally of this delete function
 		delete get;				// delete the node
+
 		m_count--;				// decrement link count
 		return;					// quit out of function
 	}
@@ -257,7 +258,9 @@ void CData::Delete ( int iID )
 		m_current		= NULL;	// point current to nothing
 		m_start		= NULL;	// point start to nothing
 
+		// U75 - 110310 - note: data mem actually deleted externally of this delete function
 		delete get;
+
 		m_count = 0;
 		return;
 	}
@@ -268,7 +271,9 @@ void CData::Delete ( int iID )
 		get->prev->next = get->next;	// recreate the next link
 		get->next->prev = get->prev;	// recreate the prev link
 
+		// U75 - 110310 - note: data mem actually deleted externally of this delete function
 		delete get;				// delete the node
+
 		m_count--;			// decrement link count
 		return;					// quit out of function
 	}

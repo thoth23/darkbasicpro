@@ -164,7 +164,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBitmapDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\MyGames\simple\DBProBitmapDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
