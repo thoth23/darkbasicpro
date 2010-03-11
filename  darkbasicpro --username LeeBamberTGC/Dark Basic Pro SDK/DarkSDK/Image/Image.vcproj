@@ -261,7 +261,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProImageDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\MyGames\simple\DBProImageDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
