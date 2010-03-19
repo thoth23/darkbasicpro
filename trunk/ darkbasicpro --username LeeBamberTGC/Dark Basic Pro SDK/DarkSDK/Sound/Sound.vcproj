@@ -907,7 +907,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="dsound.lib dxguid.lib odbc32.lib odbccp32.lib"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSoundDebug.dll"
+				OutputFile="C:\Users\Lee\Documents\Downloads\EasyLander2\EasyLander2.0Publish\DBProSoundDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""

@@ -789,7 +789,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSpritesDebug.dll"
+				OutputFile="C:\Users\Lee\Documents\Downloads\EasyLander2\EasyLander2.0Publish\DBProSpritesDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
