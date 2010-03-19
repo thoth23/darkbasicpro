@@ -4422,6 +4422,20 @@ void ObtainYawPitchRoll ( int g_Filtering )
 	#endif
 }
 
+DARKSDK int ResetLeftEye ( void )
+{
+	// U75 - 150310 - extra command to detect VR920 AND reset to left eye (otherwise user cross-eyed)
+	#ifdef VR920SUPPORT
+		g_StereoEyeToggle=LEFT_EYE;
+		if ( g_VR920AdapterAvailable==true )
+			return 1;
+		else
+			return 0;
+	#else
+		return 0;
+	#endif
+}
+
 DARKSDK void ResetTracking ( void )
 {
 	// reset to zero (forward facing set)

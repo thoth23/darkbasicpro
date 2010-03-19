@@ -173,6 +173,7 @@ BEGIN
     IDS_STRING52            "GET TRACKING ROLL[%FL%?GetTrackingRoll@@YAKH@Z%Filtering Mode"
     IDS_STRING53            "SET NVPERFHUD%L%?SetNvPerfHUD@@YAXH@Z%Use NVPerfHUD Flag"
     IDS_STRING54            "RESET TRACKING%0%?ResetTracking@@YAXXZ"
+    IDS_STRING55            "RESET LEFT EYE[%L%?ResetLeftEye@@YAHXZ"
 END
 
 #endif    // English (U.K.) resources

@@ -56,6 +56,7 @@
 #define IDS_STRING52                    52
 #define IDS_STRING53                    53
 #define IDS_STRING54                    54
+#define IDS_STRING55                    55
 #define IDB_BITMAP2                     101
 
 // Next default values for new objects
