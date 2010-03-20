@@ -159,8 +159,11 @@ class cSpecialEffect
 		// reserved members
 		DWORD				m_bDoNotGenerateExtraData;					// leeadd - 050906 - Flag passed in to control if FX data auto-generated (tangents/binormals/normals)
 		DWORD				m_dwUseDynamicTextureMask;					// leeadd - 180107 - Whether dynamic effect from TEXTURE OBJECT should apply to an effect that is using its own textures
-		DWORD				m_dwReserved3;								// reserved - maintain plugin compat.
-		DWORD				m_dwReserved4;								// reserved - maintain plugin compat.
+		bool				m_bUsesAtLeastOneRT;						// leeadd - 200310 - support for RTs in shader
+		bool				m_bRes3b;									// reserved - maintain plugin compat.
+		bool				m_bRes3c;									// reserved - maintain plugin compat.
+		bool				m_bRes3d;									// reserved - maintain plugin compat.
+		DWORD				m_dwCreatedRTTextureMask;					// leeadd - 200310 - support for RTs in shader
 		DWORD				m_dwReserved5;								// reserved - maintain plugin compat.
 
 		// virtual functions

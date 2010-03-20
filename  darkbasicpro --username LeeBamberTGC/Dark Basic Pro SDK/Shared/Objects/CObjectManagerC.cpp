@@ -2701,9 +2701,100 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 		}
 	}
 
+	// U75 - 200310 - if using RT, store current render target
+	IDirect3DSurface9 *pCurrentRenderTarget = NULL;
+	if ( pMesh->pVertexShaderEffect )
+		if ( pMesh->pVertexShaderEffect->m_bUsesAtLeastOneRT==true )
+			m_pD3D->GetRenderTarget( 0, &pCurrentRenderTarget );
+
 	// each mesh can have several render passes
     for(UINT uPass = 0; uPass < uPasses; uPass++)
     {
+		// U75 - 200310 - if using RT, determine if should switch to RT or final render target (current)
+		if ( bEffectRendering )
+		{
+			// only if RT flagged (saves performance)
+			if ( pMesh->pVertexShaderEffect->m_bUsesAtLeastOneRT==true )
+			{
+				// ensure technique exists
+				LPD3DXEFFECT pEffect = pMesh->pVertexShaderEffect->m_pEffect;
+				D3DXHANDLE hTech = pEffect->GetTechnique(0);//this may mess up multi-technique shaders??
+
+				// get rendercolortarget string from this pass
+				D3DXHANDLE hPass = pEffect->GetPass( hTech, uPass );
+				D3DXHANDLE hRT = pEffect->GetAnnotationByName( hPass, "RenderColorTarget" );
+				const char* szRT = 0;
+				if ( hRT ) pEffect->GetString( hRT, &szRT );
+
+				// check if RT string has contents
+				if ( hRT && strcmp( szRT, "" ) != 0 )
+				{
+					// yes, now get handle to texture param we want to re-direct our render to
+					D3DXHANDLE hTexParamWant = pEffect->GetParameterByName( NULL, szRT );
+
+					// go through all textures recorded during the shader parse
+					for ( DWORD t = 0; t < pMesh->pVertexShaderEffect->m_dwTextureCount; t++ )
+					{
+						// only consider RT textures that are flagged in bitmask
+						DWORD dwThisTextureBit = 1 << t;
+						if ( pMesh->pVertexShaderEffect->m_dwCreatedRTTextureMask & dwThisTextureBit )
+						{
+							// get the param handle of each texture in shader
+							int iParam = pMesh->pVertexShaderEffect->m_iParamOfTexture [ t ];
+							D3DXHANDLE hTexParam = pEffect->GetParameter( NULL, iParam );
+
+							// if it matches the one we want
+							if ( hTexParam == hTexParamWant )
+							{
+								// get texture ptr from effect
+								IDirect3DBaseTexture9* pRTTex = NULL;
+								pEffect->GetTexture( hTexParam, &pRTTex );
+
+								// switch render target to internal shader RT
+								IDirect3DSurface9 *pSurface;
+								((IDirect3DTexture9*)pRTTex)->GetSurfaceLevel( 0, &pSurface );
+								m_pD3D->SetRenderTarget( 0, pSurface );
+								if ( pSurface ) pSurface->Release( );
+
+								// put RT textures width and height into ViewSize
+								D3DXHANDLE hViewSize = pEffect->GetParameterBySemantic( NULL, "ViewSize" );
+								if ( hViewSize )
+								{
+									D3DSURFACE_DESC desc;
+									pCurrentRenderTarget->GetDesc( &desc );
+									int width = desc.Width, height = desc.Height;
+									D3DXHANDLE hWidth = pEffect->GetAnnotationByName( hTexParam, "width" );
+									D3DXHANDLE hHeight = pEffect->GetAnnotationByName( hTexParam, "height" );
+									if ( hWidth ) pEffect->GetInt( hWidth, &width );
+									if ( hHeight ) pEffect->GetInt( hWidth, &height );
+									D3DXVECTOR4 vec( (float) width, (float) height, 0, 0 );
+									pEffect->SetVector( hViewSize, &vec );
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					// no, we render to current as normal
+					m_pD3D->SetRenderTarget( 0, pCurrentRenderTarget );
+
+					// set the Viewsize to match the width and height of the RT passed in
+					D3DXHANDLE hViewSize = pEffect->GetParameterBySemantic( NULL, "ViewSize" );
+					if ( hViewSize )
+					{
+						D3DSURFACE_DESC desc;
+						pCurrentRenderTarget->GetDesc( &desc );
+						D3DXVECTOR4 vec( (float) desc.Width, (float) desc.Height, 0, 0 );
+						pEffect->SetVector( hViewSize, &vec );
+					}
+				}
+
+				// once textures established, commit effect state changes and begin this pass
+				pEffect->CommitChanges( );
+			}
+		}
+
 		// FX Effect or Regular
 		if ( bEffectRendering )
 		{
@@ -2911,7 +3002,12 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 	// mike - 300905 - enable fog after being disabled for shaders
 	if ( m_RenderStates.bFog )
 		m_pD3D->SetRenderState ( D3DRS_FOGENABLE, TRUE );
-	
+
+	// U75 - 200310 - if using RT, restore current render target
+	if ( pCurrentRenderTarget )
+		if ( pMesh->pVertexShaderEffect )
+			if ( pMesh->pVertexShaderEffect->m_bUsesAtLeastOneRT==true )
+				m_pD3D->SetRenderTarget( 0, pCurrentRenderTarget );
 
 	// Run any end code for any effect used
 	if ( pMesh->pVertexShaderEffect )

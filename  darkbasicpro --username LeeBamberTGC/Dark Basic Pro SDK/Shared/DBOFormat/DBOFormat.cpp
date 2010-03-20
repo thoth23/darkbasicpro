@@ -72,6 +72,20 @@ cSpecialEffect::cSpecialEffect ( )
 
 cSpecialEffect::~cSpecialEffect ( )
 {
+	// U75 - 200310 - free any RT textures we created
+	for ( DWORD t=0; t<m_dwTextureCount; t++ )
+	{
+		DWORD dwThisTextureBit = 1 << t;
+		if ( m_dwCreatedRTTextureMask & dwThisTextureBit )
+		{
+			// only RT textures are flagged in bitmask
+			int iParam = m_iParamOfTexture[t];
+			IDirect3DBaseTexture9* pRTTex = NULL;
+			m_pEffect->GetTexture( m_pEffect->GetParameter( NULL, iParam ), &pRTTex );
+			if ( pRTTex ) pRTTex->Release();
+		}
+	}
+
 	// free default zfile mesh
 	SAFE_DELETE ( m_pXFileMesh );
 
@@ -493,6 +507,10 @@ bool cSpecialEffect::ParseEffect ( bool bUseEffectXFile, bool bUseEffectTextures
 	m_dwUseDynamicTextureMask = 0; // default is effect uses NO dynamic textures
 	DWORD dwCountTexturesInEffect = 0;
 
+	// U75 - 200310 - clear RT mask as well
+	m_dwCreatedRTTextureMask = 0; 
+	m_bUsesAtLeastOneRT = false;
+
 	// Look at parameters for semantics and annotations that we know how to interpret
 	D3DXPARAMETER_DESC ParamDesc;
 	D3DXHANDLE hParam;
@@ -574,72 +592,112 @@ bool cSpecialEffect::ParseEffect ( bool bUseEffectXFile, bool bUseEffectTextures
 		}
 		if( pstrName != NULL )
 		{
-			// texture from effect or mesh
-			if ( bUseEffectTextures )
+			// U75 - 200310 - detect RENDERCOLORTARGET semantic here
+			bool bIsThisAnRT = false;
+			if ( ParamDesc.Semantic != NULL ) if ( _strcmpi ( ParamDesc.Semantic, "RENDERCOLORTARGET" ) == 0 ) bIsThisAnRT = true;
+			if ( bIsThisAnRT==true )
 			{
-				// texture holder
-				LPDIRECT3DBASETEXTURE9 pTex = NULL;
-
-				// 2D texture is stadnard texture
-				if (pstrTextureType != NULL) 
-					if( _strcmpi( pstrTextureType, "2d" ) == 0 )
-						pstrTextureType=NULL;
-
-				// assign effect texture from FX file
-				if (pstrTextureType != NULL) 
+				// this indicates an RT texture we want our shader to render to during the passes, so we need to create a render target for it
+				IDirect3DTexture9* pRTTex = NULL;
+				D3DSURFACE_DESC desc;
+				IDirect3DSurface9 *pCurrentRenderTarget = NULL;
+				m_pD3D->GetRenderTarget(0,&pCurrentRenderTarget);
+				if ( pCurrentRenderTarget )
 				{
-					if( _strcmpi( pstrTextureType, "volume" ) == 0 )
-					{
-						// support for internal volume textures
-						LPDIRECT3DVOLUMETEXTURE9 pVolumeTex = NULL;
-						if( SUCCEEDED( D3DXCreateVolumeTextureFromFileEx( m_pD3D, pstrName, 
-							Width, Height, Depth, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
-							D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &pVolumeTex ) ) )
-						{
-							// iTextureStage
-							pTex = pVolumeTex;
-						}
-					}
-					else if( _strcmpi( pstrTextureType, "cube" ) == 0 )
-					{
-						// support for internal cube textures
-						LPDIRECT3DCUBETEXTURE9 pCubeTex = NULL;
-						if( SUCCEEDED( D3DXCreateCubeTextureFromFileEx( m_pD3D, pstrName, 
-							Width, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
-							D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &pCubeTex ) ) )
-						{
-							// iTextureStage
-							pTex = pCubeTex;
-						}
-					}
+					pCurrentRenderTarget->GetDesc( &desc );
+					if ( Width==D3DX_DEFAULT ) Width=desc.Width;
+					if ( Height==D3DX_DEFAULT ) Height=desc.Height;
 				}
 				else
 				{
-					// support for internal basic textures
-					int iImageIndex = LoadOrFindTextureAsImage ( (char*)pstrName, "" );
-					pTex = g_Image_GetPointer ( iImageIndex );
+					if ( Width==D3DX_DEFAULT ) Width=256;
+					if ( Height==D3DX_DEFAULT ) Height=256;
 				}
+				D3DXCreateTexture( m_pD3D, Width, Height, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, (IDirect3DTexture9**)&pRTTex );
 
-				// assign texture to effect
-				//if ( pTex ) m_pEffect->SetTexture( m_pEffect->GetParameter( NULL, iParam ), pTex );
-				if ( pTex )
-				{
-					// assigns effect texture directly to effect
-					m_pEffect->SetTexture( m_pEffect->GetParameter( NULL, iParam ), pTex );
-				}
-				else
-				{
-					// u64 - 180107 - set the bit to say this texture stage should use a dynamic texture from texture object command
-					DWORD dwCorrectBitForThisStage = 1 << dwCountTexturesInEffect;
-					m_dwUseDynamicTextureMask = m_dwUseDynamicTextureMask | dwCorrectBitForThisStage;
-				}
-				dwCountTexturesInEffect++;
-			}
-			else
-			{
+				// assigns RT texture directly to effect
+				m_pEffect->SetTexture( m_pEffect->GetParameter( NULL, iParam ), pRTTex );
+
+				// set flag to indicate this specialeffect object uses at least one RT (render target)
+				m_bUsesAtLeastOneRT = true;
+
+				// mark in a bitfield which textures are RT (so we can release them when this shader is deleted)
+				DWORD dwCorrectBitForThisTexture = 1 << m_dwTextureCount;
+				m_dwCreatedRTTextureMask = m_dwCreatedRTTextureMask | dwCorrectBitForThisTexture;
+
 				// record this texture and step through texture indexes
 				m_iParamOfTexture [ m_dwTextureCount ] = iParam;
 				m_dwTextureCount++;
+			}
+			else
+			{
+				// texture from effect or mesh
+				if ( bUseEffectTextures )
+				{
+					// texture holder
+					LPDIRECT3DBASETEXTURE9 pTex = NULL;
+
+					// 2D texture is stadnard texture
+					if (pstrTextureType != NULL) 
+						if( _strcmpi( pstrTextureType, "2d" ) == 0 )
+							pstrTextureType=NULL;
+
+					// assign effect texture from FX file
+					if (pstrTextureType != NULL) 
+					{
+						if( _strcmpi( pstrTextureType, "volume" ) == 0 )
+						{
+							// support for internal volume textures
+							LPDIRECT3DVOLUMETEXTURE9 pVolumeTex = NULL;
+							if( SUCCEEDED( D3DXCreateVolumeTextureFromFileEx( m_pD3D, pstrName, 
+								Width, Height, Depth, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
+								D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &pVolumeTex ) ) )
+							{
+								// iTextureStage
+								pTex = pVolumeTex;
+							}
+						}
+						else if( _strcmpi( pstrTextureType, "cube" ) == 0 )
+						{
+							// support for internal cube textures
+							LPDIRECT3DCUBETEXTURE9 pCubeTex = NULL;
+							if( SUCCEEDED( D3DXCreateCubeTextureFromFileEx( m_pD3D, pstrName, 
+								Width, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
+								D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &pCubeTex ) ) )
+							{
+								// iTextureStage
+								pTex = pCubeTex;
+							}
+						}
+					}
+					else
+					{
+						// support for internal basic textures
+						int iImageIndex = LoadOrFindTextureAsImage ( (char*)pstrName, "" );
+						pTex = g_Image_GetPointer ( iImageIndex );
+					}
+
+					// assign texture to effect
+					//if ( pTex ) m_pEffect->SetTexture( m_pEffect->GetParameter( NULL, iParam ), pTex );
+					if ( pTex )
+					{
+						// assigns effect texture directly to effect
+						m_pEffect->SetTexture( m_pEffect->GetParameter( NULL, iParam ), pTex );
+					}
+					else
+					{
+						// u64 - 180107 - set the bit to say this texture stage should use a dynamic texture from texture object command
+						DWORD dwCorrectBitForThisStage = 1 << dwCountTexturesInEffect;
+						m_dwUseDynamicTextureMask = m_dwUseDynamicTextureMask | dwCorrectBitForThisStage;
+					}
+					dwCountTexturesInEffect++;
+				}
+				else
+				{
+					// record this texture and step through texture indexes
+					m_iParamOfTexture [ m_dwTextureCount ] = iParam;
+					m_dwTextureCount++;
+				}
 			}
 		}
 
