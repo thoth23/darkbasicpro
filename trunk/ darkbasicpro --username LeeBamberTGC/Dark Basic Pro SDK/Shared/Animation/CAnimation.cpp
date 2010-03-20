@@ -1489,39 +1489,16 @@ DARKSDK BOOL DB_LoopAnimationOff(int AnimIndex)
 
 DARKSDK BOOL DB_SetAnimationVolume(int AnimIndex, int iVolume)
 {
-	// lee - 220306 - u6b4 - should NOT be -10000 to 0, should be 0-100 (converted)
 	if(Anim[AnimIndex].pBasicAudio)
 	{
 		if(iVolume<0) iVolume=0;
 		if(iVolume>100) iVolume=100;
-		long lVolume=((100-iVolume)*100);
-		Anim[AnimIndex].pBasicAudio->put_Volume(lVolume);
-		return TRUE;
+		long lVolume=((100-iVolume)*-100);
+		HRESULT Result = Anim[AnimIndex].pBasicAudio->put_Volume(lVolume);
+		return SUCCEEDED( Result );
 	}
 	else
 		return FALSE;
-
-	/* this change was wrong - the HELP describes it is 0-100 not -10000 to 0
-	// mike - 250604
-	if(Anim[AnimIndex].pBasicAudio)
-	{
-		Anim[AnimIndex].pBasicAudio->put_Volume(iVolume);
-		return TRUE;
-	}
-	else
-		return FALSE;
-	
-	if(Anim[AnimIndex].pBasicAudio)
-	{
-		if(iVolume<0) iVolume=0;
-		if(iVolume>100) iVolume=100;
-		long lVolume=((100-iVolume)*100);
-		Anim[AnimIndex].pBasicAudio->put_Volume(lVolume);
-		return TRUE;
-	}
-	else
-		return FALSE;
-	*/
 }
 
 DARKSDK BOOL DB_SetAnimationSpeed(int AnimIndex, int iRate)
