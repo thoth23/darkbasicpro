@@ -940,6 +940,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Shared\Camera\CCameraDataC.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Shared\Camera\CCameraDataC.h"
 				>
 			</File>

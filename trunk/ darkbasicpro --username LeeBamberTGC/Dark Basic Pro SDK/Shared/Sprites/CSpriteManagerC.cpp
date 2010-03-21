@@ -102,7 +102,7 @@ void CSpriteManager::UpdateAllSprites(void)
 
 		// Update image ptr
 		int iImage = ptr->iImage;
-        if (iImage != 0)
+        if (iImage > 0)
         {
 		    ptr->iWidth    = g_Image_GetWidth   ( iImage );		// get image width
 		    ptr->iHeight   = g_Image_GetHeight  ( iImage );		// get image height
