@@ -4776,6 +4776,11 @@ DARKSDK_DLL void SaveNodeTreeObjects ( SDK_LPSTR pFilename )
 	if ( g_pUniverse ) g_pUniverse->Save((LPSTR)pFilename);
 }
 
+DARKSDK_DLL void SetNodeTreeEffectTechnique	( SDK_LPSTR pTechniqueName )
+{
+	if ( g_pUniverse ) g_pUniverse->SetEffectTechnique ( (LPSTR)pTechniqueName );
+}
+
 // CSG Commands (CSG)
 
 DARKSDK_DLL void PeformObjectCSG ( int iObjectA, int iObjectB, int iMode )

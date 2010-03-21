@@ -23,7 +23,8 @@ typedef void (*tMakeNodeTreeCollisionBox)			( float , float , float , float , fl
 typedef void (*tSetNodeTreeTextureMode)				( int  );
 typedef void (*tDisableNodeTreeOcclusion)			( void );
 typedef void (*tEnableNodeTreeOcclusion)			( void );
-typedef void (*tSaveNodeTreeObjects)				( LPSTR  );
+typedef void (*tSaveNodeTreeObjects)				( LPSTR );
+typedef void (*tSetNodeTreeEffectTechnique)			( LPSTR );
 typedef void (*tLoadNodeTreeObjects)				( LPSTR , int  );
 typedef void (*tAttachObjectToNodeTree)				( int  );
 typedef void (*tDetachObjectFromNodeTree)			( int  );
@@ -94,6 +95,7 @@ DARKSDK void SetNodeTreeTextureMode				( int iMode );
 DARKSDK void DisableNodeTreeOcclusion			( void );
 DARKSDK void EnableNodeTreeOcclusion			( void );
 DARKSDK void SaveNodeTreeObjects				( DWORD dwFilename );
+DARKSDK void SetNodeTreeEffectTechnique			( DWORD dwFilename );
 DARKSDK void LoadNodeTreeObjects				( DWORD dwFilename, int iDivideTextureSize );
 DARKSDK void AttachObjectToNodeTree				( int iID );
 DARKSDK void DetachObjectFromNodeTree			( int iID );
