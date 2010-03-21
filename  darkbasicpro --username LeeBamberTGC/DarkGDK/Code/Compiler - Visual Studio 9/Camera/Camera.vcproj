@@ -277,6 +277,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Camera\CCameraDataC.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Camera\CCameraDataC.h"
 			>
 		</File>

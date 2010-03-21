@@ -248,6 +248,12 @@ DARKSDK bool UpdatePtr ( int iID )
 	return true;
 }
 
+DARKSDK void* GetLightData( int iID )
+{
+    UpdatePtr( iID );
+    return (void*)m_ptr;
+}
+
 DARKSDK void Make ( int iID )
 {
 	// variable declarations
