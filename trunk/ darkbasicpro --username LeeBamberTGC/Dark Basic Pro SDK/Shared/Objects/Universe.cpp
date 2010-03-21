@@ -763,6 +763,43 @@ void cUniverse::Save ( LPSTR pFilename )
 	SAFE_DELETE ( pObject );
 }
 
+void cUniverse::SetEffectTechnique ( LPSTR pTechniqueName )
+{
+	// go through all meshes in universe
+	for ( int iMesh = 0; iMesh < (int)m_pMasterMeshList.size ( ); iMesh++ )
+	{
+		// get mesh ptr
+		sMesh* pMesh = m_pMasterMeshList [ iMesh ];
+		if ( pMesh->bUseVertexShader )
+		{
+			// Search for effect
+			int iEffectIDFound = 0;
+			for ( int iEffectID=0; iEffectID<MAX_EFFECTS; iEffectID++ )
+			{
+				if ( m_EffectList [ iEffectID ] )
+				{
+					if ( _stricmp ( m_EffectList [ iEffectID ]->pEffectObj->m_pEffectName, (LPSTR)pMesh->pEffectName )==NULL )
+					{
+						iEffectIDFound=iEffectID;
+						break;
+					}
+				}
+			}
+			if ( iEffectIDFound>0 )
+			{
+				sEffectItem* pEffectItem = m_EffectList [ iEffectIDFound ];
+				LPD3DXEFFECT pEffectPtr = pEffectItem->pEffectObj->m_pEffect;
+				if ( pEffectPtr )
+				{
+					D3DXHANDLE hTechnique = pEffectPtr->GetTechniqueByName ( (LPSTR)pTechniqueName );
+					if ( hTechnique )
+						pEffectPtr->SetTechnique(hTechnique);
+				}
+			}
+		}
+	}
+}
+
 DWORD cUniverse::GetMasterMeshIndex ( sMesh* pFindMesh )
 {
 	for ( DWORD dwMasterMeshListIndex = 0; dwMasterMeshListIndex < m_pMasterMeshList.size ( ); dwMasterMeshListIndex++ )

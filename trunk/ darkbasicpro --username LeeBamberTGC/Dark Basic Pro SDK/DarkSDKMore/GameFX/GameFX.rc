@@ -123,6 +123,7 @@ STRINGTABLE
 BEGIN
     IDS_STRING144           "REDUCE MESH%LLLLLL%?ReduceMesh@@YAXHHHHHH@Z%Mesh Number, Block Mode, Near Mode, GX, GY, GZ"
     IDS_STRING145           "ATTACH OBJECT TO STATIC%L%?AttachObjectToNodeTree@@YAXH@Z%Object Number"
+    IDS_STRING146           "SET STATIC EFFECT TECHNIQUE%S%?SetNodeTreeEffectTechnique@@YAXK@Z%Technique Name"
     IDS_STRING147           "DETACH OBJECT FROM STATIC%L%?DetachObjectFromNodeTree@@YAXH@Z%Object Number"
     IDS_STRING148           "ADD LOD TO OBJECT%LLLF%?AddLODToObject@@YAXHHHM@Z%Object Number, LOD Object, LOD Level, LOD Distance"
     IDS_STRING149           "SAVE STATIC OBJECTS%S%?SaveNodeTreeObjects@@YAXK@Z%Filename"

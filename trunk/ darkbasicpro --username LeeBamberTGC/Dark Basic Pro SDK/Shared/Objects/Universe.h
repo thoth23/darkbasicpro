@@ -414,6 +414,7 @@ class cUniverse
 		void Save ( LPSTR pFilename );
 		void LoadDBU ( LPSTR pDBUFilename );
 		void SaveDBU ( LPSTR pDBUFilename );
+		void SetEffectTechnique ( LPSTR pTechniqueName );
 
 		bool Make				( float fX, float fY, float fZ );					// make a universe
 		bool Attach				( sObject* pObject );

@@ -67,6 +67,11 @@ DARKSDK void GFSaveNodeTreeObjects					( LPSTR pFilename )
 	SaveNodeTreeObjects	( (DWORD)pFilename );
 }
 
+DARKSDK void GFSetNodeTreeEffectTechnique			( LPSTR pFilename )
+{
+	SetNodeTreeEffectTechnique	( (DWORD)pFilename );
+}
+
 DARKSDK void GFLoadNodeTreeObjects					( LPSTR pFilename, int iDivideTextureSize )
 {
 	LoadNodeTreeObjects	( (DWORD)pFilename, iDivideTextureSize );

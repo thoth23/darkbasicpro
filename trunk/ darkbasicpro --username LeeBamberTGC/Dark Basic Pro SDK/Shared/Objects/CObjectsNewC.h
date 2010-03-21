@@ -208,6 +208,7 @@ DARKSDK void SetNodeTreeTextureMode		( int iMode );
 DARKSDK void DisableNodeTreeOcclusion	( void );
 DARKSDK void EnableNodeTreeOcclusion	( void );
 DARKSDK void SaveNodeTreeObjects		( SDK_LPSTR pFilename );
+DARKSDK void SetNodeTreeEffectTechnique	( SDK_LPSTR pTechniqueName );
 DARKSDK void LoadNodeTreeObjects		( SDK_LPSTR pFilename, int iDivideTextureSize );
 DARKSDK void AttachObjectToNodeTree		( int iID );
 DARKSDK void DetachObjectFromNodeTree	( int iID );

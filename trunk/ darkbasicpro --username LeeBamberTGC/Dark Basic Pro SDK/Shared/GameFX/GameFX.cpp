@@ -21,6 +21,7 @@ tSetNodeTreeTextureMode B3D_SetNodeTreeTextureMode;
 tDisableNodeTreeOcclusion B3D_DisableNodeTreeOcclusion;
 tEnableNodeTreeOcclusion B3D_EnableNodeTreeOcclusion;
 tSaveNodeTreeObjects B3D_SaveNodeTreeObjects;
+tSetNodeTreeEffectTechnique B3D_SetNodeTreeEffectTechnique;
 tLoadNodeTreeObjects B3D_LoadNodeTreeObjects;
 tAttachObjectToNodeTree B3D_AttachObjectToNodeTree;
 tDetachObjectFromNodeTree B3D_DetachObjectFromNodeTree;
@@ -103,6 +104,7 @@ void ReceiveCoreDataPtr ( LPVOID pCore )
 	B3D_DisableNodeTreeOcclusion			= ( tDisableNodeTreeOcclusion )				GetProcAddress ( g_pGlob->g_Basic3D, "?GFDisableNodeTreeOcclusion@@YAXXZ" );
 	B3D_EnableNodeTreeOcclusion				= ( tEnableNodeTreeOcclusion )				GetProcAddress ( g_pGlob->g_Basic3D, "?GFEnableNodeTreeOcclusion@@YAXXZ" );
 	B3D_SaveNodeTreeObjects					= ( tSaveNodeTreeObjects )					GetProcAddress ( g_pGlob->g_Basic3D, "?GFSaveNodeTreeObjects@@YAXPAD@Z" );
+	B3D_SetNodeTreeEffectTechnique			= ( tSetNodeTreeEffectTechnique )			GetProcAddress ( g_pGlob->g_Basic3D, "?GFSetNodeTreeEffectTechnique@@YAXPAD@Z" );
 	B3D_LoadNodeTreeObjects					= ( tLoadNodeTreeObjects )					GetProcAddress ( g_pGlob->g_Basic3D, "?GFLoadNodeTreeObjects@@YAXPADH@Z" );
 	B3D_AttachObjectToNodeTree				= ( tAttachObjectToNodeTree )				GetProcAddress ( g_pGlob->g_Basic3D, "?GFAttachObjectToNodeTree@@YAXH@Z" );
 	B3D_DetachObjectFromNodeTree			= ( tDetachObjectFromNodeTree )				GetProcAddress ( g_pGlob->g_Basic3D, "?GFDetachObjectFromNodeTree@@YAXH@Z" );
@@ -236,6 +238,11 @@ void EnableNodeTreeOcclusion				( void )
 void SaveNodeTreeObjects					( DWORD dwFilename )
 {
 	B3D_SaveNodeTreeObjects	( (LPSTR)dwFilename );
+}
+
+void SetNodeTreeEffectTechnique					( DWORD dwFilename )
+{
+	B3D_SetNodeTreeEffectTechnique ( (LPSTR)dwFilename );
 }
 
 void LoadNodeTreeObjects					( DWORD dwFilename, int iDivideTextureSize )
