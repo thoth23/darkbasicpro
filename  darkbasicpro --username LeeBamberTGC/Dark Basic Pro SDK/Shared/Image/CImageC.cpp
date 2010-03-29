@@ -2232,7 +2232,10 @@ void OpenImageBlock	( char* szFilename, int iMode )
 void ExcludeFromImageBlock ( char* szExcludePath )
 {
 	// exclude any file starting with this string
-	strcpy ( g_pImageBlockExcludePath, szExcludePath );
+    if (szExcludePath)
+    	strcpy ( g_pImageBlockExcludePath, szExcludePath );
+    else
+        g_pImageBlockExcludePath[0] = 0;
 }
 
 bool AddToImageBlock ( LPSTR pAddFilename )
@@ -2243,9 +2246,10 @@ bool AddToImageBlock ( LPSTR pAddFilename )
 	// if exist
 	if ( !pAddFilename ) return false;
 
-	// exclude if path matches excluder
-	if ( strnicmp ( g_pImageBlockExcludePath, pAddFilename, strlen(g_pImageBlockExcludePath) )==NULL )
-		return true;
+	// exclude if path matches excluder, but only if excluder has a value
+    if (g_pImageBlockExcludePath && g_pImageBlockExcludePath[0])
+    	if ( strnicmp ( g_pImageBlockExcludePath, pAddFilename, strlen(g_pImageBlockExcludePath) )==NULL )
+	    	return true;
 
 	// ensure it does not already exist
 	for ( int i = 0; i < (int)g_ImageBlockListFile.size ( ); i++ )

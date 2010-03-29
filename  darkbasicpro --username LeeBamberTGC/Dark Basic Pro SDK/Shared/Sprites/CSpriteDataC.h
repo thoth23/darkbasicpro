@@ -25,9 +25,6 @@ enum eAnimType
 
 struct tagSpriteData
 {
-	// u74b7 - removal of d3ddevice, as not needed
-	// LPDIRECT3DDEVICE9		pD3D;
-
 	float					fX;				// x position float for MOVE accuracy
 	float					fY;				// y position float for MOVE accuracy
 
