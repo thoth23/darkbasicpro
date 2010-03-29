@@ -3609,8 +3609,12 @@ bool cUniverse::Render ( void )
 	}
 
 	// clear visibility flags of the areaboxes
-	for ( int i = 0; i < (int)m_pAreaList.size ( ); i++ )
-		m_pAreaList [ i ]->bRenderedThisCycle = false;
+	// U75 - 290310 - can only account for camera zero (as only have one flag to hold the rendered state
+	if ( g_pGlob->dwRenderCameraID==0 )
+	{
+		for ( int i = 0; i < (int)m_pAreaList.size ( ); i++ )
+			m_pAreaList [ i ]->bRenderedThisCycle = false;
+	}
 
 	// draw area within
 	if ( g_iAreaBox > 0 )
@@ -3675,8 +3679,14 @@ bool cUniverse::Render ( void )
 			// set visibility from areabox state
 			if ( pObject->iInsideUniverseArea>=0 )
 			{
-				// still in this areabox, transfer visiblity state over to object
-				pObject->bUniverseVisible = m_pAreaList [ pObject->iInsideUniverseArea ]->bRenderedThisCycle;
+				// U75 - 290310 - can only account for camera zero (as only have one flag to hold the rendered state
+				if ( g_pGlob->dwRenderCameraID==0 )
+				{
+					// still in this areabox, transfer visiblity state over to object
+					pObject->bUniverseVisible = m_pAreaList [ pObject->iInsideUniverseArea ]->bRenderedThisCycle;
+				}
+				else
+					pObject->bUniverseVisible = true;
 			}
 		}
 	}
