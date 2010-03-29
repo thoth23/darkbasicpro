@@ -2317,18 +2317,26 @@ DARKSDK DWORD ReDimCore(DWORD dwOldArrayPtr, DWORD dwNewTypeAndSizeOfElement, DW
 
 DARKSDK DWORD DimDDD(DWORD dwOldArrayPtr, DWORD dwTypeAndSizeOfElement, DWORD dwD1, DWORD dwD2, DWORD dwD3, DWORD dwD4, DWORD dwD5, DWORD dwD6, DWORD dwD7, DWORD dwD8, DWORD dwD9)
 {
-	// leechange - 050304 - now REDIMs if array already exists
-	if ( dwOldArrayPtr )
-	{
-		// Change Size Of Array (and retain contents)
-		DWORD dwNewArrPtr = ReDimCore ( dwOldArrayPtr, dwTypeAndSizeOfElement, dwD1, dwD2, dwD3, dwD4, dwD5, dwD6, dwD7, dwD8, dwD9 );
+    try
+    {
+	    // leechange - 050304 - now REDIMs if array already exists
+	    if ( dwOldArrayPtr )
+	    {
+		    // Change Size Of Array (and retain contents)
+		    DWORD dwNewArrPtr = ReDimCore ( dwOldArrayPtr, dwTypeAndSizeOfElement, dwD1, dwD2, dwD3, dwD4, dwD5, dwD6, dwD7, dwD8, dwD9 );
 
-		// If corruption detected, can resort to a new array as follows..
-		if ( dwNewArrPtr!=NULL ) return dwNewArrPtr;
-	}
+		    // If corruption detected, can resort to a new array as follows..
+		    if ( dwNewArrPtr!=NULL ) return dwNewArrPtr;
+	    }
 
-	// Create a New Array
-	return DimCore ( dwOldArrayPtr, dwTypeAndSizeOfElement, dwD1, dwD2, dwD3, dwD4, dwD5, dwD6, dwD7, dwD8, dwD9 );
+	    // Create a New Array
+	    return DimCore ( dwOldArrayPtr, dwTypeAndSizeOfElement, dwD1, dwD2, dwD3, dwD4, dwD5, dwD6, dwD7, dwD8, dwD9 );
+    }
+    catch (...)
+    {
+        RunTimeError(RUNTIMEERROR_NOTENOUGHMEMORY);
+        return dwOldArrayPtr;
+    }
 }
 
 DARKSDK DWORD UnDimDD(DWORD dwAllocation)
@@ -2404,176 +2412,200 @@ DARKSDK DWORD ArrayCount(DWORD dwArrayPtr)
 }
 DARKSDK DWORD ArrayInsertAtBottom(DWORD dwArrayPtr)
 {
-	// If no array, leave now
-	if(dwArrayPtr==NULL) return dwArrayPtr;
+    try
+    {
+	    // If no array, leave now
+	    if(dwArrayPtr==NULL) return dwArrayPtr;
 
-	// lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
-	if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
+	    // lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
+	    if ( IsArraySingleDim ( dwArrayPtr )==false )
+        {
+            RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM);
+            return dwArrayPtr;
+        }
 
-	// Adjust Size Of Entire Array
-	DWORD dwAllocation = ExpandArray(dwArrayPtr, 1);
+	    // Adjust Size Of Entire Array
+	    DWORD dwAllocation = ExpandArray(dwArrayPtr, 1);
 
-	// Determine index
-	int iIndex = (*((DWORD*)dwAllocation-4)) - 1;
-	if(iIndex<0) iIndex=0;
+	    // Determine index
+	    int iIndex = (*((DWORD*)dwAllocation-4)) - 1;
+	    if(iIndex<0) iIndex=0;
 
-// leefix-230603-already cleared in expandarray (and besides, it cleared the wrongblock)
-//	// Clear new item(s)
-//	ClearDataBlock(dwAllocation, iIndex, 1);
+	    // Update array index to last in list
+	    *((DWORD*)dwAllocation-1) = iIndex;
 
-	// Update array index to last in list
-	*((DWORD*)dwAllocation-1) = iIndex;
-
-	// Overwrites current array ptr
-	return dwAllocation;
+	    // Overwrites current array ptr
+	    return dwAllocation;
+    }
+    catch (...)
+    {
+        RunTimeError(RUNTIMEERROR_NOTENOUGHMEMORY);
+        return dwArrayPtr;
+    }
 }
 DARKSDK DWORD ArrayInsertAtBottom(DWORD dwArrayPtr, int iQuantity)
 {
-	// If no array, leave now
-	if(dwArrayPtr==NULL) return dwArrayPtr;
+    try
+    {
+	    // If no array, leave now
+	    if(dwArrayPtr==NULL) return dwArrayPtr;
 
-	// lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
-	if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
+	    // lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
+	    if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
 
-	// Autohandler
-	if(iQuantity<1) iQuantity=1;
+	    // Autohandler
+	    if(iQuantity<1) iQuantity=1;
 
-	// Adjust Size Of Entire Array
-	DWORD dwAllocation = ExpandArray(dwArrayPtr, iQuantity);
+	    // Adjust Size Of Entire Array
+	    DWORD dwAllocation = ExpandArray(dwArrayPtr, iQuantity);
 
-	// Determine index
-	int iIndex = (*((DWORD*)dwAllocation-4)) - iQuantity;
-	if(iIndex<0) iIndex=0;
+	    // Determine index
+	    int iIndex = (*((DWORD*)dwAllocation-4)) - iQuantity;
+	    if(iIndex<0) iIndex=0;
 
-// leefix-230603-already cleared in expandarray (and besides, it cleared the wrongblock)
-//	// Clear new item(s)
-//	ClearDataBlock(dwAllocation, iIndex, iQuantity);
+	    // Update array index to fisrt new item at end of list
+	    *((DWORD*)dwAllocation-1) = iIndex;
 
-	// Update array index to fisrt new item at end of list
-	*((DWORD*)dwAllocation-1) = iIndex;
-
-	// Overwrites current array ptr
-	return dwAllocation;
+	    // Overwrites current array ptr
+	    return dwAllocation;
+    }
+    catch (...)
+    {
+        RunTimeError(RUNTIMEERROR_NOTENOUGHMEMORY);
+        return dwArrayPtr;
+    }
 }
 
 DARKSDK DWORD ArrayInsertAtTop(DWORD dwArrayPtr)
 {
-	// If no array, leave now
-	if(dwArrayPtr==NULL) return dwArrayPtr;
+    try
+    {
+	    // If no array, leave now
+	    if(dwArrayPtr==NULL) return dwArrayPtr;
 
-	// lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
-	if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
+	    // lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
+	    if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
 
-	// Adjust Size Of Entire Array
-	DWORD dwAllocation = ExpandArray(dwArrayPtr, 1);
+	    // Adjust Size Of Entire Array
+	    DWORD dwAllocation = ExpandArray(dwArrayPtr, 1);
 
-	// Store Ref located at end of list
-	DWORD dwSizeOfTable = *((DWORD*)dwAllocation-4);
-	DWORD dwIndex = dwSizeOfTable - 1;
-	DWORD* pRef = (DWORD*)dwAllocation;
-	DWORD dwRefItem = pRef[dwIndex];
+	    // Store Ref located at end of list
+	    DWORD dwSizeOfTable = *((DWORD*)dwAllocation-4);
+	    DWORD dwIndex = dwSizeOfTable - 1;
+	    DWORD* pRef = (DWORD*)dwAllocation;
+	    DWORD dwRefItem = pRef[dwIndex];
 
-	// Shuffle ref table to make space at top
-	if(dwSizeOfTable>0) memcpy(pRef+1, pRef, (dwSizeOfTable-1)*4);
+	    // Shuffle ref table to make space at top
+	    if(dwSizeOfTable>0) memcpy(pRef+1, pRef, (dwSizeOfTable-1)*4);
 
-	// Copy refitem to top position
-	pRef[0] = dwRefItem;
+	    // Copy refitem to top position
+	    pRef[0] = dwRefItem;
 
-// leefix-230603-already cleared in expandarray (and besides, it cleared the wrongblock)
-//	// Clear new item(s)
-//	ClearDataBlock(dwAllocation, 0, 1);
+	    // Update array index to new item
+	    *((DWORD*)dwAllocation-1) = 0;
 
-	// Update array index to new item
-	*((DWORD*)dwAllocation-1) = 0;
-
-	// Overwrites current array ptr
-	return dwAllocation;
+	    // Overwrites current array ptr
+	    return dwAllocation;
+    }
+    catch (...)
+    {
+        RunTimeError(RUNTIMEERROR_NOTENOUGHMEMORY);
+        return dwArrayPtr;
+    }
 }
 
 DARKSDK DWORD ArrayInsertAtTop(DWORD dwArrayPtr, int iQuantity)
 {
-	// If no array, leave now
-	if(dwArrayPtr==NULL) return dwArrayPtr;
+    try
+    {
+	    // If no array, leave now
+	    if(dwArrayPtr==NULL) return dwArrayPtr;
 
-	// lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
-	if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
+	    // lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
+	    if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
 
-	// Autohandler
-	if(iQuantity<1) iQuantity=1;
+	    // Autohandler
+	    if(iQuantity<1) iQuantity=1;
 
-	// Adjust Size Of Entire Array
-	DWORD dwAllocation = ExpandArray(dwArrayPtr, iQuantity);
+	    // Adjust Size Of Entire Array
+	    DWORD dwAllocation = ExpandArray(dwArrayPtr, iQuantity);
 
-	// Store RefItems(iQuantity) located at end of list
-	DWORD* pStoreRefs = (DWORD*)new DWORD[iQuantity];
-	DWORD dwSizeOfTable = *((DWORD*)dwAllocation-4);
-	DWORD dwIndexOfFirstRef = dwSizeOfTable-iQuantity;
-	DWORD* pRef = (DWORD*)dwAllocation;
-	memcpy(pStoreRefs, (DWORD*)pRef + dwIndexOfFirstRef, iQuantity*4);
+	    // Store RefItems(iQuantity) located at end of list
+	    DWORD* pStoreRefs = (DWORD*)new DWORD[iQuantity];
+	    DWORD dwSizeOfTable = *((DWORD*)dwAllocation-4);
+	    DWORD dwIndexOfFirstRef = dwSizeOfTable-iQuantity;
+	    DWORD* pRef = (DWORD*)dwAllocation;
+	    memcpy(pStoreRefs, (DWORD*)pRef + dwIndexOfFirstRef, iQuantity*4);
 
-	// Shuffle ref table to make space at top
-	DWORD dwAmountToShuffle = 0;
-	if(dwSizeOfTable>(DWORD)iQuantity) dwAmountToShuffle=(dwSizeOfTable-iQuantity)*4;
-	if(dwAmountToShuffle>0) memcpy(pRef+iQuantity, pRef, dwAmountToShuffle);
+	    // Shuffle ref table to make space at top
+	    DWORD dwAmountToShuffle = 0;
+	    if(dwSizeOfTable>(DWORD)iQuantity) dwAmountToShuffle=(dwSizeOfTable-iQuantity)*4;
+	    if(dwAmountToShuffle>0) memcpy(pRef+iQuantity, pRef, dwAmountToShuffle);
 
-	// Copy refitem to top position
-	memcpy(pRef, pStoreRefs, iQuantity*4);
+	    // Copy refitem to top position
+	    memcpy(pRef, pStoreRefs, iQuantity*4);
 
-// leefix-230603-already cleared in expandarray (and besides, it cleared the wrong datablock)
-//	// Clear new item(s)
-//	ClearDataBlock(dwAllocation, 0, iQuantity);
+	    // Update array index to new item
+	    *((DWORD*)dwAllocation-1) = 0;
 
-	// Update array index to new item
-	*((DWORD*)dwAllocation-1) = 0;
-
-	// Overwrites current array ptr
-	return dwAllocation;
+	    // Overwrites current array ptr
+	    return dwAllocation;
+    }
+    catch (...)
+    {
+        RunTimeError(RUNTIMEERROR_NOTENOUGHMEMORY);
+        return dwArrayPtr;
+    }
 }
 DARKSDK DWORD ArrayInsertAtElement(DWORD dwArrayPtr, int iIndex)
 {
-	// If no array, leave now
-	if(dwArrayPtr==NULL) return dwArrayPtr;
+    try
+    {
+	    // If no array, leave now
+	    if(dwArrayPtr==NULL) return dwArrayPtr;
 
-	// lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
-	if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
+	    // lee - 140306 - u60b3 - Do not allow multi-dimensional arrays
+	    if ( IsArraySingleDim ( dwArrayPtr )==false ) { RunTimeError(RUNTIMEERROR_ARRAYMUSTBESINGLEDIM); return dwArrayPtr; }
 
-	DWORD dwSizeOfTable = *((DWORD*)dwArrayPtr-4);
-	if(iIndex<0 || iIndex>=(int)dwSizeOfTable)
-	{
-		RunTimeError(RUNTIMEERROR_ARRAYINDEXINVALID);
-		return dwArrayPtr;
-	}
-	
-	// Size of insert
-	int iQuantity=1;
+	    DWORD dwSizeOfTable = *((DWORD*)dwArrayPtr-4);
+	    if(iIndex<0 || iIndex>=(int)dwSizeOfTable)
+	    {
+		    RunTimeError(RUNTIMEERROR_ARRAYINDEXINVALID);
+		    return dwArrayPtr;
+	    }
+    	
+	    // Size of insert
+	    int iQuantity=1;
 
-	// Adjust Size Of Entire Array
-	DWORD dwAllocation = ExpandArray(dwArrayPtr, iQuantity);
+	    // Adjust Size Of Entire Array
+	    DWORD dwAllocation = ExpandArray(dwArrayPtr, iQuantity);
 
-	// Store RefItems(iQuantity) located at end of list
-	DWORD* pStoreRefs = (DWORD*)new DWORD[iQuantity];
-	DWORD dwIndexOfFirstRef = dwSizeOfTable-(iQuantity-1);  //leefix-230603-corrected ptr to new item-ref in expanded array
-	DWORD* pRef = (DWORD*)dwAllocation;
-	memcpy(pStoreRefs, (DWORD*)pRef + dwIndexOfFirstRef, iQuantity*4);
+	    // Store RefItems(iQuantity) located at end of list
+	    DWORD* pStoreRefs = (DWORD*)new DWORD[iQuantity];
+	    DWORD dwIndexOfFirstRef = dwSizeOfTable-(iQuantity-1);  //leefix-230603-corrected ptr to new item-ref in expanded array
+	    DWORD* pRef = (DWORD*)dwAllocation;
+	    memcpy(pStoreRefs, (DWORD*)pRef + dwIndexOfFirstRef, iQuantity*4);
 
-	// Shuffle iIndex to End onwards
-	DWORD dwSizeOfLaterChunk = 0;
-	if(dwSizeOfTable>(DWORD)iIndex) dwSizeOfLaterChunk = dwSizeOfTable-iIndex;
-	if(dwSizeOfLaterChunk>0) memcpy(pRef+iIndex+iQuantity, pRef+iIndex, dwSizeOfLaterChunk*4);
+	    // Shuffle iIndex to End onwards
+	    DWORD dwSizeOfLaterChunk = 0;
+	    if(dwSizeOfTable>(DWORD)iIndex) dwSizeOfLaterChunk = dwSizeOfTable-iIndex;
+	    if(dwSizeOfLaterChunk>0) memcpy(pRef+iIndex+iQuantity, pRef+iIndex, dwSizeOfLaterChunk*4);
 
-	// Copy RefItems into space created inside table
-	memcpy(pRef+iIndex, pStoreRefs, iQuantity*4);
-    delete[] pStoreRefs;    // Remove memory leak
+	    // Copy RefItems into space created inside table
+	    memcpy(pRef+iIndex, pStoreRefs, iQuantity*4);
+        delete[] pStoreRefs;    // Remove memory leak
 
-// leefix-230603-already cleared in expandarray (and besides, it cleared the wrongblock)
-//	// Clear new item(s)
-//	ClearDataBlock(dwAllocation, iIndex, iQuantity);
+	    // Update array index to new item
+	    *((DWORD*)dwAllocation-1) = iIndex;
 
-	// Update array index to new item
-	*((DWORD*)dwAllocation-1) = iIndex;
-
-	// Overwrites current array ptr
-	return dwAllocation;
+	    // Overwrites current array ptr
+	    return dwAllocation;
+    }
+    catch (...)
+    {
+        RunTimeError(RUNTIMEERROR_NOTENOUGHMEMORY);
+        return dwArrayPtr;
+    }
 }
 DARKSDK void ArrayDeleteElement(DWORD dwArrayPtr, int iIndex)
 {

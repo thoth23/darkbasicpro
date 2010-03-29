@@ -62,6 +62,8 @@ int g_iSpriteResizeMode = 0;
 // mike - 071005 - filter mode in case you want to use linear
 int g_iFilterMode = 0;
 
+// Forward declarations
+DARKSDK void SetVertexTextureDataForSprite( void );
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -313,29 +315,42 @@ DARKSDK bool UpdatePtr ( int iID )
 	return true;
 }
 
+
+
 DARKSDK void UpdateAllSprites(void)
 {
-	// Called When Image Is Changed (sprites must relink to latest texture surfaces)
-	m_SpriteManager.UpdateAllSprites();
+    link* pCheck = m_SpriteManager.GetList()->m_start;
+	while ( pCheck )
+	{
+		tagSpriteData* ptr = ( tagSpriteData* )( pCheck->data );
+
+		int iImage = ptr->iImage;
+        if (iImage > 0)
+        {
+//            ptr->lpTexture = g_Image_GetPointer ( iImage );
+	        ptr->iWidth    = g_Image_GetWidth   ( iImage );
+	        ptr->iHeight   = g_Image_GetHeight  ( iImage );
+	        ptr->fClipU    = g_Image_GetUMax    ( iImage );
+	        ptr->fClipV    = g_Image_GetVMax    ( iImage );
+
+            if (ptr->eAnimType == ONE_IMAGE)
+            {
+                ptr->iFrameWidth  = ptr->iWidth / ptr->iFrameAcross;
+                ptr->iFrameHeight = ptr->iHeight / ptr->iFrameDown;
+                ptr->iWidth = ptr->iFrameWidth;
+                ptr->iHeight = ptr->iFrameHeight;
+                SetFrameEx ( pCheck->id, ptr->iFrame + 1 );
+                // BUG: Apparent bug here on uv's for non-power-of-2 image sizes on animated single-image sprites
+            }
+            m_ptr = ptr;
+            SetVertexTextureDataForSprite ( );
+        }
+
+        // check next one
+		pCheck = pCheck->next;
+	}
 }
 
-/* LEEFIX - UV Data supplied by image calls as it should be
-void CalcClipFromTexture ( LPDIRECT3DTEXTURE8 lpTexture, int iWidth, int iHeight, float* pU, float* pV )
-{
-//	// Get actual texture wize and calc a clip based on smaller size of image
-//	if(lpTexture)
-//	{
-//		D3DSURFACE_DESC imageddsd;
-//		lpTexture->GetLevelDesc(0, &imageddsd);
-//		*pU=(float)((double)iWidth/(double)imageddsd.Width);
-//		*pV=(float)((double)iHeight/(double)imageddsd.Height);
-//		if(*pU>1.0f) *pU=1.0f;
-//		if(*pV>1.0f) *pV=1.0f;
-//	}
-//	*pU=1.0f;
-//	*pV=1.0f;
-}
-*/
 
 
 DARKSDK void CreateSprite( int iID, int iX, int iY, int iImage )
@@ -2054,17 +2069,10 @@ DARKSDK int GetWidth ( int iID )
 		return -1;
 	}
 
-	// lee - 090206 - update in case image changed
-	m_ptr->iWidth = g_Image_GetWidth   ( m_ptr->iImage );		// get image width
-	m_ptr->iHeight= g_Image_GetHeight  ( m_ptr->iImage );		// get image height
-
-	// return the image width
 	if ( m_ptr->iXSize==0 )
 		return (int)(m_ptr->iWidth * m_ptr->fXScale);
 	else
 		return m_ptr->iXSize;
-// lee - 090206 - return the SIZE of the sprite, not the old image width
-//		return m_ptr->iWidth;
 }
 
 DARKSDK int GetHeight ( int iID )
@@ -2081,21 +2089,10 @@ DARKSDK int GetHeight ( int iID )
 		return -1;
 	}
 
-	// lee - 090206 - update in case image changed
-	m_ptr->iWidth = g_Image_GetWidth   ( m_ptr->iImage );		// get image width
-	m_ptr->iHeight= g_Image_GetHeight  ( m_ptr->iImage );		// get image height
-
-	// return the image height
-	//if ( m_ptr->iXSize==0 )
-	//	return (int)(m_ptr->iHeight * m_ptr->fXScale);
-
-	// mike - 041005 - return y value for height
 	if ( m_ptr->iYSize==0 )
 		return (int)(m_ptr->iHeight * m_ptr->fYScale);
 	else
 		return m_ptr->iYSize;
-//		return m_ptr->iHeight;
-// lee - 090206 - return the SIZE of the sprite, not the old image width
 }
 
 DARKSDK int GetXScale ( int iID )

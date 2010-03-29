@@ -35,8 +35,6 @@ class CSpriteManager
 		CSpriteManager	( void );
 		~CSpriteManager	( void );
 
-		void  UpdateAllSprites(void);
-
 		bool  Add	        ( tagSpriteData* pData, int iID );
 		bool  Delete        ( int iID );
 		int   Count         ( void )                { return m_List.Count();  }

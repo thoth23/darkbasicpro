@@ -91,32 +91,6 @@ CSpriteManager::~CSpriteManager ( void )
 }
 
 
-void CSpriteManager::UpdateAllSprites(void)
-{
-	// For when images are changed, sprites may have old textures
-	link* pCheck = m_List.m_start;
-	while ( pCheck )
-	{
-		// get sprite info
-		tagSpriteData* ptr = ( tagSpriteData* )( pCheck->data );
-
-		// Update image ptr
-		int iImage = ptr->iImage;
-        if (iImage > 0)
-        {
-		    ptr->iWidth    = g_Image_GetWidth   ( iImage );		// get image width
-		    ptr->iHeight   = g_Image_GetHeight  ( iImage );		// get image height
-		    ptr->lpTexture = g_Image_GetPointer ( iImage );		// get image data
-		    ptr->fClipU    = g_Image_GetUMax    ( iImage );		// get image
-		    ptr->fClipV    = g_Image_GetVMax    ( iImage );		// get image
-        }
-
-		// check next one
-		pCheck = pCheck->next;
-	}
-}
-
-
 bool CSpriteManager::Add ( tagSpriteData* pData, int iID )
 {
     // Attempt to get the sprite
