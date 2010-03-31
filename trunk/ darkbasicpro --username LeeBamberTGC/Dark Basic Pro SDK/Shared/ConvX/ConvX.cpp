@@ -2459,7 +2459,11 @@ DARKSDK bool ParseXFileData ( IDirectXFileData* pDataObj, sFrame* pParentFrame, 
 			}
 			else
 			{
-				// create new mesh in frame
+                // apply the mesh name to the frame if the frame hasn't yet got a name
+                if (pParentFrame->szName[0] == 0 && szName[0] != 0)
+                    strcpy ( pParentFrame->szName, szName );
+
+                // create new mesh in frame
 				if ( !XFILE_GetMeshData ( pDataObj, pParentFrame ) )
 					return false;
 			}

@@ -408,6 +408,8 @@ DARKSDK void TurnLeft ( int iID, float fAngle )
 	D3DXMatrixRotationY ( &matRotation, D3DXToRadian ( -fAngle ) );
 	pObject->position.matFreeFlightRotate = matRotation * pObject->position.matFreeFlightRotate;
 
+    AnglesFromMatrix ( &pObject->position.matFreeFlightRotate, &pObject->position.vecRotate );
+
 	// regenerate look vectors
 	RegenerateLookVectors( pObject );
 
@@ -435,6 +437,8 @@ DARKSDK void TurnRight ( int iID, float fAngle )
 	D3DXMATRIX matRotation;
 	D3DXMatrixRotationY ( &matRotation, D3DXToRadian ( fAngle ) );
 	pObject->position.matFreeFlightRotate = matRotation * pObject->position.matFreeFlightRotate;
+
+    AnglesFromMatrix ( &pObject->position.matFreeFlightRotate, &pObject->position.vecRotate );
 
 	// regenerate look vectors
 	RegenerateLookVectors( pObject );
@@ -464,6 +468,8 @@ DARKSDK void PitchUp ( int iID, float fAngle )
 	D3DXMatrixRotationX ( &matRotation, D3DXToRadian ( -fAngle ) );
 	pObject->position.matFreeFlightRotate = matRotation * pObject->position.matFreeFlightRotate;
 
+    AnglesFromMatrix ( &pObject->position.matFreeFlightRotate, &pObject->position.vecRotate );
+
 	// regenerate look vectors
 	RegenerateLookVectors( pObject );
 
@@ -491,6 +497,8 @@ DARKSDK void PitchDown ( int iID, float fAngle )
 	D3DXMATRIX matRotation;
 	D3DXMatrixRotationX ( &matRotation, D3DXToRadian ( fAngle ) );
 	pObject->position.matFreeFlightRotate = matRotation * pObject->position.matFreeFlightRotate;
+
+    AnglesFromMatrix ( &pObject->position.matFreeFlightRotate, &pObject->position.vecRotate );
 
 	// regenerate look vectors
 	RegenerateLookVectors( pObject );
@@ -520,6 +528,8 @@ DARKSDK void RollLeft ( int iID, float fAngle )
 	D3DXMatrixRotationZ ( &matRotation, D3DXToRadian ( fAngle ) );
 	pObject->position.matFreeFlightRotate = matRotation * pObject->position.matFreeFlightRotate;
 
+    AnglesFromMatrix ( &pObject->position.matFreeFlightRotate, &pObject->position.vecRotate );
+
 	// regenerate look vectors
 	RegenerateLookVectors( pObject );
 
@@ -547,6 +557,8 @@ DARKSDK void RollRight ( int iID, float fAngle )
 	D3DXMATRIX matRotation;
 	D3DXMatrixRotationZ ( &matRotation, D3DXToRadian ( -fAngle ) );
 	pObject->position.matFreeFlightRotate = matRotation * pObject->position.matFreeFlightRotate;
+
+    AnglesFromMatrix ( &pObject->position.matFreeFlightRotate, &pObject->position.vecRotate );
 
 	// regenerate look vectors
 	RegenerateLookVectors( pObject );
