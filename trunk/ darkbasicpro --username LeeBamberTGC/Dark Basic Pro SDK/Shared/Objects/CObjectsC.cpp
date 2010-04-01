@@ -5795,6 +5795,11 @@ DARKSDK_DLL void MakeMeshFromObject ( int iMeshID, int iObjectID, int iIgnoreMod
     if (pObject->pInstanceOfObject)
         pObject = pObject->pInstanceOfObject;
 
+	if ( iMeshID==70000 )
+	{
+		int lee=452;
+	}
+
 	// create new mesh
 	sMesh* pNewMesh = NULL;
 	if ( !CreateSingleMeshFromObject ( &pNewMesh, pObject, iIgnoreMode ) )

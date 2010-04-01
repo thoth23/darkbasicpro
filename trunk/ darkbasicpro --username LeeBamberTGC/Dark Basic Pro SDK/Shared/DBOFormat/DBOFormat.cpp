@@ -1308,8 +1308,17 @@ DARKSDK_DLL bool CreateSingleMeshFromObject ( sMesh** ppMesh, sObject* pObject, 
 		{
 			sMesh* pFrameMesh = pFrame->pMesh;
 			if ( pFrameMesh )
+			{
 				if ( pFrameMesh->dwIndexCount==0 )
 					bVertexOnlyBuffer=true;
+
+				// U75 - 010410 - moved here from belo as both pFrameMesh->iPrimitiveType and iNewPrimitiveType known here
+				if ( pFrameMesh->iPrimitiveType != iNewPrimitiveType ) 
+				{
+					// leeadd - 151008 - u70 - use verts if not trilist
+					bVertexOnlyBuffer=true;
+				}
+			}
 		}
 	}
 
@@ -1353,12 +1362,10 @@ DARKSDK_DLL bool CreateSingleMeshFromObject ( sMesh** ppMesh, sObject* pObject, 
 					MakeLocalMeshFromOtherLocalMesh ( pStandardMesh, pFrameMesh );
 					ConvertLocalMeshToFVF ( pStandardMesh, dwNewMeshFVF );
 
-					// leeadd - 151008 - u70 - use verts if not trilist
-					if ( pFrameMesh->iPrimitiveType != iNewPrimitiveType ) bVertexOnlyBuffer=true;
-
+					// U75 - 010410 - this is redundant as the check is performed earlier in this function
 					// leeadd - 081208 - U71 - if mesh has NO index data, all mesh must have NO index data, so switch to vertex only
-					if ( pFrameMesh->dwIndexCount==0 )
-						bVertexOnlyBuffer=true;
+					//if ( pFrameMesh->dwIndexCount==0 )
+					//	bVertexOnlyBuffer=true;
 
 					// just verts
 					if ( bVertexOnlyBuffer==true ) ConvertLocalMeshToVertsOnly ( pStandardMesh ); 

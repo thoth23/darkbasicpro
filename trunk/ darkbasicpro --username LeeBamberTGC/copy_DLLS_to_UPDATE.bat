@@ -37,4 +37,3 @@ cd "english"
 copy "*.txt" ".\..\..\..\..\..\Dark Basic Pro Shared\UPDATES\U7.5\Main\Compiler\lang\english\"
 
 echo "finished."
-cmd.exe
