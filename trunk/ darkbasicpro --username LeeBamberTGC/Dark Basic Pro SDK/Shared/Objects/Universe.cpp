@@ -3649,6 +3649,9 @@ bool cUniverse::Render ( void )
 			D3DXVECTOR3 vecAdjPos = pObject->position.vecPosition;
 			vecAdjPos.y+=5.0f;
 
+			// FPGC - 050410 - use 'middle' of object to determine which areabox the obj is in
+			vecAdjPos += pObject->collision.vecColCenter;
+
 			// first check previous areabox the object was in
 			if ( pObject->iInsideUniverseArea>=0 )
 			{
@@ -3669,7 +3672,7 @@ bool cUniverse::Render ( void )
 					if ( CollisionBoundBoxTest (	&vecAdjPos,
 													&vecAdjPos,
 													&m_pAreaList [ i ]->vecMin,
-													&m_pAreaList [ i ]->vecMax	  ) )
+													&m_pAreaList [ i ]->vecMax ) )
 					{
 						pObject->iInsideUniverseArea = i;
 						break;
