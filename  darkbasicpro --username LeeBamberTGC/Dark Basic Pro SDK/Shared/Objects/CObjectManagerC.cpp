@@ -3605,8 +3605,6 @@ bool CObjectManager::Reset ( void )
 
 void CObjectManager::UpdateInitOnce ( void )
 {
-	// V111 - 110608 - called only once (form the main SYNC call), not from FASTSYNCS
-
 	// ensure that the D3D device is valid
 	if ( !m_pD3D )
 		return;
@@ -3614,10 +3612,11 @@ void CObjectManager::UpdateInitOnce ( void )
 	// replace any buffers if object modified (from mesh size change or limb mods)
 	if ( !m_ObjectManager.ReplaceAllFlaggedObjectsInBuffers() )
 		return;
-	
+
+	// U75 - 080410 - moved to a call in Core (once per SYNC, not FASTSYNC calls! as it speeds up anim)
 	// update all animation data (advance AnimFame only)
-	if ( !m_ObjectManager.UpdateAnimationCycle() )
-		return;
+	//if ( !m_ObjectManager.UpdateAnimationCycle() )
+	//	return;
 
 	// sort texture list if needed
 	if ( !SortTextureList ( ) )

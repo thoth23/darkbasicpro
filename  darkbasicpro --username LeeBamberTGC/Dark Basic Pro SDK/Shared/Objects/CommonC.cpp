@@ -428,6 +428,13 @@ DARKSDK_DLL void RefreshD3D ( int iMode )
 // EXPORTED INTERNAL FUNCTIONS ///////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
+DARKSDK_DLL void UpdateAnimationCycle ( void )
+{
+	// U75 - 080410 - moved here (once per SYNC, not FASTSYNC calls! as it speeds up anim)
+	m_ObjectManager.UpdateAnimationCycle ( );
+}
+
+
 DARKSDK_DLL void UpdateOnce ( void )
 {
 	m_ObjectManager.UpdateInitOnce ( );

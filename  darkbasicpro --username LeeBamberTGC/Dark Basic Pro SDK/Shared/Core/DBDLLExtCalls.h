@@ -433,6 +433,7 @@ extern RetVoidFunctionPointerPFN		g_Basic3D_Destructor;
 extern PTR_RetVoidParamLPVOID			g_Basic3D_SetErrorHandler;
 extern RetVoidFCoreDataPFN				g_Basic3D_PassCoreData;
 extern RetVoidFunctionPointerPFN		g_Basic3D_Update;
+extern RetVoidFunctionPointerPFN		g_Basic3D_UpdateAnimationCycle;
 extern RetVoidFunctionPointerPFN		g_Basic3D_UpdateOnce;
 //extern GFX_RetVoidParamVoidPFN		g_Basic3D_Update;
 extern RetVoidFunctionPointerPFN		g_Basic3D_UpdateGhostLayer;

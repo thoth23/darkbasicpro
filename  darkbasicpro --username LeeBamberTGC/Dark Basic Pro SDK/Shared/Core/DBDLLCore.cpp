@@ -246,14 +246,14 @@ DARKSDK void ConstantNonDisplayUpdate(void)
 	if(g_Animation_UpdateAnims) g_Animation_UpdateAnims();
 }
 
-DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCode )
+DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCodeAkaFastSync )
 {
 	// Skip this phase if app has been shut down (always active off)
 	if ( g_bAlwaysActiveOneOff ) 
 		return;
 
 	// V111 - 110608 - FASTSYNC should not use sync delay!
-	if ( iSkipSyncRateCode==0 )
+	if ( iSkipSyncRateCodeAkaFastSync==0 )
 	{
         AccurateTimer Timer;
 
@@ -353,6 +353,11 @@ DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCode )
 			// Disable backdrop if camera zero disabled
 			int iMode = 0; if ( bSuspendScreenOperations ) iMode = 1;
 
+			// U75 - 080410 - ensure animation in scene only calculated once (on SYNC)
+			if ( iSkipSyncRateCodeAkaFastSync==0 )
+				if(g_Basic3D_UpdateAnimationCycle)
+					g_Basic3D_UpdateAnimationCycle();
+
 			// Draw all 3D - all cameras loop
 			g_Camera3D_StartSceneInt ( iMode );
 			while(1)
@@ -386,6 +391,7 @@ DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCode )
 					{
                         // u74b8 - replace hard-coded calls with a dynamic list of function pointers
                         ExecuteRenderList();
+
                         /*
 						if(g_Basic3D_UpdateOnce) g_Basic3D_UpdateOnce(); // U70 - 300808 - moved from just above Basic3D (need correct frustrum culling for stencil calc)
 						if(g_Basic3D_StencilRenderStart) g_Basic3D_StencilRenderStart();
