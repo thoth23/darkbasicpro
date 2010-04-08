@@ -209,6 +209,7 @@ BEGIN
     IDS_STRING80            "SET CAMERA CLIP%LLFFFFFF%?SetClip@@YAXHHMMMMMM@Z%Camera Number, ClipOnOff, X, Y, Z, NX, NY, NZ"
     IDS_STRING81            "SET CAMERAS TO STEREOSCOPIC%LLLLL%?SetCamerasToStereoscopic@@YAXHHHHH@Z%Stereoscopic Mode, Camera Left, Camera Right, Image Back, Image Front"
     IDS_STRING82            "SET CAMERA TO IMAGE%LLLLLD%?SetCameraToImageEx@@YAXHHHHHK@Z%Camera Number, Image Number, Width, Height, Generate Alpha Mode, D3D Format"
+    IDS_STRING83            "COLOR BACKDROP%LDD%?BackdropColor@@YAXHKK@Z%Camera Number, Color Value, Foreground Wipe Color"
 END
 
 #endif    // English (U.K.) resources

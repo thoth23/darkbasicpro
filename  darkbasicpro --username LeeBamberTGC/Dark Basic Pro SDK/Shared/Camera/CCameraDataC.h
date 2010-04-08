@@ -62,7 +62,10 @@ struct tagCameraData
 	int					iBackdropTextureMode;
 	LPDIRECT3DTEXTURE9	pBackdropTexture;
 
-	DWORD				dwRes1;
+	// U75 - 070410 - (used RES1) stores the third parameter to COLOR BACKDROP (special FF foreground color to override textures/effects)
+	DWORD				dwForegroundColor;
+
+	// reserved members
 	DWORD				dwRes2;
 	DWORD				dwRes3;
 	DWORD				dwRes4;

@@ -84,6 +84,7 @@
 #define IDS_STRING80                    80
 #define IDS_STRING81                    81
 #define IDS_STRING82                    82
+#define IDS_STRING83                    83
 
 // Next default values for new objects
 // 

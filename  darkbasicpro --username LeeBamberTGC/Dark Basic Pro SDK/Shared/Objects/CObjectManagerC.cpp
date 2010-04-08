@@ -2601,12 +2601,15 @@ inline DWORD FtoDW( FLOAT f ) { return *((DWORD*)&f); }
 
 bool CObjectManager::DrawMesh ( sMesh* pMesh )
 {
-	// draw a mesh
-	
 	// get pointer to drawbuffers
 	sDrawBuffer* pDrawBuffer = pMesh->pDrawBuffer;
 	if ( pDrawBuffer==NULL )
 		return true;
+
+	// U75 - 070410 - can switch off fore color wipe if object flags it
+	bool bLocalOverrideAllTexturesAndEffects = m_RenderStates.bOverrideAllTexturesAndEffects;
+	if ( pMesh->pDrawBuffer->dwImmuneToForeColorWipe==1 )
+		bLocalOverrideAllTexturesAndEffects = false;
 
 	// skip if mesh is invisible
 	if ( pMesh->iMeshType==0 )
@@ -2659,8 +2662,7 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 	// set effect shader (if any)
 	UINT uPasses = 1;
 	bool bEffectRendering=false;
-	//u64 bool bEffectWillUseFFTexturing=true;
-	if ( pMesh->pVertexShaderEffect )
+	if ( pMesh->pVertexShaderEffect && bLocalOverrideAllTexturesAndEffects==false )
 	{
 		// use an effect
 		D3DXMATRIX matWorld;
@@ -2694,10 +2696,6 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 					}
 				}
 			}
-
-			// and does NOT require old FF texturing
-			// u64 if ( pMesh->pVertexShaderEffect->m_bUseShaderTextures )
-			// u64 	bEffectWillUseFFTexturing=false;
 		}
 	}
 
@@ -2710,200 +2708,221 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 	// each mesh can have several render passes
     for(UINT uPass = 0; uPass < uPasses; uPass++)
     {
-		// U75 - 200310 - if using RT, determine if should switch to RT or final render target (current)
-		if ( bEffectRendering )
+		// U75 - 070410 - override every texture and effect with single color
+		// useful for advanced post-processing effects like depthoffield/heathaze
+		if ( bLocalOverrideAllTexturesAndEffects==true )
 		{
-			// only if RT flagged (saves performance)
-			if ( pMesh->pVertexShaderEffect->m_bUsesAtLeastOneRT==true )
+			// no texture, no effect, just plane color
+			m_pD3D->SetTexture ( 0, NULL );
+			m_pD3D->SetTextureStageState ( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+			m_pD3D->SetTextureStageState ( 0, D3DTSS_COLORARG1, D3DTA_TFACTOR );
+			m_pD3D->SetTextureStageState ( 0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+			for ( int t=1; t<=7; t++ )
 			{
-				// ensure technique exists
-				LPD3DXEFFECT pEffect = pMesh->pVertexShaderEffect->m_pEffect;
-				D3DXHANDLE hTech = pEffect->GetTechnique(0);//this may mess up multi-technique shaders??
-
-				// get rendercolortarget string from this pass
-				D3DXHANDLE hPass = pEffect->GetPass( hTech, uPass );
-				D3DXHANDLE hRT = pEffect->GetAnnotationByName( hPass, "RenderColorTarget" );
-				const char* szRT = 0;
-				if ( hRT ) pEffect->GetString( hRT, &szRT );
-
-				// check if RT string has contents
-				if ( hRT && strcmp( szRT, "" ) != 0 )
+				m_pD3D->SetTexture ( t, NULL );
+				m_pD3D->SetTextureStageState ( t, D3DTSS_COLOROP, D3DTOP_DISABLE );
+				m_pD3D->SetTextureStageState ( t, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+			}
+			m_pD3D->SetRenderState ( D3DRS_TEXTUREFACTOR,	m_RenderStates.dwOverrideAllWithColor );
+			m_pD3D->SetRenderState ( D3DRS_FOGCOLOR,		m_RenderStates.dwFogColor );
+		}
+		else
+		{
+			// U75 - 200310 - if using RT, determine if should switch to RT or final render target (current)
+			if ( bEffectRendering )
+			{
+				// only if RT flagged (saves performance)
+				if ( pMesh->pVertexShaderEffect->m_bUsesAtLeastOneRT==true )
 				{
-					// yes, now get handle to texture param we want to re-direct our render to
-					D3DXHANDLE hTexParamWant = pEffect->GetParameterByName( NULL, szRT );
+					// ensure technique exists
+					LPD3DXEFFECT pEffect = pMesh->pVertexShaderEffect->m_pEffect;
+					D3DXHANDLE hTech = pEffect->GetTechnique(0);//this may mess up multi-technique shaders??
 
-					// go through all textures recorded during the shader parse
-					for ( DWORD t = 0; t < pMesh->pVertexShaderEffect->m_dwTextureCount; t++ )
+					// get rendercolortarget string from this pass
+					D3DXHANDLE hPass = pEffect->GetPass( hTech, uPass );
+					D3DXHANDLE hRT = pEffect->GetAnnotationByName( hPass, "RenderColorTarget" );
+					const char* szRT = 0;
+					if ( hRT ) pEffect->GetString( hRT, &szRT );
+
+					// check if RT string has contents
+					if ( hRT && strcmp( szRT, "" ) != 0 )
 					{
-						// only consider RT textures that are flagged in bitmask
-						DWORD dwThisTextureBit = 1 << t;
-						if ( pMesh->pVertexShaderEffect->m_dwCreatedRTTextureMask & dwThisTextureBit )
+						// yes, now get handle to texture param we want to re-direct our render to
+						D3DXHANDLE hTexParamWant = pEffect->GetParameterByName( NULL, szRT );
+
+						// go through all textures recorded during the shader parse
+						for ( DWORD t = 0; t < pMesh->pVertexShaderEffect->m_dwTextureCount; t++ )
 						{
-							// get the param handle of each texture in shader
-							int iParam = pMesh->pVertexShaderEffect->m_iParamOfTexture [ t ];
-							D3DXHANDLE hTexParam = pEffect->GetParameter( NULL, iParam );
-
-							// if it matches the one we want
-							if ( hTexParam == hTexParamWant )
+							// only consider RT textures that are flagged in bitmask
+							DWORD dwThisTextureBit = 1 << t;
+							if ( pMesh->pVertexShaderEffect->m_dwCreatedRTTextureMask & dwThisTextureBit )
 							{
-								// get texture ptr from effect
-								IDirect3DBaseTexture9* pRTTex = NULL;
-								pEffect->GetTexture( hTexParam, &pRTTex );
+								// get the param handle of each texture in shader
+								int iParam = pMesh->pVertexShaderEffect->m_iParamOfTexture [ t ];
+								D3DXHANDLE hTexParam = pEffect->GetParameter( NULL, iParam );
 
-								// switch render target to internal shader RT
-								IDirect3DSurface9 *pSurface;
-								((IDirect3DTexture9*)pRTTex)->GetSurfaceLevel( 0, &pSurface );
-								m_pD3D->SetRenderTarget( 0, pSurface );
-								if ( pSurface ) pSurface->Release( );
-
-								// put RT textures width and height into ViewSize
-								D3DXHANDLE hViewSize = pEffect->GetParameterBySemantic( NULL, "ViewSize" );
-								if ( hViewSize )
+								// if it matches the one we want
+								if ( hTexParam == hTexParamWant )
 								{
-									D3DSURFACE_DESC desc;
-									pCurrentRenderTarget->GetDesc( &desc );
-									int width = desc.Width, height = desc.Height;
-									D3DXHANDLE hWidth = pEffect->GetAnnotationByName( hTexParam, "width" );
-									D3DXHANDLE hHeight = pEffect->GetAnnotationByName( hTexParam, "height" );
-									if ( hWidth ) pEffect->GetInt( hWidth, &width );
-									if ( hHeight ) pEffect->GetInt( hWidth, &height );
-									D3DXVECTOR4 vec( (float) width, (float) height, 0, 0 );
-									pEffect->SetVector( hViewSize, &vec );
+									// get texture ptr from effect
+									IDirect3DBaseTexture9* pRTTex = NULL;
+									pEffect->GetTexture( hTexParam, &pRTTex );
+
+									// switch render target to internal shader RT
+									IDirect3DSurface9 *pSurface;
+									((IDirect3DTexture9*)pRTTex)->GetSurfaceLevel( 0, &pSurface );
+									m_pD3D->SetRenderTarget( 0, pSurface );
+									if ( pSurface ) pSurface->Release( );
+
+									// put RT textures width and height into ViewSize
+									D3DXHANDLE hViewSize = pEffect->GetParameterBySemantic( NULL, "ViewSize" );
+									if ( hViewSize )
+									{
+										D3DSURFACE_DESC desc;
+										pCurrentRenderTarget->GetDesc( &desc );
+										int width = desc.Width, height = desc.Height;
+										D3DXHANDLE hWidth = pEffect->GetAnnotationByName( hTexParam, "width" );
+										D3DXHANDLE hHeight = pEffect->GetAnnotationByName( hTexParam, "height" );
+										if ( hWidth ) pEffect->GetInt( hWidth, &width );
+										if ( hHeight ) pEffect->GetInt( hWidth, &height );
+										D3DXVECTOR4 vec( (float) width, (float) height, 0, 0 );
+										pEffect->SetVector( hViewSize, &vec );
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						// no, we render to current as normal
+						m_pD3D->SetRenderTarget( 0, pCurrentRenderTarget );
+
+						// set the Viewsize to match the width and height of the RT passed in
+						D3DXHANDLE hViewSize = pEffect->GetParameterBySemantic( NULL, "ViewSize" );
+						if ( hViewSize )
+						{
+							D3DSURFACE_DESC desc;
+							pCurrentRenderTarget->GetDesc( &desc );
+							D3DXVECTOR4 vec( (float) desc.Width, (float) desc.Height, 0, 0 );
+							pEffect->SetVector( hViewSize, &vec );
+						}
+					}
+
+					// once textures established, commit effect state changes and begin this pass
+					pEffect->CommitChanges( );
+				}
+			}
+
+			// FX Effect or Regular
+			if ( bEffectRendering )
+			{
+				// mike - 300905 - disable fog for shaders
+				m_pD3D->SetRenderState ( D3DRS_FOGENABLE, FALSE );
+				// m_RenderStates.bFog						= false;
+
+				// begin effect rendernig
+				pMesh->pVertexShaderEffect->m_pEffect->BeginPass ( uPass );
+			}
+
+			// old FF texturing code (some effects do not do any texturing stuff)
+			// leefixback - 010405 - this allowed non PS shader to use DBP textures
+			//                       but it killed shader ability to use DBP textures that HAD PS code!
+			// if ( bEffectWillUseFFTexturing==true && uPass==0 )
+			if ( bEffectRendering )
+			{
+				// SHADER EFFECT
+				// u64 - 180107 - effects CAN use 'texture object' textures if the effect 
+				// did not assign a specfic texture to them (paul request for DarkSHADER)
+				if ( pMesh->pTextures )
+				{
+					for ( DWORD dwTextureIndex = 0; dwTextureIndex < pMesh->dwTextureCount; dwTextureIndex++ )
+					{
+						DWORD dwTextureStage = pMesh->pTextures [ dwTextureIndex ].dwStage;
+						if ( dwTextureStage < 16 )
+						{
+							// get texture ptr
+							sTexture* pTexture = &pMesh->pTextures [ dwTextureIndex ];
+
+							// m_dwUseDynamicTextureMask holds a mask of 32 bits, 1=use dynamic texture form texture object command
+							int iUseDyntex = ( ( pMesh->pVertexShaderEffect->m_dwUseDynamicTextureMask >> dwTextureStage ) & 1 );
+							if ( iUseDyntex==1 )
+							{
+								// when in effect, only if texture in effect is NULL should this be allowed
+								if ( pTexture->pTexturesRef )
+								{
+									m_pD3D->SetTexture ( dwTextureStage, pTexture->pTexturesRef );
+								}
+								else
+								{
+									if ( pMesh->pTextures [ dwTextureIndex ].pCubeTexture )
+										m_pD3D->SetTexture ( dwTextureStage, pTexture->pCubeTexture );
+									else
+										m_pD3D->SetTexture ( dwTextureStage, NULL);
 								}
 							}
 						}
 					}
 				}
-				else
-				{
-					// no, we render to current as normal
-					m_pD3D->SetRenderTarget( 0, pCurrentRenderTarget );
-
-					// set the Viewsize to match the width and height of the RT passed in
-					D3DXHANDLE hViewSize = pEffect->GetParameterBySemantic( NULL, "ViewSize" );
-					if ( hViewSize )
-					{
-						D3DSURFACE_DESC desc;
-						pCurrentRenderTarget->GetDesc( &desc );
-						D3DXVECTOR4 vec( (float) desc.Width, (float) desc.Height, 0, 0 );
-						pEffect->SetVector( hViewSize, &vec );
-					}
-				}
-
-				// once textures established, commit effect state changes and begin this pass
-				pEffect->CommitChanges( );
 			}
-		}
-
-		// FX Effect or Regular
-		if ( bEffectRendering )
-		{
-			// mike - 300905 - disable fog for shaders
-			m_pD3D->SetRenderState ( D3DRS_FOGENABLE, FALSE );
-			// m_RenderStates.bFog						= false;
-
-			// begin effect rendernig
-	        pMesh->pVertexShaderEffect->m_pEffect->BeginPass ( uPass );
-		}
-
-		// old FF texturing code (some effects do not do any texturing stuff)
-		// leefixback - 010405 - this allowed non PS shader to use DBP textures
-		//                       but it killed shader ability to use DBP textures that HAD PS code!
-		// if ( bEffectWillUseFFTexturing==true && uPass==0 )
-		if ( bEffectRendering )
-		{
-			// SHADER EFFECT
-			// u64 - 180107 - effects CAN use 'texture object' textures if the effect 
-			// did not assign a specfic texture to them (paul request for DarkSHADER)
-			if ( pMesh->pTextures )
+			else
 			{
-				for ( DWORD dwTextureIndex = 0; dwTextureIndex < pMesh->dwTextureCount; dwTextureIndex++ )
-				{
-					DWORD dwTextureStage = pMesh->pTextures [ dwTextureIndex ].dwStage;
-					if ( dwTextureStage < 16 )
-					{
-						// get texture ptr
-						sTexture* pTexture = &pMesh->pTextures [ dwTextureIndex ];
+				// FIXED FUNCTION TEXTURING
 
-						// m_dwUseDynamicTextureMask holds a mask of 32 bits, 1=use dynamic texture form texture object command
-						int iUseDyntex = ( ( pMesh->pVertexShaderEffect->m_dwUseDynamicTextureMask >> dwTextureStage ) & 1 );
-						if ( iUseDyntex==1 )
+				// call the texturestate function
+				if ( !SetMeshTextureStates ( pMesh ) )
+					return false;
+
+				// is there a texture
+				if ( pMesh->pTextures )
+				{
+					// store the current texture
+					m_iCurrentTexture = pMesh->pTextures [ 0 ].iImageID;
+
+					// is it different to the last texture we set (leefix-040803-and only if single texture otherwise lightmaps might be used)
+					if ( m_iCurrentTexture != m_iLastTexture || pMesh->dwTextureCount>1 )
+					{
+						// set the new texture - along with related stage textures
+						for ( DWORD dwTextureIndex = 0; dwTextureIndex < pMesh->dwTextureCount; dwTextureIndex++ )
 						{
-							// when in effect, only if texture in effect is NULL should this be allowed
+							// Determine texture stage to write to
+							DWORD dwTextureStage = pMesh->pTextures [ dwTextureIndex ].dwStage;
+
+							// Determine texture data ptr
+							sTexture* pTexture = &pMesh->pTextures [ dwTextureIndex ];
+
 							if ( pTexture->pTexturesRef )
 							{
-								m_pD3D->SetTexture ( dwTextureStage, pTexture->pTexturesRef );
+								// set regular texture
+								if ( FAILED ( m_pD3D->SetTexture ( dwTextureStage, pTexture->pTexturesRef ) ) )
+									break;
 							}
 							else
 							{
 								if ( pMesh->pTextures [ dwTextureIndex ].pCubeTexture )
-									m_pD3D->SetTexture ( dwTextureStage, pTexture->pCubeTexture );
+								{
+									// set cube texture
+									if ( FAILED ( m_pD3D->SetTexture ( dwTextureStage, pTexture->pCubeTexture ) ) )
+										break;
+								}
 								else
-									m_pD3D->SetTexture ( dwTextureStage, NULL);
+								{
+									// set no texture
+									if ( FAILED ( m_pD3D->SetTexture ( dwTextureStage, NULL) ) )
+										break;
+								}
 							}
 						}
+
+						// now store the current texture
+						m_iLastTexture = m_iCurrentTexture;
 					}
 				}
-			}
-		}
-		else
-		{
-			// FIXED FUNCTION TEXTURING
-
-			// call the texturestate function
-			if ( !SetMeshTextureStates ( pMesh ) )
-				return false;
-
-			// is there a texture
-			if ( pMesh->pTextures )
-			{
-				// store the current texture
-				m_iCurrentTexture = pMesh->pTextures [ 0 ].iImageID;
-
-				// is it different to the last texture we set (leefix-040803-and only if single texture otherwise lightmaps might be used)
-				if ( m_iCurrentTexture != m_iLastTexture || pMesh->dwTextureCount>1 )
+				else
 				{
-					// set the new texture - along with related stage textures
-					for ( DWORD dwTextureIndex = 0; dwTextureIndex < pMesh->dwTextureCount; dwTextureIndex++ )
-					{
-						// Determine texture stage to write to
-						DWORD dwTextureStage = pMesh->pTextures [ dwTextureIndex ].dwStage;
-
-						// Determine texture data ptr
-						sTexture* pTexture = &pMesh->pTextures [ dwTextureIndex ];
-
-						if ( pTexture->pTexturesRef )
-						{
-							// set regular texture
-							if ( FAILED ( m_pD3D->SetTexture ( dwTextureStage, pTexture->pTexturesRef ) ) )
-								break;
-						}
-						else
-						{
-							if ( pMesh->pTextures [ dwTextureIndex ].pCubeTexture )
-							{
-								// set cube texture
-								if ( FAILED ( m_pD3D->SetTexture ( dwTextureStage, pTexture->pCubeTexture ) ) )
-									break;
-							}
-							else
-							{
-								// set no texture
-								if ( FAILED ( m_pD3D->SetTexture ( dwTextureStage, NULL) ) )
-									break;
-							}
-						}
-					}
-
-					// now store the current texture
-					m_iLastTexture = m_iCurrentTexture;
+					// default zero texture
+					m_pD3D->SetTexture ( 0, NULL );
+					m_iLastTexture = 0;
 				}
-			}
-			else
-			{
-				// default zero texture
-				m_pD3D->SetTexture ( 0, NULL );
-				m_iLastTexture = 0;
 			}
 		}
 
@@ -2911,7 +2930,7 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 		if ( pMesh->pIndices )
 		{
 			// if multimaterial mesh
-			if ( pMesh->bUseMultiMaterial )
+			if ( pMesh->bUseMultiMaterial && bLocalOverrideAllTexturesAndEffects==false )
 			{
 				// draw several indexed primitives (one for each material)
 				sMultiMaterial* pMultiMaterial = pMesh->pMultiMaterial;
@@ -3575,6 +3594,12 @@ bool CObjectManager::Reset ( void )
 	m_RenderStates.bCull						= true;
 	m_RenderStates.iCullMode					= 0;	
 
+	// U75 - 070410 - added new render state to control whether entire render is blanked to a color
+	tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( g_pGlob->dwRenderCameraID );
+	m_RenderStates.bOverrideAllTexturesAndEffects = false;
+	m_RenderStates.dwOverrideAllWithColor = m_Camera_Ptr->dwForegroundColor;
+	if ( m_RenderStates.dwOverrideAllWithColor != 0 ) m_RenderStates.bOverrideAllTexturesAndEffects = true;
+	
 	return true;
 }
 

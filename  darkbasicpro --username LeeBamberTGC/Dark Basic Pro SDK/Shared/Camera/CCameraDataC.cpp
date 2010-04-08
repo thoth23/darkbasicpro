@@ -30,6 +30,8 @@ tagCameraData::tagCameraData ( )
 	iBackdropState=0;							// used as an automatic clear
 	dwBackdropColor=D3DCOLOR_XRGB(0,0,128);		// color of backdrop
 
+	dwForegroundColor=0;						// U75 - 070410 - color of foreground (used to WIPE OUT textures/effects)
+
 	iBackdropTextureMode=0;						// no backdrop texture by default
 	pBackdropTexture=NULL;
 }
