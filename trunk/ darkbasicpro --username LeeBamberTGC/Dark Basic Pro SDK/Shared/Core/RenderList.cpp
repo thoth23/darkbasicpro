@@ -4,14 +4,12 @@
 #include <algorithm>
 #include <functional>
 
-
 namespace
 {
     class RenderListItem;
     typedef std::vector<RenderListItem>     RenderList;
     typedef RenderList::iterator            RenderListIter;
     typedef void (*FunctionPtr)(...);
-
 
     // This used to hold a function pointer to be called during rendering of each camera
     class RenderListItem

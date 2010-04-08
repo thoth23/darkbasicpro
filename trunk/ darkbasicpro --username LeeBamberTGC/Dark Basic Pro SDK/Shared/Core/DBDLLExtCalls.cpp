@@ -311,6 +311,7 @@ DBPRO_GLOBAL PTR_RetVoidParamLPVOID					g_Basic3D_SetErrorHandler;
 DBPRO_GLOBAL RetVoidFCoreDataPFN					g_Basic3D_PassCoreData;
 //RetVoidFunctionPointerPFN			g_Basic3D_Update;
  RetVoidFunctionPointerPFN				g_Basic3D_Update;
+ RetVoidFunctionPointerPFN				g_Basic3D_UpdateAnimationCycle;
  RetVoidFunctionPointerPFN				g_Basic3D_UpdateOnce;
 //RetVoidFunctionPointerPFN			g_Basic3D_UpdateNoZDepth;
 //RetVoidFunctionPointerPFN			g_Basic3D_StencilRenderStart;
@@ -863,6 +864,7 @@ DARKSDK bool SetDBDLLExtCalls(void)
 		g_Basic3D_Destructor		= ( RetVoidFunctionPointerPFN )				GetProcAddress ( g_Glob.g_Basic3D, "?Destructor@@YAXXZ" );
 		g_Basic3D_SetErrorHandler	= ( PTR_RetVoidParamLPVOID )				GetProcAddress ( g_Glob.g_Basic3D, "?SetErrorHandler@@YAXPAX@Z" );
 		g_Basic3D_PassCoreData		= ( RetVoidFCoreDataPFN )					GetProcAddress ( g_Glob.g_Basic3D, "?PassCoreData@@YAXPAX@Z" );
+		g_Basic3D_UpdateAnimationCycle		= ( RetVoidFunctionPointerPFN )		GetProcAddress ( g_Glob.g_Basic3D, "?UpdateAnimationCycle@@YAXXZ" );
 		g_Basic3D_UpdateOnce		= ( RetVoidFunctionPointerPFN )				GetProcAddress ( g_Glob.g_Basic3D, "?UpdateOnce@@YAXXZ" );
 		g_Basic3D_Update			= ( RetVoidFunctionPointerPFN )				GetProcAddress ( g_Glob.g_Basic3D, "?Update@@YAXXZ" );
 		g_Basic3D_UpdateGhostLayer	= ( RetVoidFunctionPointerPFN )				GetProcAddress ( g_Glob.g_Basic3D, "?UpdateGhostLayer@@YAXXZ" );

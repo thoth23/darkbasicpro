@@ -315,6 +315,7 @@ DARKSDK void Destructor			( void );
 // EXPORTED INTERNAL FUNCTIONS ///////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
+DARKSDK void UpdateAnimationCycle ( void );
 DARKSDK void UpdateOnce			( void );
 DARKSDK void Update				( void );
 DARKSDK void UpdateGhostLayer	( void );
