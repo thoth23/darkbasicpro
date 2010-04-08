@@ -69,6 +69,10 @@ struct sRenderStates
 	// camera specific states
 	float			fStoreCameraFOV;
 	float			fObjectFOV;
+
+	// U75 - 060410 - control whether scene uses a color instead of textures/effects
+	bool			bOverrideAllTexturesAndEffects;	
+	DWORD			dwOverrideAllWithColor;
 };
 
 struct sStencilStates

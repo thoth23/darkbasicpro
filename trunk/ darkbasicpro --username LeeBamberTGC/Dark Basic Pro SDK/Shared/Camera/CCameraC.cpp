@@ -2990,7 +2990,7 @@ DARKSDK void BackdropOff ( int iID )
 
 }
 
-DARKSDK void BackdropColor ( int iID, DWORD dwColor ) 
+DARKSDK void BackdropColor ( int iID, DWORD dwColor, DWORD dwForeColor ) 
 {
 	// update the pointer
 	if ( iID < 0 || iID > MAXIMUMVALUE )
@@ -3006,9 +3006,16 @@ DARKSDK void BackdropColor ( int iID, DWORD dwColor )
 
 	// set color
 	m_ptr->dwBackdropColor = dwColor;
+	m_ptr->dwForegroundColor = dwForeColor;
 
 	// lee - 310306 - u6rc4 - if camera zero, community colour for sprite backdrop
 	if ( g_pGlob && iID==0 ) g_pGlob->dw3DBackColor = dwColor;
+}
+
+DARKSDK void BackdropColor ( int iID, DWORD dwColor ) 
+{
+	// passed to core function
+	BackdropColor ( iID, dwColor, 0 );
 }
 
 DARKSDK void BackdropTexture ( int iID, int iImage ) 

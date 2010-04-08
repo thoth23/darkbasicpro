@@ -543,14 +543,15 @@ DARKSDK void			SetMask	( int iID, int iMASK );
 // lee - 140108 - x10 compat.
 DARKSDK void SetMask			( int iID, int iMASK, int iShadowMASK );
 DARKSDK void SetMask			( int iID, int iMASK, int iShadowMASK, int iCubeMapMASK );
-DARKSDK void SetArrayMap				( int iID, int iStage, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10 );
-DARKSDK void SetArrayMapEx				( int iID, int iStage, int iSrcObject, int iSrcStage );
+DARKSDK void SetMask			( int iID, int iMASK, int iShadowMASK, int iCubeMapMASK, int iForeColorWipe );
+DARKSDK void SetArrayMap		( int iID, int iStage, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10 );
+DARKSDK void SetArrayMapEx		( int iID, int iStage, int iSrcObject, int iSrcStage );
 DARKSDK void Instance			( int iDestinationID, int iSourceID, int iInstanceValue );
-DARKSDK void SetNodeTreeEffect			( int iEffectID );
-DARKSDK void DrawSingle					( int iObjectID, int iCameraID );
-DARKSDK void ResetStaticLights			( void );
-DARKSDK void AddStaticLight				( int iIndex, float fX, float fY, float fZ, float fRange );
-DARKSDK void UpdateStaticLights			( void );
+DARKSDK void SetNodeTreeEffect	( int iEffectID );
+DARKSDK void DrawSingle			( int iObjectID, int iCameraID );
+DARKSDK void ResetStaticLights	( void );
+DARKSDK void AddStaticLight		( int iIndex, float fX, float fY, float fZ, float fRange );
+DARKSDK void UpdateStaticLights	( void );
 
 // lee - 071108 - u71 - post processing screen commands (from SetupDLL)
 DARKSDK void TextureScreen 				( int iStageIndex, int iImageID );

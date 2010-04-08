@@ -5795,11 +5795,6 @@ DARKSDK_DLL void MakeMeshFromObject ( int iMeshID, int iObjectID, int iIgnoreMod
     if (pObject->pInstanceOfObject)
         pObject = pObject->pInstanceOfObject;
 
-	if ( iMeshID==70000 )
-	{
-		int lee=452;
-	}
-
 	// create new mesh
 	sMesh* pNewMesh = NULL;
 	if ( !CreateSingleMeshFromObject ( &pNewMesh, pObject, iIgnoreMode ) )
@@ -8303,6 +8298,35 @@ DARKSDK void SetMask					( int iID, int iMASK, int iShadowMASK, int iCubeMapMASK
 {
 	// MessageBox ( NULL, "DX10", "", MB_OK );
 }
+
+DARKSDK void SetMask ( int iID, int iMASK, int iShadowMASK, int iCubeMapMASK, int iForeColorWipe )
+{
+	// check the object exists
+	// leefix - 211006 - allow instanced objects to be masked
+	if ( !ConfirmObjectInstance ( iID ) )
+		return;
+
+	if ( iID>=10100 )
+	{
+		int lee=42;
+	}
+
+	// apply setting to all meshes
+	sObject* pObject = g_ObjectList [ iID ];
+
+	// set regular mask, then the following
+	SetMask ( iID, iMASK );
+
+	// U75 - 070410 - set fore color wipe to all meshes in object
+	for ( int iMesh = 0; iMesh < pObject->iMeshCount; iMesh++ )
+	{
+		sMesh* pMesh = pObject->ppMeshList [ iMesh ];
+		if ( pMesh )
+			if ( pMesh->pDrawBuffer )
+				pMesh->pDrawBuffer->dwImmuneToForeColorWipe = (DWORD)iForeColorWipe;
+	}
+}
+
 
 DARKSDK void SetArrayMap				( int iID, int iStage, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10 )
 {

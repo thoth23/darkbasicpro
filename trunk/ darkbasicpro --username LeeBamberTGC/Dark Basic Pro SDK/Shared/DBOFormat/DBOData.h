@@ -339,7 +339,7 @@ struct sDrawBuffer
 	LPVOID							pIBListEntryRef;							// ref to obj-manager IB list item
 
 	// reserved members
-	DWORD							dwReservedDB1;								// reserved - maintain plugin compat.
+	DWORD							dwImmuneToForeColorWipe;					// U75 - 070410 - (was RES1) set by SET OBJECT MASK to allow objects to escape being wiped by COLOR BACKDROP c,b,FORECOLOR
 	DWORD							dwReservedDB2;								// reserved - maintain plugin compat.
 	DWORD							dwReservedDB3;								// reserved - maintain plugin compat.
 	
