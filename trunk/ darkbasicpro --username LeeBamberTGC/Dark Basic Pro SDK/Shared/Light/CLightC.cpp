@@ -82,6 +82,7 @@ DBPRO_GLOBAL float							g_fFogEndDistance;
 DBPRO_GLOBAL int							g_iFogRed;
 DBPRO_GLOBAL int							g_iFogGreen;
 DBPRO_GLOBAL int							g_iFogBlue;
+DBPRO_GLOBAL int							g_iFogAlpha;
 DBPRO_GLOBAL GlobStruct*					g_pGlob	= NULL;
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ DARKSDK void ConstructorD3D ( HINSTANCE hSetup )
 	g_iFogRed			= 0;
 	g_iFogGreen			= 0;
 	g_iFogBlue			= 0;
+	g_iFogAlpha			= 0;
 
 	// Default Light
 	if(bFromCore)
@@ -892,7 +894,8 @@ DARKSDK void FogOn ( void )
 {
 	if(g_pGlob) g_pGlob->iFogState=1;
 	m_pD3D->SetRenderState ( D3DRS_FOGENABLE, TRUE );
-	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( 0, g_iFogRed, g_iFogGreen, g_iFogBlue ) );
+	//m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( 0, g_iFogRed, g_iFogGreen, g_iFogBlue ) ); // U75 - 080410 - fix
+	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( g_iFogRed, g_iFogGreen, g_iFogBlue, g_iFogAlpha ) );
 	m_pD3D->SetRenderState ( D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR );
 	m_pD3D->SetRenderState ( D3DRS_FOGSTART, *( DWORD * ) ( &g_fFogStartDistance ) );
 	m_pD3D->SetRenderState ( D3DRS_FOGEND,   *( DWORD * ) ( &g_fFogEndDistance   ) );
@@ -909,14 +912,18 @@ DARKSDK void SetFogColor ( DWORD dwColor )
 	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, dwColor );
 }
 
-DARKSDK void SetFogColorEx ( int iR, int iG, int iB )
+DARKSDK void SetFogColorEx ( int iR, int iG, int iB, int iA )
 {
 	g_iFogRed   = iR;
 	g_iFogGreen = iG;
 	g_iFogBlue  = iB;
+	g_iFogAlpha  = iA;
+	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( g_iFogRed, g_iFogGreen, g_iFogBlue, g_iFogAlpha ) );
+}
 
-	// 270305 - fixed the fog
-	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( g_iFogRed, g_iFogGreen, g_iFogBlue, 0 ) );
+DARKSDK void SetFogColorEx ( int iR, int iG, int iB )
+{
+	SetFogColorEx ( iR, iG, iB, 0 );
 }
 
 DARKSDK void SetFogDistance ( int iDistance )

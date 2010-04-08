@@ -110,6 +110,7 @@ DARKSDK void	FogOn							( void );
 DARKSDK void	FogOff							( void );
 DARKSDK void	SetFogColor						( DWORD dwColor );
 DARKSDK void	SetFogColorEx					( int iR, int iG, int iB );
+DARKSDK void	SetFogColorEx					( int iR, int iG, int iB, int iA );
 DARKSDK void	SetFogDistance					( int iDistance );
 DARKSDK void	SetFogDistance					( int iStartDistance, int iFinishDistance );
 
