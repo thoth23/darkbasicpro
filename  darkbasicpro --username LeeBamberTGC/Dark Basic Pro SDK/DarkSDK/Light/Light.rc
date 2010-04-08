@@ -155,6 +155,7 @@ BEGIN
     IDS_STRING38            "SET VECTOR3 TO LIGHT ROTATION%LL%?GetRotationVector3@@YAXHH@Z%Vector, Light Number"
     IDS_STRING39            "FOG DISTANCE%LL%?SetFogDistance@@YAXHH@Z%Start Distance, End Distance"
     IDS_STRING40            "AMBIENT LIGHT[%L%?GetAmbient@@YAHXZ"
+    IDS_STRING41            "FOG COLOR%LLLL%?SetFogColorEx@@YAXHHHH@Z%Red, Green, Blue, Alpha"
 END
 
 #endif    // English (U.K.) resources

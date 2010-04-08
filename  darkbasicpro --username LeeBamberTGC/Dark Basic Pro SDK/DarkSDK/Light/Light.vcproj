@@ -785,7 +785,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib"
-				OutputFile="C:\Program Files (x86)\The Game Creators\Dark Basic Professional\Projects\CrashLights\DBProLightDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProLightDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
