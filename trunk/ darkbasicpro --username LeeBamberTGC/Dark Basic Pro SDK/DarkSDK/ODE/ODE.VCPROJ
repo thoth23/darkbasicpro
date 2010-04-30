@@ -936,7 +936,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ode.lib D3dx9.lib winmm.lib"
-				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProODEDebug.dll"
+				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\DBProODEDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;.\..\..\ode\lib&quot;"
