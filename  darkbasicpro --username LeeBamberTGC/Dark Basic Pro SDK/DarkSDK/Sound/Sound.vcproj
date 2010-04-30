@@ -907,7 +907,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="dsound.lib dxguid.lib odbc32.lib odbccp32.lib"
-				OutputFile="C:\Users\Lee\Documents\Downloads\EasyLander2\EasyLander2.0Publish\DBProSoundDebug.dll"
+				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\DBProSoundDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
