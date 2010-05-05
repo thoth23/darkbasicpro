@@ -263,25 +263,33 @@ DARKSDK int SMEMAvailable(void)
 
 DARKSDK int SMEMAvailable( int iMode )
 {
-	HANDLE hProcess;
-	PROCESS_MEMORY_COUNTERS pmc;
-	DWORD dwProcessID = GetCurrentProcessId();
-	memset ( &pmc, 0, sizeof(PROCESS_MEMORY_COUNTERS) );
-	pmc.cb = sizeof ( PROCESS_MEMORY_COUNTERS );
-	hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, dwProcessID );
-    if (NULL == hProcess)
+	if ( iMode==2 )
 	{
-		// could not find process
-		return 0;
+		// U75 - 050510 - returns Virtual Size (most apps will crash if this goes above 2GB!)
+		MEMORYSTATUSEX statex;
+		statex.dwLength = sizeof (statex);
+		GlobalMemoryStatusEx (&statex);
+		DWORDLONG dwVMSize1 = statex.ullTotalVirtual / 1024;
+		DWORDLONG dwVMSize2 = statex.ullAvailVirtual / 1024;
+		int dwVMSize = (int)(dwVMSize1-dwVMSize2);
+		return dwVMSize;
 	}
 	else
 	{
-		if ( GetProcessMemoryInfo( hProcess, &pmc, sizeof(pmc)) )
+		HANDLE hProcess;
+		PROCESS_MEMORY_COUNTERS pmc;
+		DWORD dwProcessID = GetCurrentProcessId();
+		memset ( &pmc, 0, sizeof(PROCESS_MEMORY_COUNTERS) );
+		pmc.cb = sizeof ( PROCESS_MEMORY_COUNTERS );
+		hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, dwProcessID );
+		if (NULL == hProcess)
+			return 0;
+		else
 		{
-			// return current memory used by process (tracks memory used) (KB)
+			GetProcessMemoryInfo( hProcess, &pmc, sizeof(pmc) );
+			CloseHandle( hProcess );
+			return pmc.PagefileUsage / 1024;
 		}
-		CloseHandle( hProcess );
-		return pmc.PagefileUsage / 1024;
 	}
 }
 
