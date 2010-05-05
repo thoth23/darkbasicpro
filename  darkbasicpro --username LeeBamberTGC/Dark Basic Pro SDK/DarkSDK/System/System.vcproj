@@ -787,7 +787,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="Psapi.lib"
-				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProSystemDebug.dll"
+				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\DBProSystemDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
