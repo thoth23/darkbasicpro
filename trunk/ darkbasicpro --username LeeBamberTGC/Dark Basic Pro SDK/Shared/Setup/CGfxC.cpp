@@ -4188,12 +4188,18 @@ DARKSDK void WindowToFront(DWORD pTitleString)
 		// makes sense in test game for FPS Creator as mouse pointer is hijacked anyway!
 		SetForegroundWindow(m_hWnd);
 		SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		Sleep(100);
-		HWND hWnd = FindWindow ( NULL, (LPSTR)(lpstrTitle+11) );
-		SetForegroundWindow(hWnd);
-		SetActiveWindow(hWnd);
-		SetFocus(hWnd);
-		Sleep(100);
+
+		// U&5 - 070510 - Force a click on the screen to give topmost window the focus
+		MOUSEINPUT Mouse;
+		memset ( &Mouse, 0, sizeof(MOUSEINPUT) );
+		Mouse.dx=320;
+		Mouse.dy=240;
+		Mouse.dwFlags = MOUSEEVENTF_LEFTDOWN;
+		INPUT Input;
+		memset ( &Input, 0, sizeof(INPUT) );
+		Input.type = INPUT_MOUSE;
+		Input.mi = Mouse;
+		SendInput ( 1, &Input, sizeof(INPUT) );
 	}
 	else
 	{
