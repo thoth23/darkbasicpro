@@ -909,7 +909,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
-				OutputFile="C:\Users\Lee\Documents\Downloads\EasyLander2\EasyLander2.0Publish\DBProSetupDebug.dll"
+				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
