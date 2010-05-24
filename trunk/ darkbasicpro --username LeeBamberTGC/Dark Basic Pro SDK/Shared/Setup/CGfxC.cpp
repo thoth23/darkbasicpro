@@ -4194,12 +4194,26 @@ DARKSDK void WindowToFront(DWORD pTitleString)
 		memset ( &Mouse, 0, sizeof(MOUSEINPUT) );
 		Mouse.dx=320;
 		Mouse.dy=240;
-		Mouse.dwFlags = MOUSEEVENTF_LEFTDOWN;
 		INPUT Input;
 		memset ( &Input, 0, sizeof(INPUT) );
 		Input.type = INPUT_MOUSE;
 		Input.mi = Mouse;
+		Mouse.dwFlags = MOUSEEVENTF_LEFTDOWN;
 		SendInput ( 1, &Input, sizeof(INPUT) );
+		Mouse.dwFlags = MOUSEEVENTF_LEFTUP;
+		SendInput ( 1, &Input, sizeof(INPUT) );
+		Mouse.dwFlags = MOUSEEVENTF_LEFTDOWN;
+		SendInput ( 1, &Input, sizeof(INPUT) );
+		MOUSEINPUT Mouse2;
+		memset ( &Mouse2, 0, sizeof(MOUSEINPUT) );
+		Mouse2.dx=320;
+		Mouse2.dy=240;
+		INPUT Input2;
+		memset ( &Input2, 0, sizeof(INPUT) );
+		Input2.type = INPUT_MOUSE;
+		Input2.mi = Mouse2;
+		Mouse2.dwFlags = MOUSEEVENTF_LEFTUP;
+		SendInput ( 1, &Input2, sizeof(INPUT) );
 	}
 	else
 	{
