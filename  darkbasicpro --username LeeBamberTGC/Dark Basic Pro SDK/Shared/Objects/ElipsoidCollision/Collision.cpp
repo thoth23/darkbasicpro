@@ -29,6 +29,9 @@ BOOL Collision::World ( D3DXVECTOR3 starto, D3DXVECTOR3 endo, D3DXVECTOR3 eRadiu
 	// used to store final collision feedback
 	bool bCollisionDetected = false;
 
+	// U75 - 150610 - reset so this value remains fresh and reflective of current material after each collision call
+	g_DBPROCollisionResult.dwArbitaryValue = 0;
+
 	// shrink volume to ColE space
 	D3DXVECTOR3 start, end;
 	start.x = starto.x / eRadius.x;

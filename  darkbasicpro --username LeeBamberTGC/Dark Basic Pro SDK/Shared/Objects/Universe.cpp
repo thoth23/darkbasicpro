@@ -3754,6 +3754,9 @@ bool cUniverse::CollisionSingleRayCast (	sMesh* pMesh, float fX, float fY, float
 	// true if best updated
 	bool bResult=false;
 
+	// U75 - 150610 - reset so this value remains fresh and reflective of current material after each collision call
+	g_DBPROCollisionResult.dwArbitaryValue = 0;
+
 	// extra data collected for checklist feedback
 	int iRefToObject=0, iRefToLimbOfTheObject=0;
 	DWORD dwVertex0IndexOfHitPoly, dwVertex1IndexOfHitPoly, dwVertex2IndexOfHitPoly;
