@@ -2018,7 +2018,7 @@ DARKSDK void FreeStringsFromArray(DWORD dwArrayPtr)
 	if ( dwArrayPtr )
 	{
 		DWORD dwTypeValueOfOneDataItem = *((DWORD*)dwArrayPtr-2);
-		if ( dwTypeValueOfOneDataItem==2 ) 
+		if ( dwTypeValueOfOneDataItem == 2 ) 
 		{
 			// only free strings if array holds string items
 			DWORD dwSizeOfTable = *((DWORD*)dwArrayPtr-4);
@@ -2030,11 +2030,61 @@ DARKSDK void FreeStringsFromArray(DWORD dwArrayPtr)
 			{
 				if ( pData [ dwDataOffset ] )
 				{
-					delete pData [ dwDataOffset ];
-					pData [ dwDataOffset ] = NULL;
+					delete[] pData [ dwDataOffset ];
+// Unnecessary clearance - this function only called from Undim.
+//					pData [ dwDataOffset ] = NULL;
 				}
 			}
 		}
+        // Clear strings from UDT's
+        else if (dwTypeValueOfOneDataItem >= 9)
+        {
+            // Grab a copy of the arrays format string
+            LPSTR UdtFormat = GetTypePatternCore( NULL, dwTypeValueOfOneDataItem );
+
+            // Search the format string to see if the UDT contains any strings
+            bool ContainsString = false;
+            for ( LPSTR CurrentItem = UdtFormat; *CurrentItem; ++CurrentItem )
+            {
+                if (*CurrentItem == 'S')
+                {
+                    ContainsString = true;
+                    break;
+                }
+            }
+
+            // If it does, loop through every UDT and release those strings
+            if (ContainsString)
+            {
+                DWORD* ArrayPtr = (DWORD*)dwArrayPtr;
+                DWORD  ArraySize = ArrayPtr[-4];
+
+                for ( DWORD Position = 0; Position < ArraySize; ++Position )
+                {
+                    DWORD ItemOffset = 0;
+                    for ( LPSTR CurrentItem = UdtFormat; *CurrentItem; ++CurrentItem )
+                    {
+                        if (*CurrentItem == 'S')
+                        {
+                            DWORD P = ArrayPtr[ Position ] + ItemOffset;
+                            delete[] *(LPSTR*)P;
+                            ItemOffset += 4;            // Strings are 4 bytes
+                        }
+                        else if (*CurrentItem == 'O' || *CurrentItem == 'R')
+                        {
+                            ItemOffset += 8;            // Double float/integer are 8 bytes
+                        }
+                        else
+                        {
+                            ItemOffset += 4;            // Everything else is 4 bytes
+                        }
+                    }
+                }
+            }
+
+            // Release the copy of the arrays format string
+            delete[] UdtFormat;
+        }
 	}
 }
 
@@ -2814,11 +2864,12 @@ DARKSDK void EmptyArray(DWORD dwAllocation)
 	LPSTR pData = (LPSTR)(pArrayPtr+dwHeaderSizeInBytes+dwRefSizeInBytes+dwFlagSizeInBytes);
 
 	// Clear all data from array
+    FreeStringsFromArray( dwAllocation );
 	memset(pRef, 0, dwRefSizeInBytes);
 	memset(pFlag, 0, dwFlagSizeInBytes);
 	memset(pData, 0, dwDataSizeInBytes);
 
-	// Reset size of array to empty
+    // Reset size of array to empty
 	*((DWORD*)dwAllocation-4) = 0;
 	*((DWORD*)dwAllocation-1) = 0;
 }
@@ -4554,13 +4605,64 @@ DARKSDK void LoadArray( LPSTR szFilename, DWORD dwAllocation )
 
 DARKSDK DWORD GetDXVer$(DWORD dwDestStr)
 {
-	LPSTR lpNewStr = new char[255];
-	strcpy ( lpNewStr, "" );
-	if ( g_pGlob )
-		if ( g_pGlob->lpDirectXVersionString )
-			strcpy ( lpNewStr, g_pGlob->lpDirectXVersionString );
+    DWORD DataSize = 255;
+	LPSTR lpNewStr = new char[DataSize];
+    lpNewStr[0] = 0;
 
-	if((DWORD*)dwDestStr) delete[] (LPSTR)(DWORD*)dwDestStr;
+    if (g_pGlob && g_pGlob->lpDirectXVersionString)
+    {
+        if (g_pGlob->lpDirectXVersionString[ 0 ])
+        {
+            strcpy(lpNewStr, g_pGlob->lpDirectXVersionString);
+        }
+    }
+
+    if (!lpNewStr[0])
+    {
+        // Could get the DX version the 'proper' way using the DXDiag library,
+        // except that it always fetches the latest version of DX on the system,
+        // ie 10 on Vista, 11 on Windows 7.
+        // Luckily those don't overwrite the DX version held in the registry so
+        // we can collect the value from there instead.
+        // If the exe is running in compatibility mode for XP or prior, then this
+        // will never be executed anyway.
+        // (TBH, I don't really understand why we even bother as if the required
+        //  version is not installed, we won't be able to run the exe anyway...)
+
+        HKEY Key;
+        LONG Status;
+
+        Status = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\DirectX", NULL, KEY_READ, &Key);
+	    if (Status == ERROR_SUCCESS)
+	    {
+            DWORD DataType = REG_SZ;
+
+            Status = RegQueryValueEx( Key, "Version", NULL, &DataType, (LPBYTE)lpNewStr, &DataSize );
+            if (Status != ERROR_SUCCESS)
+                lpNewStr[0] = 0;
+            else
+            {
+                // Please excuse this rather nasty bodge...
+                if (strncmp(lpNewStr, "4.09.00.0904", 12) == 0)
+                    strcpy(lpNewStr, "9.0c");
+                else if (strncmp(lpNewStr, "4.09.00.0903", 11) == 0)
+                {
+                    char Letter = lpNewStr[11] - '1' + 'a';
+                    strcpy(lpNewStr, "9.0?");
+                    lpNewStr[3] = Letter;
+                }
+                else
+                    lpNewStr[0] = 0;
+            }
+
+            RegCloseKey( Key );
+        }
+    }
+
+    if (! lpNewStr[0])
+        strcpy( lpNewStr, "DirectX 9.0 not installed" );
+
+    if((DWORD*)dwDestStr) delete[] (LPSTR)(DWORD*)dwDestStr;
 	return (DWORD)lpNewStr;
 }
 
