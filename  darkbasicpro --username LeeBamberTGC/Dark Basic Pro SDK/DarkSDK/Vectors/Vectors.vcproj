@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="Vectors"
 	ProjectGUID="{E72F0AB4-B8E1-4424-96DC-4C23F167FCA6}"
+	RootNamespace="Vectors"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -773,7 +774,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProVectorsDebug.dll"
+				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\MyGames\simple\DBProVectorsDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
