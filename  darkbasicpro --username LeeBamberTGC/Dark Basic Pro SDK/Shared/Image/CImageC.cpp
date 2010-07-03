@@ -20,7 +20,7 @@ bool				g_bImageBlockActive = false;
 LPSTR				g_iImageBlockFilename = NULL;
 LPSTR				g_iImageBlockRootPath = NULL;
 char				g_pImageBlockExcludePath[512];
-int					g_iImageBlockMode = 0;
+int					g_iImageBlockMode = -1;
 DWORD				g_dwImageBlockSize = 0;
 LPSTR				g_pImageBlockPtr = NULL;
 vector < LPSTR >	g_ImageBlockListFile;
@@ -2153,6 +2153,10 @@ DARKSDK void SetImageData( int iID, DWORD dwWidth, DWORD dwHeight, DWORD dwDepth
 
 void OpenImageBlock	( char* szFilename, int iMode )
 {
+	// cannot open if already open
+	if ( g_iImageBlockMode!=-1 )
+		return;
+
 	// Reset exclude path
 	strcpy ( g_pImageBlockExcludePath, "" );
 
@@ -2180,7 +2184,7 @@ void OpenImageBlock	( char* szFilename, int iMode )
 	// Load imageblock
 	if ( g_iImageBlockMode==1 )
 	{
-		// open to write
+		// open to read
 		HANDLE hFile = CreateFile ( g_iImageBlockFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 		DWORD dwReadBytes = 0;
 
@@ -2240,8 +2244,8 @@ void ExcludeFromImageBlock ( char* szExcludePath )
 
 bool AddToImageBlock ( LPSTR pAddFilename )
 {
-	// cannot add in read mode
-	if ( g_iImageBlockMode==1 ) return true;
+	// can only add in write mode
+	if ( g_iImageBlockMode!=0 ) return true;
 
 	// if exist
 	if ( !pAddFilename ) return false;
@@ -2271,7 +2275,22 @@ bool AddToImageBlock ( LPSTR pAddFilename )
 
 	// create space in the imageblock
 	DWORD dwNewSize = g_dwImageBlockSize + dwFileSize;
-	LPSTR pNewData = new char [ dwNewSize ];
+
+	// U76 - 020710 - image blocks can get LARGE enough to overrun virtual address space
+	// so catch the exeption raised in this case and end the image block creation process gracefully
+	LPSTR pNewData = NULL;
+	try
+	{
+		pNewData = new char [ dwNewSize ];
+	}
+	catch(...)
+	{
+		// failed to create a new "continuous" block of memory in virtual address space
+		// so end image block creation and exit here
+		SAFE_DELETE ( pFileData );
+		CloseImageBlock();
+		return false;
+	}
 	memcpy ( pNewData, g_pImageBlockPtr, g_dwImageBlockSize );
 
 	// add data to the imageblock
@@ -2327,6 +2346,10 @@ LPSTR RetrieveFromImageBlock ( LPSTR pRetrieveFilename, DWORD* pdwFileSize )
 
 void CloseImageBlock ( void )
 {
+	// cannot close if already closed
+	if ( g_iImageBlockMode==-1 )
+		return;
+
 	// Save imageblock
 	if ( g_iImageBlockMode==0 )
 	{
@@ -2386,7 +2409,7 @@ void CloseImageBlock ( void )
 
 	// Switch off imageblock
 	g_bImageBlockActive = false;
-	g_iImageBlockMode = 0;
+	g_iImageBlockMode = -1;
 }
 
 void PerformChecklistForImageBlockFiles ( void )
