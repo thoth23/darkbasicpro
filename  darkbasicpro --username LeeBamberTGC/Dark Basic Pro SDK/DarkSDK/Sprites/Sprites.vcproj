@@ -789,7 +789,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib"
-				OutputFile="C:\Users\Lee\Documents\Downloads\EasyLander2\EasyLander2.0Publish\DBProSpritesDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProSpritesDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"

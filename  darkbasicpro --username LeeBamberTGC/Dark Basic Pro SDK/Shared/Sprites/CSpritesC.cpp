@@ -390,6 +390,7 @@ DARKSDK void CreateSprite( int iID, int iX, int iY, int iImage )
 	data.fXScale		= 1.0f;							
 	data.fYScale		= 1.0f;							
 	data.bTransparent	= true;		
+	data.bGhostMode		= false;
 	
 	data.iXSize			= 0;
 	data.iYSize			= 0;
@@ -795,7 +796,7 @@ DARKSDK void PasteImageEx ( int iImageID, int iX, int iY, float fU, float fV, in
 	m_ImagePtr.iPriority	= 0;
 
 	// Transparency
-	if(iTransparent==1)
+	if(iTransparent>0)
 		m_ImagePtr.bTransparent	= true;	
 	else
 		m_ImagePtr.bTransparent	= false;	
@@ -960,8 +961,8 @@ DARKSDK void SetSprite ( int iID, int iBacksave, int iTransparent )
 		return;
 	}
 
-	// Transparency Flag
-	if(iTransparent<0 || iTransparent>1)
+	// Transparency Flag (U76 - 070710 - extra transparency mode for FPGC crosshair sprite)
+	if(iTransparent<0 || iTransparent>2)
 	{
 		RunTimeError(RUNTIMEERROR_SPRITETRANSPARENCYILLEGAL);
 		return;
@@ -988,6 +989,10 @@ DARKSDK void SetSprite ( int iID, int iBacksave, int iTransparent )
 	{
 		if ( m_ptr )
 			m_ptr->bTransparent=true;
+
+		// U76 - 070710 - new mode to simulate 3D object ghost mode, but for sprites
+		if ( iTransparent==2 )
+			m_ptr->bGhostMode=true;
 	}
 }
 
