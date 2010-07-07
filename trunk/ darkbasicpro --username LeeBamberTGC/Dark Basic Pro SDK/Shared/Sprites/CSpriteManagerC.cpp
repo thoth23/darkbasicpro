@@ -378,6 +378,18 @@ void CSpriteManager::RenderDrawList ( tagSpriteData** pList, int iListSize )
             m_pD3D->SetRenderState ( D3DRS_ALPHABLENDENABLE, bLastTransparent ? TRUE : FALSE );
         }
 
+		// U76 - 070710 - special ghost mode render state (simulates GHOST OBJECT ON)
+		if ( pCurrent->bGhostMode )
+		{
+			m_pD3D->SetRenderState( D3DRS_SRCBLEND,			D3DBLEND_SRCCOLOR );
+			m_pD3D->SetRenderState( D3DRS_DESTBLEND,		D3DBLEND_ONE );
+		}
+		else
+		{
+			m_pD3D->SetRenderState ( D3DRS_SRCBLEND,		D3DBLEND_SRCALPHA );
+			m_pD3D->SetRenderState ( D3DRS_DESTBLEND,		D3DBLEND_INVSRCALPHA );
+		}
+
         m_pD3D->DrawPrimitiveUP ( D3DPT_TRIANGLESTRIP, 2, pCurrent->lpVertices, sizeof ( VERTEX2D ) );
 	}
 

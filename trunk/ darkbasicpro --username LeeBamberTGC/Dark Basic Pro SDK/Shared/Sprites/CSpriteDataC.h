@@ -46,6 +46,7 @@ struct tagSpriteData
 	float					fXScale;
 	float					fYScale;
 	bool					bTransparent;
+	bool					bGhostMode;
 	int						iXSize;
 	int						iYSize;
 
