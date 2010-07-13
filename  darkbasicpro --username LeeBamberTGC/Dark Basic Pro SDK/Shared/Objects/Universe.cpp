@@ -3754,9 +3754,6 @@ bool cUniverse::CollisionSingleRayCast (	sMesh* pMesh, float fX, float fY, float
 	// true if best updated
 	bool bResult=false;
 
-	// U75 - 150610 - reset so this value remains fresh and reflective of current material after each collision call
-	g_DBPROCollisionResult.dwArbitaryValue = 0;
-
 	// extra data collected for checklist feedback
 	int iRefToObject=0, iRefToLimbOfTheObject=0;
 	DWORD dwVertex0IndexOfHitPoly, dwVertex1IndexOfHitPoly, dwVertex2IndexOfHitPoly;
@@ -4022,6 +4019,10 @@ bool cUniverse::CollisionBoundBoxTest ( D3DXVECTOR3* pvecMinA, D3DXVECTOR3* pvec
 
 int cUniverse::CollisionRayCast ( float fX, float fY, float fZ, float fNewX, float fNewY, float fNewZ )
 {
+	// U75 - 150610 - reset so this value remains fresh and reflective of current material after each collision call
+	// U76 - 130710 - moved from within ray cast loop (as it got wiped if complex mesh/andor many iterations)
+	g_DBPROCollisionResult.dwArbitaryValue = 0;
+
 	// for best result from cast
 	float fBestDistance = 99999.0f;
 	int iBestReturnDistance = 0;
