@@ -179,7 +179,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ode.lib D3dx9.lib winmm.lib"
-				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProODEDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\Dark Basic Professional\Projects\BlitzTerrain2ForFPSC\DBProODEDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;.\..\..\ode\lib&quot;"
