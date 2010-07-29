@@ -1349,19 +1349,28 @@ static void ODE_Callback ( void* data, dGeomID o1, dGeomID o2 )
 			{
 				// X10 hack - player borble needs to have very quick ERP (correct error quickly to avoid going through floor)
 				contacts [ i ].surface.mode			= dContactSoftERP | pObject->iSurfaceMode;
-				contacts [ i ].surface.soft_erp		= 2.0f; // was0.8 but could run into table and fall through floor
+
+				// U76 - 290710 - when hit surface that will push borble DOWN, it's not a great character controlling move
+				// so as we're already hacking 65534, we will add a hack to ensure we cannot be pushed down through a floor
+//				contacts [ i ].surface.soft_erp		= 2.0f; // was0.8 but could run into table and fall through floor
+				contacts [ i ].surface.soft_erp		= 1.1f;
+				if ( contacts [ i ].geom.normal[1] < 0.0f )
+				{
+					// and to help smooth things out, we even off a slight upward force so we can climb it
+					contacts [ i ].geom.normal[1] = 0.001f;
+				}
 			}
 			else
 			{
 				contacts [ i ].surface.mode			= pObject->iSurfaceMode;
 				contacts [ i ].surface.soft_erp		= pObject->fContactSoftERP;
 			}
-
 			contacts [ i ].surface.soft_cfm		= pObject->fContactSoftCFM;
 			contacts [ i ].surface.motion1		= pObject->fContactMotion1;
 			contacts [ i ].surface.motion2		= pObject->fContactMotion2;
 			contacts [ i ].surface.slip1		= pObject->fContactSlip1;
 			contacts [ i ].surface.slip2		= pObject->fContactSlip2;
+
 			dJointID c = dJointCreateContact ( g_ODEWorld, g_ODEContactGroup, &contacts [ i ] );
 			dBodyID bodyA = dGeomGetBody ( contacts [ i ].geom.g1 );
 			dBodyID bodyB = dGeomGetBody ( contacts [ i ].geom.g2 );
