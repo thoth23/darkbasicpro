@@ -257,7 +257,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="dxerr9.lib ws2_32.lib dxguid.lib odbc32.lib odbccp32.lib"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins-user\DBProMultiplayerPlusDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\MyGames\simplearena\DBProMultiplayerPlusDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
