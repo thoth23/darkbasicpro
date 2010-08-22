@@ -234,7 +234,11 @@ bool cSpecialEffect::Load ( LPSTR pEffectFile, bool bUseXFile, bool bUseTextures
 	// Shader Legacy Mode for later DXSDK
 	DWORD dwShaderLegacyMode = 0;
 	#ifdef DARKSDK_COMPILE
-		dwShaderLegacyMode = D3DXSHADER_USE_LEGACY_D3DX9_31_DLL;
+        #ifdef D3DXSHADER_USE_LEGACY_D3DX9_31_DLL
+		    dwShaderLegacyMode = D3DXSHADER_USE_LEGACY_D3DX9_31_DLL;
+        #else
+            #error You should be using DX SDK Aug 2007 or later
+        #endif
 	#endif
 
 	// load effect from local file first

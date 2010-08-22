@@ -21,10 +21,12 @@
 #define WIN32_LEAN_AND_MEAN 
 #include < windows.h >
 
+/* Not needed for this file
 #define DARKSDK __declspec ( dllexport )
 #define SAFE_DELETE( p )       { if ( p ) { delete ( p );       ( p ) = NULL; } }
 #define SAFE_RELEASE( p )      { if ( p ) { ( p )->Release ( ); ( p ) = NULL; } }
 #define SAFE_DELETE_ARRAY( p ) { if ( p ) { delete [ ] ( p );   ( p ) = NULL; } }
+*/
 //////////////////////////////////////////////////////////////////////////
 
 #include "loader.h"

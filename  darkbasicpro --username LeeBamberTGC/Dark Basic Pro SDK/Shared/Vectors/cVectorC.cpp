@@ -4252,12 +4252,12 @@ void RefreshD3D3DMaths ( int iMode )
 
 bool dbMakeVector2 ( int iID )
 {
-	return ( bool ) MakeVector2 ( iID );
+	return 0 != MakeVector2 ( iID );
 }
 
 bool dbDeleteVector2 ( int iID )
 {
-	return ( bool ) DeleteVector2 ( iID );
+	return 0 != DeleteVector2 ( iID );
 }
 
 void dbSetVector2 ( int iID, float fX, float fY )
@@ -4293,12 +4293,12 @@ void dbDivideVector2 ( int iID, float fValue )
 
 bool dbIsEqualVector2 ( int iA, int iB )
 {
-	return ( bool ) IsEqualVector2 ( iA, iB );
+	return 0 != IsEqualVector2 ( iA, iB );
 }
 
 bool dbIsNotEqualVector2 ( int iA, int iB )
 {
-	return ( bool ) IsNotEqualVector2 ( iA, iB );
+	return 0 != IsNotEqualVector2 ( iA, iB );
 }
 
 float dbXVector2 ( int iID )
@@ -4390,12 +4390,12 @@ void dbTransformCoordsVector2 ( int iResult, int iSource, int iMatrix )
 
 bool dbMakeVector3 ( int iID )
 {
-	return ( bool ) MakeVector3 ( iID );
+	return 0 != MakeVector3 ( iID );
 }
 
 bool dbDeleteVector3 ( int iID )
 {
-	return ( bool ) DeleteVector3 ( iID );
+	return 0 != DeleteVector3 ( iID );
 }
 
 void dbSetVector3 ( int iID, float fX, float fY, float fZ )
@@ -4430,12 +4430,12 @@ void dbDivideVector3 ( int iID, float fValue )
 
 bool dbIsEqualVector3 ( int iA, int iB )
 {
-	return ( bool ) IsEqualVector3 ( iA, iB );
+	return 0 != IsEqualVector3 ( iA, iB );
 }
 
 bool dbIsNotEqualVector3 ( int iA, int iB )
 {
-	return ( bool ) IsNotEqualVector3 ( iA, iB );
+	return 0 != IsNotEqualVector3 ( iA, iB );
 }
 
 void dbBCCVector3 ( int iResult, int iA, int iB, int iC, float f, float g )
@@ -4542,12 +4542,12 @@ float dbZVector3 ( int iID )
 
 bool dbMakeVector4 ( int iID )
 {
-	return ( bool ) MakeVector4 ( iID );
+	return 0 != MakeVector4 ( iID );
 }
 
 bool dbDeleteVector4 ( int iID )
 {
-	return ( bool ) DeleteVector4 ( iID );
+	return 0 != DeleteVector4 ( iID );
 }
 
 void dbSetVector4 ( int iID, float fX, float fY, float fZ, float fW )
@@ -4582,12 +4582,12 @@ void dbDivideVector4 ( int iID, float fValue )
 
 bool dbIsEqualVector4 ( int iA, int iB )
 {
-	return ( bool ) IsEqualVector4 ( iA, iB );
+	return 0 != IsEqualVector4 ( iA, iB );
 }
 
 bool dbIsNotEqualVector4 ( int iA, int iB )
 {
-	return IsNotEqualVector4 ( iA, iB );
+	return 0 != IsNotEqualVector4 ( iA, iB );
 }
 
 float dbXVector4 ( int iID )
@@ -4679,12 +4679,12 @@ void dbTransformVector4 ( int iResult, int iSource, int iMatrix )
 
 bool dbMakeMatrix4 ( int iID )
 {
-	return ( bool ) MakeMatrix ( iID );
+	return 0 != MakeMatrix ( iID );
 }
 
 bool dbDeleteMatrix4 ( int iID )
 {
-	return ( bool ) DeleteMatrix ( iID );
+	return 0 != DeleteMatrix ( iID );
 }
 
 void dbCopyMatrix4 ( int iSource, int iDestination )
@@ -4719,12 +4719,12 @@ void dbDivideMatrix4 ( int iID, float fValue )
 
 bool dbIsEqualMatrix4 ( int iA, int iB )
 {
-	return ( bool ) IsEqualMatrix ( iA, iB );
+	return 0 != IsEqualMatrix ( iA, iB );
 }
 
 bool dbIsNotEqualMatrix4 ( int iA, int iB )
 {
-	return ( bool ) IsNotEqualMatrix ( iA, iB );
+	return 0 != IsNotEqualMatrix ( iA, iB );
 }
 
 void dbSetIdentityMatrix4 ( int iID )
@@ -4741,7 +4741,7 @@ float dbInverseMatrix4 ( int iResult, int iSource )
 
 bool dbIsIdentityMatrix4 ( int iID )
 {
-	return IsIdentityMatrix ( iID );
+	return 0 != IsIdentityMatrix ( iID );
 }
 
 void dbBuildLookAtRHMatrix4 ( int iResult, int iVectorEye, int iVectorAt, int iVectorUp )

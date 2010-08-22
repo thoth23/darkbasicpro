@@ -35,6 +35,8 @@
 	#define DARKSDK __declspec ( dllexport )
 	#define DBPRO_GLOBAL 
 #else
+    #undef DARKSDK
+    #undef DBPRO_GLOBAL
 	#define DARKSDK static
 	#define DBPRO_GLOBAL static
 #endif
@@ -139,7 +141,6 @@ extern BSP_Start				g_Q2BSP_SetHardwareMultiTexturingOn;
 // defines ///////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //#define DARKSDK __declspec ( dllexport )
-#define SAFE_FREE( p )       { if ( p ) { free ( p );       ( p ) = NULL; } }
 #define SAFE_DELETE( p )       { if ( p ) { delete ( p );       ( p ) = NULL; } }
 #define SAFE_RELEASE( p )      { if ( p ) { ( p )->Release ( ); ( p ) = NULL; } }
 #define SAFE_DELETE_ARRAY( p ) { if ( p ) { delete [ ] ( p );   ( p ) = NULL; } }
@@ -367,11 +368,19 @@ struct shader
 			}
 
 			stage [ x ].tex_count = 0;
-			SAFE_FREE ( stage [ x ].tcmod );
+            if (stage [ x ].tcmod)
+            {
+                free( stage [ x ].tcmod );
+                stage [ x ].tcmod = 0;
+            }
 			stage [ x ].tcmod_count = 0;
 		}
 
-		SAFE_FREE ( stage );
+        if (stage)
+        {
+            free( stage );
+            stage = 0;
+        }
 
 		SAFE_DELETE_ARRAY ( pk3name );
 		SAFE_DELETE_ARRAY ( filename );
@@ -447,7 +456,11 @@ extern struct _shaders
 			*/
 		}
 
-		SAFE_FREE ( entry );
+        if (entry)
+        {
+            free( entry );
+            entry = 0;
+        }
 		entry_count = 0;
 	}
 
@@ -532,11 +545,21 @@ struct _Q3MAP
 		void Release ( )
 		{
 			for ( int x = 0; x < tex_count; x++ )
-				SAFE_FREE ( tex [ x ].face );
+            {
+                if (tex [ x ].face)
+                {
+                    free( tex [ x ].face );
+                    tex [ x ].face = 0;
+                }
+            }
 
 			tex_count = 0;
 
-			SAFE_FREE ( tex );
+            if (tex)
+            {
+                free( tex );
+                tex = 0;
+            }
 		}
 	} sort;
 
@@ -544,8 +567,16 @@ struct _Q3MAP
 	{
 		for ( int iTemp = 0; iTemp < 65536; iTemp++ )
 		{
-			SAFE_FREE ( meshes [ iTemp ].verts );
-			SAFE_FREE ( meshes [ iTemp ].elems );
+            if (meshes [ iTemp ].verts)
+            {
+                free( meshes [ iTemp ].verts );
+                meshes [ iTemp ].verts = 0;
+            }
+            if (meshes [ iTemp ].elems)
+            {
+                free( meshes [ iTemp ].elems );
+                meshes [ iTemp ].elems = 0;
+            }
 		}
 		
 		vert_count = 0;

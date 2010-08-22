@@ -708,7 +708,11 @@ BOOL BoundElipsoidIntersect ( D3DXVECTOR3 mid, D3DXVECTOR3 e, D3DXVECTOR3 o_pos,
 
 void FreeColOpt ( void )
 {
-	SAFE_FREE(col_opt_Q3A.check);
+    if (col_opt_Q3A.check)
+    {
+        free( col_opt_Q3A.check );
+        col_opt_Q3A.check = 0;
+    }
 }
 
 void CalcNormal ( D3DXVECTOR3 v [ 3 ], D3DXVECTOR3* out )
