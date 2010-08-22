@@ -1,4 +1,3 @@
-#include "cBSPFile.h"
 #include "loader.h"
 #include <direct.h>
 #include "textures.h"
@@ -15,11 +14,8 @@
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKCamera.h"
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKBasic3D.h"
 #endif
-	
-// leefix - 131108 - DarkGDK does not want another global instance
-#ifdef DARKSDK_COMPILE
-	#define DBPRO_GLOBAL static
-#endif
+
+#include "cBSPFile.h"
 
 // Global Shared Data Pointer (passed in from core)
 DBPRO_GLOBAL GlobStruct*						g_pGlob							= NULL;
@@ -992,7 +988,11 @@ BOOL LoadQ3AMap ( LPSTR filename, char* szMap, BOOL reset )
 
 	BOOL ok = InitMapQ3A ( data );
 	
-	SAFE_FREE ( data );
+    if (data)
+    {
+        free(data);
+        data = 0;
+    }
 
 	if ( ok )
 	{

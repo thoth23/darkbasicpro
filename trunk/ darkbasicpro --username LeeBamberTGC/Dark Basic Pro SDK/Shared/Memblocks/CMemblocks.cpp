@@ -11,7 +11,6 @@
 #include ".\..\error\cerror.h"
 #include ".\..\core\globstruct.h"
 #include ".\..\core\DBDLLArray.h"
-#include "CMemblocks.h"
 
 #ifdef DARKSDK_COMPILE
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKBitmap.h"
@@ -19,6 +18,8 @@
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKSound.h"
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKBasic3D.h"
 #endif
+
+#include "CMemblocks.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////

@@ -21,6 +21,8 @@
 	#define DARKSDK __declspec ( dllexport )
 	#define DBPRO_GLOBAL 
 #else
+	#undef DARKSDK
+	#undef DBPRO_GLOBAL
 	#define DARKSDK static
 	#define DBPRO_GLOBAL static
 	// global.h refines DBPRO_GLOBAL in Basic3D.h call, see later

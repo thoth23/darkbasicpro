@@ -24,6 +24,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 #ifdef DARKSDK_COMPILE
+    #undef DARKSDK
+	#undef DBPRO_GLOBAL
 	#define DARKSDK static
 	#define DBPRO_GLOBAL static
 #else

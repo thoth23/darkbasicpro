@@ -12,7 +12,6 @@
 #endif
 
 // Includes
-#include "cmultiplayerc.h"
 #include ".\..\error\cerror.h"
 #include ".\..\core\globstruct.h"
 
@@ -26,6 +25,8 @@
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKBasic3D.h"
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKMemblocks.h"
 #endif
+
+#include "cmultiplayerc.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
