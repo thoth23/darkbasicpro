@@ -749,6 +749,9 @@ DARKSDK void SetDir( DWORD pString )
 	{
 		if(_chdir((LPSTR)pString)==-1)
 		{
+			char strstr[512];
+			wsprintf(strstr,"Path:%s",(LPSTR)pString);
+			MessageBox ( NULL, strstr, "Path Cannot Be Found", MB_OK );
 			RunTimeError(RUNTIMEERROR_PATHCANNOTBEFOUND);
 		}
 	}
