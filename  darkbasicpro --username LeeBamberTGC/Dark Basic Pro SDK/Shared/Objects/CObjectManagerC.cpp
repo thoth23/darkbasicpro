@@ -1693,9 +1693,12 @@ bool CObjectManager::UpdateAnimationCycle ( void )
 			if ( pObject->fAnimFrame >= pObject->fAnimFrameEnd )
 			{
 				// if animation loops
-//				pObject->fAnimFrame = pObject->fAnimLoopStart; (190303-see below)
 				if ( pObject->bAnimLooping==false )
 				{
+					// U76 - 300710 - ensure we clip any over-run so we're dead on the final frame
+					pObject->fAnimFrame = pObject->fAnimFrameEnd;
+
+					// stop playing if reach end frame
 					pObject->bAnimPlaying = false;
 				}
 				else
