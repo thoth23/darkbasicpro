@@ -309,20 +309,25 @@ void CSpriteManager::RenderDrawList ( tagSpriteData** pList, int iListSize )
 	m_pD3D->SetRenderState ( D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA );
 	m_pD3D->SetRenderState ( D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA );
 
-    // Enable both vertical and horizontal scrolling of the texture
-	m_pD3D->SetSamplerState ( 0, D3DSAMP_ADDRESSU,        D3DTADDRESS_WRAP );
-	m_pD3D->SetSamplerState ( 0, D3DSAMP_ADDRESSV,        D3DTADDRESS_WRAP );
-	
 	if ( g_iFilterMode == 0 )
 	{
 		m_pD3D->SetSamplerState ( 0, D3DSAMP_MAGFILTER,       D3DTEXF_POINT  );
 		m_pD3D->SetSamplerState ( 0, D3DSAMP_MINFILTER,       D3DTEXF_POINT  );
+
+		// Enable both vertical and horizontal scrolling of the texture
+		m_pD3D->SetSamplerState ( 0, D3DSAMP_ADDRESSU,        D3DTADDRESS_WRAP );
+		m_pD3D->SetSamplerState ( 0, D3DSAMP_ADDRESSV,        D3DTADDRESS_WRAP );
 	}
 	else
 	{
 		m_pD3D->SetSamplerState ( 0, D3DSAMP_MAGFILTER,       D3DTEXF_LINEAR  );
 		m_pD3D->SetSamplerState ( 0, D3DSAMP_MINFILTER,       D3DTEXF_LINEAR  );
+
+		// lee - 090910 - need this for sprites that have the wrap artefeact (non scrolling more common)
+		m_pD3D->SetSamplerState ( 0, D3DSAMP_ADDRESSU,        D3DTADDRESS_CLAMP );
+		m_pD3D->SetSamplerState ( 0, D3DSAMP_ADDRESSV,        D3DTADDRESS_CLAMP );
 	}
+
 	m_pD3D->SetSamplerState ( 0, D3DSAMP_MIPFILTER,       D3DTEXF_NONE  );
 
 	// setup texture states to allow for diffuse colours

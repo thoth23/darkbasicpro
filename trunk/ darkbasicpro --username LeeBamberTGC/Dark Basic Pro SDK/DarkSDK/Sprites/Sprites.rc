@@ -167,6 +167,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STRING48            "SPRITE PRIORITY[%LL%?GetPriority@@YAHH@Z%Sprite Number"
+    IDS_STRING49            "SET SPRITE FILTER MODE%L%?SetSpriteFilterMode@@YAXH@Z%Clamp Mode"
 END
 
 #endif    // English (U.K.) resources
