@@ -2424,9 +2424,10 @@ DARKSDK int GetVisible   ( int iID )
 		return 0;
 }
 
-void SetSpritesFilterMode ( int iMode )
+DARKSDK void SetSpriteFilterMode ( int iMode )
 {
 	// mike - 071005 - filter mode in case you want to use linear
+	// lee - 090910 - also controls whether WRAP(0-default) or 1(CLAMP)
 	g_iFilterMode = iMode;
 }
 

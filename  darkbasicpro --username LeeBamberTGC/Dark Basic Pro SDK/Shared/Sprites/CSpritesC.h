@@ -109,6 +109,7 @@ DARKSDK void Clone  ( int iID, int iDestinationID );				// clones a sprite
 DARKSDK void SetPriority ( int iID, int iPriority );
 
 DARKSDK void SetSpriteResize ( int iMode );							// mike - 041005 - special option to resize sprites automatically
+DARKSDK void SetSpriteFilterMode ( int iMode );
 
 DARKSDK int  GetPriority ( int iID );							// mike - 041005 - return the priority of the sprite
 DARKSDK int  GetExist     ( int iID );								// does sprite exist?
