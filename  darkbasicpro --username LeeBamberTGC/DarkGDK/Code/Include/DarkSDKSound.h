@@ -35,6 +35,9 @@ void	dbStopRecordingSound	( void );
 void	dbSaveSound				( LPSTR szFilename, int iID );
 
 void	dbLoad3DSound			( LPSTR szFilename, int iID );
+void	dbLoad3DSound			( LPSTR szFilename, int iID, int iSilentFail );
+void	dbLoad3DSound			( LPSTR szFilename, int iID, int iSilentFail, int iGlobalSound );
+
 void	dbPositionSound			( int iID, float fX, float fY, float fZ );
 void	dbPositionListener		( float fX, float fY, float fZ );
 void	dbRotateListener		( float fX, float fY, float fZ );

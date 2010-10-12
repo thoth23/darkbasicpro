@@ -94,3 +94,9 @@ char* 			dbEntry 							( void );
 void 			dbWriteStringToRegistry				( LPSTR pfolder, LPSTR valuekey, DWORD pString );
 char* 			dbGetRegistryString					( LPSTR pfolder, LPSTR valuekey );
 int 			dbJoystickFireX 					( int iButton );
+
+int				dbControlDeviceIndex				( void );
+int				dbGetKeyState						( int iVirtKey );
+int				dbJoystickInformation				( int iInfo );
+void			dbSetKeyStateToggle					( int iVirtKey, int iFlag );
+void			dbSetJoystickDeadzone				( int iPercentage );

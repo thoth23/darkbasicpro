@@ -17,6 +17,7 @@ void  SaveTerrain               ( DWORD dwFilename, int iID );
 void  MakeObjectTerrain			( int iID );
 void  BuildTerrain				( int iID );
 void  DeleteTerrain				( int iID );
+void  DeleteTerrain				( int iID, int iUserData );
 
 void  SetTerrainScale			( int iID, float fXScale, float fYScale, float fZScale );
 void  SetTerrainSplit			( int iID, int iSplit );
@@ -63,6 +64,11 @@ void dbBuildTerrain ( int iID )
 void dbDeleteTerrain ( int iID )
 {
 	DeleteTerrain ( iID );
+}
+
+void dbDeleteTerrain ( int iID, int iUserData )
+{
+    DeleteTerrain ( iID, iUserData );
 }
 
 void dbSetTerrainScale ( int iID, float fXScale, float fYScale, float fZScale )

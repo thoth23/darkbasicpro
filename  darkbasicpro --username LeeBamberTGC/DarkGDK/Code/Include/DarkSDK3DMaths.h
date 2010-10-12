@@ -135,3 +135,4 @@ D3DXVECTOR3		dbGetVector3 						( int iID );
 D3DXVECTOR4		dbGetVector4 						( int iID );
 D3DXMATRIX		dbGetMatrix							( int iID );
 int				dbGet3DMathsExist					( int iID );
+float			dbGetMatrixElement					( int iID, int iElementIndex );

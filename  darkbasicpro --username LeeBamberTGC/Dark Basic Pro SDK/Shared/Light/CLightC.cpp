@@ -80,10 +80,7 @@ DBPRO_GLOBAL int							m_iAmbientGreen;
 DBPRO_GLOBAL int							m_iAmbientBlue;
 DBPRO_GLOBAL float							g_fFogStartDistance;
 DBPRO_GLOBAL float							g_fFogEndDistance;
-DBPRO_GLOBAL int							g_iFogRed;
-DBPRO_GLOBAL int							g_iFogGreen;
-DBPRO_GLOBAL int							g_iFogBlue;
-DBPRO_GLOBAL int							g_iFogAlpha;
+DBPRO_GLOBAL DWORD                          g_dwFogColor;
 DBPRO_GLOBAL GlobStruct*					g_pGlob	= NULL;
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -133,10 +130,7 @@ DARKSDK void ConstructorD3D ( HINSTANCE hSetup )
 	// Default Fog Settings
 	g_fFogStartDistance = 0.0f;
 	g_fFogEndDistance   = 3000.0f;
-	g_iFogRed			= 0;
-	g_iFogGreen			= 0;
-	g_iFogBlue			= 0;
-	g_iFogAlpha			= 0;
+    g_dwFogColor        = 0;
 
 	// Default Light
 	if(bFromCore)
@@ -895,8 +889,7 @@ DARKSDK void FogOn ( void )
 {
 	if(g_pGlob) g_pGlob->iFogState=1;
 	m_pD3D->SetRenderState ( D3DRS_FOGENABLE, TRUE );
-	//m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( 0, g_iFogRed, g_iFogGreen, g_iFogBlue ) ); // U75 - 080410 - fix
-	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( g_iFogRed, g_iFogGreen, g_iFogBlue, g_iFogAlpha ) );
+	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, g_dwFogColor );
 	m_pD3D->SetRenderState ( D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR );
 	m_pD3D->SetRenderState ( D3DRS_FOGSTART, *( DWORD * ) ( &g_fFogStartDistance ) );
 	m_pD3D->SetRenderState ( D3DRS_FOGEND,   *( DWORD * ) ( &g_fFogEndDistance   ) );
@@ -910,21 +903,18 @@ DARKSDK void FogOff ( void )
 
 DARKSDK void SetFogColor ( DWORD dwColor )
 {
+    g_dwFogColor = dwColor;
 	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, dwColor );
 }
 
 DARKSDK void SetFogColorEx ( int iR, int iG, int iB, int iA )
 {
-	g_iFogRed   = iR;
-	g_iFogGreen = iG;
-	g_iFogBlue  = iB;
-	g_iFogAlpha  = iA;
-	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( g_iFogRed, g_iFogGreen, g_iFogBlue, g_iFogAlpha ) );
+    SetFogColor( D3DCOLOR_RGBA ( iR, iG, iB, iA ) );
 }
 
 DARKSDK void SetFogColorEx ( int iR, int iG, int iB )
 {
-	SetFogColorEx ( iR, iG, iB, 0 );
+    SetFogColor( D3DCOLOR_RGBA ( iR, iG, iB, 0 ) );
 }
 
 DARKSDK void SetFogDistance ( int iDistance )

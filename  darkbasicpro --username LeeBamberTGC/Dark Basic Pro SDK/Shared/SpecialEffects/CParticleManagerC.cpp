@@ -63,8 +63,6 @@ extern CSnowstorm*				m_pSnow;
 
 void CParticleManager::Update ( void )
 {
-	
-
 	// Standard Polydraw Renderstates
 	m_pD3D->SetRenderState ( D3DRS_FILLMODE,				D3DFILL_SOLID );
 	m_pD3D->SetRenderState ( D3DRS_LIGHTING,				FALSE );
@@ -93,6 +91,15 @@ void CParticleManager::Update ( void )
 	m_pD3D->GetRenderState ( D3DRS_FOGCOLOR, &g_dwFogColor );
 	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, D3DCOLOR_RGBA ( 0, 0, 0, 0 ) );
 
+    UpdateInner();
+
+	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, g_dwFogColor );
+	m_pD3D->SetRenderState ( D3DRS_ZWRITEENABLE, TRUE );
+	m_pD3D->SetRenderState ( D3DRS_ALPHABLENDENABLE, FALSE );
+}
+
+void CParticleManager::UpdateInner ( void )
+{
 	// for all particle objects
 	link* check = m_List.m_start;
 	for ( int temp = 0; temp < m_List.m_count; temp++ )
@@ -513,21 +520,6 @@ void CParticleManager::Update ( void )
 		
 		check = check->next;
 	}
-
-	// Deactivate states specific to all particles
-	// mike - 131005 - not sure resetting fog is right, it can screw up some shaders
-	//m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, g_dwFogColor );
-	// mike - 190107 - comment out the above line as it causes trouble with fog in gdk
-	#ifdef DARKSDK_COMPILE
-	// DarkGDK is not restoring fog color on purpose (Mike to resolve at some point)
-	#else
-	// DBPro requires that fog colour is restored after particles have been rendered
-	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, g_dwFogColor );
-	#endif
-
-	// restore more states
-	m_pD3D->SetRenderState ( D3DRS_ZWRITEENABLE, TRUE );
-	m_pD3D->SetRenderState ( D3DRS_ALPHABLENDENABLE, FALSE );
 }
 
 //-----------------------------------------------------------------------------

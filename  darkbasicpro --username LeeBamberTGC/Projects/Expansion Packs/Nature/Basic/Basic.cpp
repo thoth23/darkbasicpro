@@ -197,6 +197,7 @@ vector < sTerrain >					g_Terrain;
 	float				dbCameraPositionY 				( int iID );
 	float				dbCameraPositionZ	 			( int iID );
 	void				dbLoadObject					( char* szFilename, int iID );
+	void				dbDeleteObject					( int iID );
 #endif
 
 void SetupTerrain ( void )
@@ -240,6 +241,7 @@ void SetupTerrain ( void )
 		g_GetImageName						= dbGetImageName;
 		g_CreateCustomDataArrayForObject	= CreateCustomDataArrayForObject;
 		g_LoadObject						= ( ObjectLoadPFN ) dbLoadObject;
+        g_DeleteObject						= dbDeleteObject;
 	#endif
 
 	// get the direct3D device

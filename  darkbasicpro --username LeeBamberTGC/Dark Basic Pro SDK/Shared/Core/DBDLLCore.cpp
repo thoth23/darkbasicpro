@@ -2464,7 +2464,7 @@ DARKSDK DWORD ArrayCount(DWORD dwArrayPtr)
 	if(dwArrayPtr) 
 		return (*((DWORD*)dwArrayPtr-4))-1;
 	else
-		return 0;
+		return -1;
 }
 DARKSDK DWORD ArrayInsertAtBottom(DWORD dwArrayPtr)
 {

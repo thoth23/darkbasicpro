@@ -16,7 +16,8 @@ void  dbSaveTerrain					( char* dwFilename, int iID );
 void  dbMakeObjectTerrain			( int iID );
 void  dbBuildTerrain				( int iID );
 
-void  dbDeleteObject				( int iID );
+void  dbDeleteTerrain				( int iID );
+void  dbDeleteTerrain				( int iID, int iUserData );
 
 void  dbSetTerrainScale				( int iID, float fXScale, float fYScale, float fZScale );
 void  dbSetTerrainSplit				( int iID, int iSplit );
