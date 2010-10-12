@@ -236,6 +236,7 @@ class CObjectManager
 		void UpdateInitOnce					( void );
 		bool UpdateInit						( void );
 		bool UpdateLayer					( int iLayer );				// update the core
+		bool UpdateLayerInner				( int iLayer );				// update the core
 		bool Update							( void );					// update
 		bool UpdateGhostLayer				( void );
 		bool UpdateNoZLayer					( void );					// update

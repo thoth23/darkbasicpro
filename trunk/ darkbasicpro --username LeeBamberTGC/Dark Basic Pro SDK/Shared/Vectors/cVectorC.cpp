@@ -4869,6 +4869,13 @@ int	dbGet3DMathsExist ( int iID )
 	return GetExist ( iID );
 }
 
+float dbGetMatrixElement ( int iID, int iElementIndex )
+{
+	DWORD dwReturn = GetMatrixElement ( iID, iElementIndex );
+	
+	return *( float* ) &dwReturn;
+}
+
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////

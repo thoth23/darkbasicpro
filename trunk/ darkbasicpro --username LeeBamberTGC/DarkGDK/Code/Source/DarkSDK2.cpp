@@ -16,6 +16,9 @@ bool CreateSDKApplication ( void );
 // Global for CL$ storage
 LPSTR g_pUniqueCommandLineString = NULL;
 
+// Global for runtime error reporting
+DWORD dwRuntimeErrorDWORD = 0;
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNCTION LISTINGS ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +68,6 @@ bool CreateSDKApplication ( void )
 	dbPassCmdLineLineHandlerPtr ( ( LPVOID ) g_pUniqueCommandLineString );
 
 	// pass error handler to return error code
-	DWORD dwRuntimeErrorDWORD = 0;
 	dbPassErrorHandlerPtr ( ( LPVOID ) &dwRuntimeErrorDWORD );
 
 	// calls init display with settings (using DarkGDKInit)

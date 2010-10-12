@@ -935,7 +935,10 @@ DARKSDK void ResumeSound ( int iID )
 	m_ptr->bPause = false;
 
 	// resume playing
-	m_ptr->pSound->Play(0, NULL );
+    if (m_ptr->bLoop)
+    	m_ptr->pSound->Play(0, DSBPLAY_LOOPING );
+    else
+    	m_ptr->pSound->Play(0, NULL );
 }
 
 DARKSDK void PauseSound	( int iID )
@@ -1919,6 +1922,16 @@ void dbSaveSound ( LPSTR szFilename, int iID )
 void dbLoad3DSound ( LPSTR szFilename, int iID )
 {
 	Load3DSound ( szFilename, iID );
+}
+
+void dbLoad3DSound ( LPSTR szFilename, int iID, int iSilentFail )
+{
+    Load3DSound ( szFilename, iID, iSilentFail );
+}
+
+void dbLoad3DSound ( LPSTR szFilename, int iID, int iSilentFail, int iGlobalSound )
+{
+    Load3DSound ( szFilename, iID, iSilentFail, iGlobalSound );
 }
 
 void dbPositionSound ( int iID, float fX, float fY, float fZ )

@@ -27,6 +27,7 @@ class CParticleManager : private CData
 		CData* GetList ( void ) { return &m_List; }
 
 		void Update ( void );
+        void UpdateInner ( void );
 };
 
 #endif _CPARTICLEMANAGER_H_

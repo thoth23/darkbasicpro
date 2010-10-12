@@ -3563,9 +3563,8 @@ bool CObjectManager::PostDrawRestores ( void )
 		}
 	}
 
-	// must always restore ambient level (for layers)
+    // must always restore ambient level (for layers)
 	m_pD3D->SetRenderState ( D3DRS_AMBIENT, m_RenderStates.dwAmbientColor );
-	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, m_RenderStates.dwFogColor );
 
 	// leeadd - 140304 - ensure FOV is restored
 	if ( m_RenderStates.fObjectFOV != 0.0f )
@@ -3574,7 +3573,15 @@ bool CObjectManager::PostDrawRestores ( void )
 		m_RenderStates.fObjectFOV = 0.0f;
 	}
 
-	// okay
+
+    if ( g_pGlob && g_pGlob->iFogState == 1 )
+    {
+
+	    m_pD3D->SetRenderState ( D3DRS_FOGENABLE, TRUE );
+    	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, m_RenderStates.dwFogColor );
+    }
+
+    // okay
 	return true;
 }
 
@@ -3747,15 +3754,27 @@ bool CObjectManager::UpdateLayer ( int iLayer )
 	if ( GetSortedObjectVisibleList()==NULL )
 		return true;
 
+	// prepare render states to draw
+	if ( !PreDrawSettings ( ) )
+		return false;
+
+    bool Status = UpdateLayerInner(iLayer);
+
+    // restore render states after draw
+	if ( !PostDrawRestores ( ) )
+		return false;
+
+    return Status;
+}
+
+bool CObjectManager::UpdateLayerInner ( int iLayer )
+{
+
 	// work vars
 	int iObject = 0;
 	bool bUseStencilWrite=false;
 	D3DLIGHT9 lightzero;
 	D3DXVECTOR3 vecShadowPos;
-
-	// prepare render states to draw
-	if ( !PreDrawSettings ( ) )
-		return false;
 
     // u74b7 - Get camera information for LOD and distance calculation
     DWORD dwCurrentCameraBit = 1 << g_pGlob->dwRenderCameraID;
@@ -4255,10 +4274,6 @@ bool CObjectManager::UpdateLayer ( int iLayer )
 		break;
 	}
 
-	// restore render states after draw
-	if ( !PostDrawRestores ( ) )
-		return false;
-	
 	// okay
 	return true;
 }
