@@ -30,7 +30,7 @@
 
 // Global Shared Data Pointer (passed in from core)
 DBPRO_GLOBAL GlobStruct*	g_pGlob = NULL;
-LPDIRECT3DDEVICE9			m_pD3D = NULL;						// pointer to D3D device
+DBPRO_GLOBAL LPDIRECT3DDEVICE9			m_pD3D = NULL;						// pointer to D3D device
 
 namespace
 {
