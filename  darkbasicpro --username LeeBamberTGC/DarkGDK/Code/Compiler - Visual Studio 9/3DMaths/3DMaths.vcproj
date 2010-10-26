@@ -114,7 +114,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="2"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;DARKSDK_COMPILE"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -238,43 +238,6 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Data\CDataC.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="3"
-					InlineFunctionExpansion="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="ReleaseVR920|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Data\CDataC.h"
-			>
-		</File>
 		<File
 			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Error\CError.h"
 			>
