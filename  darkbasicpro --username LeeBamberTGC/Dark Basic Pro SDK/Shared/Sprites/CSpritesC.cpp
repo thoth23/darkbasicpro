@@ -29,38 +29,36 @@
 
 
 // Global Shared Data Pointer (passed in from core)
-DBPRO_GLOBAL GlobStruct*				g_pGlob							= NULL;
+DBPRO_GLOBAL GlobStruct*	g_pGlob = NULL;
+LPDIRECT3DDEVICE9			m_pD3D = NULL;						// pointer to D3D device
 
-// DirectX Support Data
-typedef IDirect3DDevice9* ( *GFX_GetDirect3DDevicePFN ) ( void );
-DBPRO_GLOBAL HINSTANCE					g_GFX;						// for dll loading
-DBPRO_GLOBAL GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;	// get pointer to D3D device
+namespace
+{
+    // DirectX Support Data
+    typedef IDirect3DDevice9* ( *GFX_GetDirect3DDevicePFN ) ( void );
+    HINSTANCE					g_GFX;						// for dll loading
+    GFX_GetDirect3DDevicePFN	g_GFX_GetDirect3DDevice;	// get pointer to D3D device
 
-DBPRO_GLOBAL LPDIRECT3DDEVICE9			m_pD3D=NULL;						// pointer to D3D device
+    // Global Sprite Data
+    CSpriteManager				m_SpriteManager;				// sprite manager
+    tagSpriteData*				m_ptr;							// sprites internal data
+    float						m_preCos [ 360 ];				// used for lookup table for rotation
+    float						m_preSin [ 360 ];				// used for lookup table for rotation
 
-// Global Sprite Data
-DBPRO_GLOBAL CSpriteManager			m_SpriteManager;				// sprite manager
-DBPRO_GLOBAL tagSpriteData*			m_ptr;							// sprites internal data
-DBPRO_GLOBAL float					m_preCos [ 360 ];				// used for lookup table for rotation
-DBPRO_GLOBAL float					m_preSin [ 360 ];				// used for lookup table for rotation
+    // Global Backsave Feature
+    bool						g_bFirstTimeSprite = true;
+    int							g_iBackSaveState = 0;			// 2-new mode-autoclear!
+    LPDIRECT3DSURFACE9			g_pBackSaveBackBuffer = NULL;	// used to store backsave
+    LPDIRECT3DSURFACE9			g_pBackSaveSurface = NULL;		// used to store backsave
 
-// Global Backsave Feature
-DBPRO_GLOBAL bool						g_bFirstTimeSprite = true;
-DBPRO_GLOBAL int						g_iBackSaveState = 0;			// 2-new mode-autoclear!
-DBPRO_GLOBAL LPDIRECT3DSURFACE9		g_pBackSaveBackBuffer = NULL;	// used to store backsave
-DBPRO_GLOBAL LPDIRECT3DSURFACE9		g_pBackSaveSurface = NULL;		// used to store backsave
+    // Global TempSpriteForImage Pasting
+     tagSpriteData				m_ImagePtr;						// temp image internal data
 
-// Global TempSpriteForImage Pasting
-DBPRO_GLOBAL tagSpriteData			m_ImagePtr;						// temp image internal data
+    bool						g_bCallFromAnim = false;
 
-DBPRO_GLOBAL bool						g_bCallFromAnim = false;
-
-
-// mike - 041005 - special option to resize sprites automatically
-int g_iSpriteResizeMode = 0;
-
-// mike - 071005 - filter mode in case you want to use linear
-int g_iFilterMode = 0;
+    // mike - 041005 - special option to resize sprites automatically
+    int g_iSpriteResizeMode = 0;
+}
 
 // Forward declarations
 DARKSDK void SetVertexTextureDataForSprite( void );
@@ -319,10 +317,12 @@ DARKSDK bool UpdatePtr ( int iID )
 
 DARKSDK void UpdateAllSprites(void)
 {
-    link* pCheck = m_SpriteManager.GetList()->m_start;
-	while ( pCheck )
-	{
-		tagSpriteData* ptr = ( tagSpriteData* )( pCheck->data );
+    for (CSpriteManager::SpritePtrConst pCheck = m_SpriteManager.begin();
+         pCheck != m_SpriteManager.end();
+         ++pCheck)
+    {
+        int id = pCheck->first;
+		tagSpriteData* ptr = pCheck->second;
 
 		int iImage = ptr->iImage;
         if (iImage > 0)
@@ -339,15 +339,12 @@ DARKSDK void UpdateAllSprites(void)
                 ptr->iFrameHeight = ptr->iHeight / ptr->iFrameDown;
                 ptr->iWidth = ptr->iFrameWidth;
                 ptr->iHeight = ptr->iFrameHeight;
-                SetFrameEx ( pCheck->id, ptr->iFrame + 1 );
+                SetFrameEx ( id, ptr->iFrame + 1 );
                 // BUG: Apparent bug here on uv's for non-power-of-2 image sizes on animated single-image sprites
             }
             m_ptr = ptr;
             SetVertexTextureDataForSprite ( );
         }
-
-        // check next one
-		pCheck = pCheck->next;
 	}
 }
 
@@ -729,11 +726,12 @@ DARKSDK int CheckSpriteCollision( int iID, int iTarget )
 		int collisionwith=0;
 
 		// For when images are changed, sprites may have old textures
-		link* pCheck = m_SpriteManager.GetList()->m_start;
-		while ( pCheck )
+		for (CSpriteManager::SpritePtrConst pCheck = m_SpriteManager.begin();
+             pCheck != m_SpriteManager.end();
+             ++pCheck)
 		{
 			// get sprite info
-			iTarget = pCheck->id;
+			iTarget = pCheck->first;
 			if(iTarget!=iID)
 			{
 				if(ReturnOverlapResult(iID, iTarget)==1)
@@ -742,9 +740,6 @@ DARKSDK int CheckSpriteCollision( int iID, int iTarget )
 					break;
 				}
 			}
-
-			// check next one
-			pCheck = pCheck->next;
 		}
 		overlap = collisionwith;
 	}
@@ -2428,7 +2423,7 @@ DARKSDK void SetSpriteFilterMode ( int iMode )
 {
 	// mike - 071005 - filter mode in case you want to use linear
 	// lee - 090910 - also controls whether WRAP(0-default) or 1(CLAMP)
-	g_iFilterMode = iMode;
+    m_SpriteManager.SetFilterMode( iMode );
 }
 
 //////////////////////////////////////////////////////////////////////////////////
