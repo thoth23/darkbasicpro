@@ -12,8 +12,6 @@
 #include <D3D9.h>
 #include <D3DX9.h>
 
-#include ".\..\data\cdatac.h"
-
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -91,7 +89,6 @@ DARKSDK void				SetErrorHandler							( LPVOID pErrorHandlerPtr );
 DARKSDK void				PassCoreData							( LPVOID pGlobPtr );
 DARKSDK void				RefreshD3D								( int iMode );
 DARKSDK void				UpdateBitmapZeroOfNewBackbuffer			( void );
-DARKSDK bool                UpdatePtr								( int iID );
 DARKSDK LPDIRECT3DSURFACE9	Make									( int iID, int iWidth, int iHeight );
 
 //////////////////////////////////////////////////////////////////////////////////
