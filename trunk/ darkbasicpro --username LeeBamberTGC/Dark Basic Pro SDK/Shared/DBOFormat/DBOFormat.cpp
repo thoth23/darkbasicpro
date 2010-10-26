@@ -237,7 +237,9 @@ bool cSpecialEffect::Load ( LPSTR pEffectFile, bool bUseXFile, bool bUseTextures
         #ifdef D3DXSHADER_USE_LEGACY_D3DX9_31_DLL
 		    dwShaderLegacyMode = D3DXSHADER_USE_LEGACY_D3DX9_31_DLL;
         #else
-            #error You should be using DX SDK Aug 2007 or later
+			// lee - 131010 - DarkGDK should support The October 2006 SDK (for legacy users)
+			// previous DarkGDK builds may have used Aug 2007 (35.DLL)
+            // #error You should be using DX SDK Aug 2007 or later
         #endif
 	#endif
 
