@@ -473,6 +473,56 @@ DARKSDK void ExternalDisplayUpdate(void)
 extern int g_iDarkGameSDKQuit;
 #endif
 
+LRESULT DecodeGesture(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	// U76 - added but not used (yet)
+    GESTUREINFO gi;  
+    ZeroMemory(&gi, sizeof(GESTUREINFO));
+    gi.cbSize = sizeof(GESTUREINFO);
+    BOOL bResult  = GetGestureInfo((HGESTUREINFO)lParam, &gi);
+    BOOL bHandled = FALSE;
+    if ( bResult )
+	{
+        // now interpret the gesture
+        switch (gi.dwID)
+		{
+           case GID_ZOOM:
+               // Code for zooming goes here     
+               break;
+           case GID_PAN:
+               // Code for panning goes here
+               break;
+           case GID_ROTATE:
+               // Code for rotation goes here
+               break;
+           case GID_TWOFINGERTAP:
+               // Code for two-finger tap goes here
+               break;
+           case GID_PRESSANDTAP:
+               // Code for tap goes here
+               break;
+           default:
+               // A gesture was not recognized
+               break;
+        }
+    }
+	else
+	{
+        DWORD dwErr = GetLastError();
+        if (dwErr > 0)
+		{
+            //MessageBoxW(hWnd, L"Error!", L"Could not retrieve a GESTUREINFO structure.", MB_OK);
+        }
+    }
+    if ( bHandled )
+	{
+        return 0;
+    }
+	else
+	{
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+}
 
 LRESULT CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
@@ -649,6 +699,7 @@ LRESULT CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 		case WM_LBUTTONDOWN:
 			g_Glob.iWindowsMouseClick|=1;
+			g_Glob.dwWindowsMouseLeftTouchPersist=1;
 			if ( GetFocus()!=hWnd ) SetFocus ( hWnd );
 			break;
 
@@ -664,6 +715,11 @@ LRESULT CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 		case WM_RBUTTONUP:
 			g_Glob.iWindowsMouseClick^=2;
 			break;
+
+		case WM_GESTURE:
+			// U77 - Touch for Windows 7
+			// ensure tap = click (not mouse position)
+			return DecodeGesture(hWnd, message, wParam, lParam);
 
 		case WM_SYSKEYDOWN:
 			g_wWinKey = wParam; // leefix - 240604 - u54 - for WAIT KEY bug F10
