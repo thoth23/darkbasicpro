@@ -201,7 +201,7 @@ struct GlobStruct
 	int							iWindowsMouseX;
 	int							iWindowsMouseY;
 	int							iWindowsMouseClick;
-	DWORD						dwWMDSpare2;
+	DWORD						dwWindowsMouseLeftTouchPersist;
 	DWORD						dwWMDSpare3;
 	DWORD						dwWMDSpare4;
 	DWORD						dwWMDSpare5;

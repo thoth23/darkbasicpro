@@ -1034,6 +1034,16 @@ DARKSDK int GetMouseClick ( void )
 
     memset ( &m_MouseBuffer, 0, sizeof ( m_MouseBuffer ) );
 
+	// U76 - Windows 7 can produce mouse event!
+	if ( g_pGlob )
+	{
+		if ( g_pGlob->dwWindowsMouseLeftTouchPersist==1 ) 
+		{
+			g_pGlob->dwWindowsMouseLeftTouchPersist=0;
+			iCount |= 1;
+		}
+	}
+
 	return iCount;
 }
 
