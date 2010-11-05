@@ -1037,9 +1037,8 @@ DARKSDK int GetMouseClick ( void )
 	// U76 - Windows 7 can produce mouse event!
 	if ( g_pGlob )
 	{
-		if ( g_pGlob->dwWindowsMouseLeftTouchPersist==1 ) 
+		if ( g_pGlob->dwWindowsMouseLeftTouchPersist != 0 ) 
 		{
-			g_pGlob->dwWindowsMouseLeftTouchPersist=0;
 			iCount |= 1;
 		}
 	}
