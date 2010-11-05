@@ -202,6 +202,12 @@ bool IsArraySingleDim ( DWORD dwArrayPtr )
 
 DARKSDK DWORD ProcessMessagesOnly(void)
 {
+	// U76 - Windows 7 touch has no 'touch-release' via WM_MOUSE commands
+	// so create an artificial persistence so MOUSECLICK(DX) can detect it
+	if ( g_Glob.dwWindowsMouseLeftTouchPersist > 0 )
+		if ( timeGetTime() > g_Glob.dwWindowsMouseLeftTouchPersist )
+			g_Glob.dwWindowsMouseLeftTouchPersist=0;
+
 	// Vars
 	MSG msg;
 
@@ -699,7 +705,7 @@ LRESULT CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 		case WM_LBUTTONDOWN:
 			g_Glob.iWindowsMouseClick|=1;
-			g_Glob.dwWindowsMouseLeftTouchPersist=1;
+			g_Glob.dwWindowsMouseLeftTouchPersist=timeGetTime()+250; // U76 - many cycles
 			if ( GetFocus()!=hWnd ) SetFocus ( hWnd );
 			break;
 
