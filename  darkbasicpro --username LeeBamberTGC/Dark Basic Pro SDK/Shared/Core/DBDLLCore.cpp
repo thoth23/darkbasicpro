@@ -479,6 +479,7 @@ DARKSDK void ExternalDisplayUpdate(void)
 extern int g_iDarkGameSDKQuit;
 #endif
 
+/* Proved incompatible with Windows XP (user.dll)
 LRESULT DecodeGesture(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	// U76 - added but not used (yet)
@@ -529,6 +530,7 @@ LRESULT DecodeGesture(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 }
+*/
 
 LRESULT CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
@@ -722,10 +724,10 @@ LRESULT CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			g_Glob.iWindowsMouseClick^=2;
 			break;
 
-		case WM_GESTURE:
-			// U77 - Touch for Windows 7
-			// ensure tap = click (not mouse position)
-			return DecodeGesture(hWnd, message, wParam, lParam);
+//		case WM_GESTURE:
+//			// U77 - Touch for Windows 7
+//			// ensure tap = click (not mouse position)
+//			return DecodeGesture(hWnd, message, wParam, lParam);
 
 		case WM_SYSKEYDOWN:
 			g_wWinKey = wParam; // leefix - 240604 - u54 - for WAIT KEY bug F10
