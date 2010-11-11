@@ -47,9 +47,3 @@ bool cDataManager::Delete ( int iID )
     }
 	return true;
 }
-
-BaseVector* cDataManager::GetData ( int iID )
-{
-    ListPtr p = m_List.find( iID );
-    return (p == m_List.end()) ? NULL : p->second;
-}
