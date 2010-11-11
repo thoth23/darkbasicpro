@@ -24,18 +24,19 @@
 
 #include <map>
 
-#define TYPE_VECTOR2	1
-#define TYPE_VECTOR3	2
-#define TYPE_VECTOR4	3
-#define TYPE_MATRIX		4
-
 class BaseVector
 {
-private:
-    int Type;
 public:
-    BaseVector(int Type_) : Type( Type_ ) {}
-    int GetType() const { return Type; }
+    enum eVectorType
+    {
+        E_TYPE_VECTOR2 = 1,
+        E_TYPE_VECTOR3 = 2,
+        E_TYPE_VECTOR4 = 3,
+        E_TYPE_MATRIX  = 4,
+    };
+
+    BaseVector() {}
+    virtual eVectorType GetType() const = 0;
 };
 
 class Vector2 : public BaseVector
@@ -43,7 +44,9 @@ class Vector2 : public BaseVector
 private:
     D3DXVECTOR2 V;
 public:
-    Vector2() : BaseVector(TYPE_VECTOR2), V(0.0f, 0.0f) { }
+    Vector2() : V(0.0f, 0.0f) { }
+    eVectorType GetType() const { return E_TYPE_VECTOR2; }
+
     D3DXVECTOR2& Get() { return V; }
 };
 
@@ -52,7 +55,9 @@ class Vector3 : public BaseVector
 private:
     D3DXVECTOR3 V;
 public:
-    Vector3() : BaseVector(TYPE_VECTOR3), V(0.0f, 0.0f, 0.0f) { }
+    Vector3() : V(0.0f, 0.0f, 0.0f) { }
+    eVectorType GetType() const { return E_TYPE_VECTOR3; }
+
     D3DXVECTOR3& Get() { return V; }
 };
 
@@ -61,7 +66,9 @@ class Vector4 : public BaseVector
 private:
     D3DXVECTOR4 V;
 public:
-    Vector4() : BaseVector(TYPE_VECTOR4), V(0.0f, 0.0f, 0.0f, 0.0f) { }
+    Vector4() : V(0.0f, 0.0f, 0.0f, 0.0f) { }
+    eVectorType GetType() const { return E_TYPE_VECTOR4; }
+
     D3DXVECTOR4& Get() { return V; }
 };
 
@@ -70,10 +77,12 @@ class Matrix : public BaseVector
 private:
     D3DXMATRIX V;
 public:
-    Matrix() : BaseVector(TYPE_MATRIX), V()
+    Matrix()
     {
         memset( &V, 0, sizeof(V) );
     }
+    eVectorType GetType() const { return E_TYPE_MATRIX; }
+
     D3DXMATRIX& Get() { return V; }
 };
 
@@ -82,6 +91,7 @@ class cDataManager
 	private:
         typedef std::map<int, BaseVector*>	List_t;
         typedef List_t::iterator			ListPtr;
+        typedef List_t::const_iterator		ConstListPtr;
         typedef std::pair<ListPtr, bool>    ListInsertStatus;
 
         List_t	m_List;
@@ -94,7 +104,14 @@ class cDataManager
 		bool Add    		( BaseVector* pData, int iID );
 		bool Delete 		( int iID );
 
-		BaseVector* GetData ( int iID );
+        bool Exist ( int iID ) const { return m_List.count( iID ) > 0; }
+
+        template <typename T>
+		T* GetData ( int iID ) const 
+        {
+            ConstListPtr p = m_List.find( iID );
+            return (p == m_List.end()) ? NULL : dynamic_cast<T*>(p->second);
+        };
 };
 
 #endif _CVECTORMANAGER_H_

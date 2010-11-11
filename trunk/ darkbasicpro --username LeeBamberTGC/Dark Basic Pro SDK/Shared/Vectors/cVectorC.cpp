@@ -56,64 +56,40 @@ namespace
 
 namespace
 {
-    Vector2* GetVector2Ptr( int iID )
+    template <typename T>
+    inline T* GetCorrectedPtr( int iID )
     {
-        BaseVector* pVectorBase = m_DataManager.GetData( iID );
+        T* pVector = m_DataManager.GetData<T>( iID );
 
         // Confirm it exists and is of the correct type
-        if (!pVectorBase || pVectorBase->GetType() != TYPE_VECTOR2)
+        if (!pVector)
         {
 		    RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		    return NULL;
+		    return 0;
         }
 
         // Cast to the proper type and return the pointer
-        return (Vector2*)(pVectorBase);
+        return pVector;
     }
 
-    Vector3* GetVector3Ptr( int iID )
+    inline Vector2* GetVector2Ptr( int iID )
     {
-        BaseVector* pVectorBase = m_DataManager.GetData( iID );
-
-        // Confirm it exists and is of the correct type
-        if (!pVectorBase || pVectorBase->GetType() != TYPE_VECTOR3)
-        {
-		    RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		    return NULL;
-        }
-
-        // Cast to the proper type and return the pointer
-        return (Vector3*)(pVectorBase);
+        return GetCorrectedPtr<Vector2>( iID );
     }
 
-    Vector4* GetVector4Ptr( int iID )
+    inline Vector3* GetVector3Ptr( int iID )
     {
-        BaseVector* pVectorBase = m_DataManager.GetData( iID );
-
-        // Confirm it exists and is of the correct type
-        if (!pVectorBase || pVectorBase->GetType() != TYPE_VECTOR4)
-        {
-		    RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		    return NULL;
-        }
-
-        // Cast to the proper type and return the pointer
-        return (Vector4*)(pVectorBase);
+        return GetCorrectedPtr<Vector3>( iID );
     }
 
-    Matrix* GetMatrixPtr( int iID )
+    inline Vector4* GetVector4Ptr( int iID )
     {
-        BaseVector* pVectorBase = m_DataManager.GetData( iID );
+        return GetCorrectedPtr<Vector4>( iID );
+    }
 
-        // Confirm it exists and is of the correct type
-        if (!pVectorBase || pVectorBase->GetType() != TYPE_MATRIX)
-        {
-		    RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		    return NULL;
-        }
-
-        // Cast to the proper type and return the pointer
-        return (Matrix*)(pVectorBase);
+    inline Matrix* GetMatrixPtr( int iID )
+    {
+        return GetCorrectedPtr<Matrix>( iID );
     }
 }
 
@@ -223,15 +199,12 @@ DARKSDK D3DXMATRIX GetMatrix ( int iID )
 
 DARKSDK int GetExist ( int iID )
 {
-	if ( m_DataManager.GetData ( iID )==NULL )
-		return 0;
-	else
-		return 1;
+    return m_DataManager.Exist( iID ) ? 1 : 0;
 }
 
 DARKSDK bool CheckTypeIsValid ( int iID, int iType )
 {
-    BaseVector* pVectorBase = m_DataManager.GetData( iID );
+    BaseVector* pVectorBase = m_DataManager.GetData<BaseVector>( iID );
 
     // Confirm it exists and is of the correct type
     if (!pVectorBase || pVectorBase->GetType() != iType)
