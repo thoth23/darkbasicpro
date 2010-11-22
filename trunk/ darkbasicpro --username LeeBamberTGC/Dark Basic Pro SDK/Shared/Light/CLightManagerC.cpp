@@ -1,57 +1,87 @@
 #include "CLightManagerC.h"
 
-CLightManager::CLightManager ( void )
-{
-	
-}
-
-CLightManager::~CLightManager ( void )
-{
-}
-
 bool CLightManager::Add ( tagLightData* pData, int iID )
 {
 	///////////////////////////////////////
-	// check if an object already exists //
-	// with the same id, if it does then //
-	// delete it                         //
+    // if an object already exists with  //
+    // the same id, delete it            //
 	///////////////////////////////////////
-	tagLightData* ptr = NULL;
-	ptr = ( tagLightData* ) m_List.Get ( iID );
-			
-	if ( ptr != NULL )
-		m_List.Delete ( iID );
-	///////////////////////////////////////
+    Delete( iID, NULL );
 
 	///////////////////////////////////////
 	// create a new object and insert in //
 	// the list                          //
 	///////////////////////////////////////
-	tagLightData* test;
-	test = new tagLightData;
+	tagLightData* NewLight = new tagLightData;
+    memcpy(NewLight, pData, sizeof(tagLightData));
 
-	memset ( test,     0, sizeof ( test          ) );
-	memcpy ( test, pData, sizeof ( tagLightData ) );
+    m_List.insert( std::make_pair(iID, NewLight) );
 
-	m_List.Add ( iID, ( VOID* ) test, 0, 1 );
-	///////////////////////////////////////
+    CurrentPtr = NewLight;
+    CurrentID  = iID;
 
 	return false;
 }
 
-bool CLightManager::Delete ( int iID )
+bool CLightManager::Delete ( int iID, LPDIRECT3DDEVICE9 pD3D )
 {
-	tagLightData* ptr = NULL;
-	ptr = ( tagLightData* ) m_List.Get ( iID );
-	if ( ptr != NULL ) delete ptr;
-	m_List.Delete ( iID );
-	return false;
+    // If deleting the cached  light, clear the cached data.
+    if (CurrentID == iID)
+    {
+        CurrentPtr = NULL;
+        CurrentID = -1;
+    }
+
+    // Locate the light, disable it, delete the light details,
+    // then remove it from the list.
+    LightPtr p = m_List.find( iID );
+    if (p != m_List.end())
+    {
+        if (pD3D)
+        	pD3D->LightEnable ( p->first, FALSE );
+
+        delete p->second;
+        
+        m_List.erase( p );
+        
+        return true;
+    }
+    return false;
 }
 
+void CLightManager::DeleteAll ( LPDIRECT3DDEVICE9 pD3D )
+{
+    // Disable all lights and free their memory
+    for (LightPtr p = m_List.begin(); p != m_List.end(); ++p)
+    {
+        if (pD3D)
+        	pD3D->LightEnable ( p->first, FALSE );
 
- 
+        delete p->second;
+    }
+
+    // Now clear the list
+    m_List.clear();
+
+    // Clear the cached pointer.
+    CurrentID = -1;
+    CurrentPtr = NULL;
+}
+
 tagLightData* CLightManager::GetData ( int iID )
 {
-	// get a pointer to the sprite info and update data
-	return ( tagLightData* ) m_List.Get ( iID );
+    // If the light requested isn't the cached light,
+    // refresh the cached pointer.
+    if (CurrentPtr == NULL || CurrentID != iID)
+    {
+        LightPtr p = m_List.find( iID );
+        if (p == m_List.end())
+            CurrentPtr = NULL;
+        else
+            CurrentPtr = p->second;
+        CurrentID = iID;
+    }
+
+    // Return the cached pointer.
+    return CurrentPtr;
 }

@@ -60,28 +60,32 @@ namespace
 // GLOBALS ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef IDirect3DDevice9*	( *GFX_GetDirect3DDevicePFN )	( void );
-typedef D3DXVECTOR3			( *GetVectorPFN )				( int );
-typedef void				( *SetVectorPFN )				( int, float, float, float );
-typedef int					( *GetExistPFN )				( int );
-typedef sObject*            ( *GetObjectPFN )               ( int );
+DBPRO_GLOBAL GlobStruct*			g_pGlob	= NULL;
 
-DBPRO_GLOBAL GetVectorPFN					g_Types_GetVector;
-DBPRO_GLOBAL SetVectorPFN					g_Types_SetVector;
-DBPRO_GLOBAL GetExistPFN					g_Types_GetExist;
-DBPRO_GLOBAL GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;
-DBPRO_GLOBAL GetObjectPFN                   g_Basic3D_GetObject;
-DBPRO_GLOBAL CLightManager					m_LightManager;
-DBPRO_GLOBAL tagLightData*					m_ptr;
-DBPRO_GLOBAL LPDIRECT3DDEVICE9				m_pD3D;
-DBPRO_GLOBAL int							m_iAmbientParcentage;
-DBPRO_GLOBAL int							m_iAmbientRed;
-DBPRO_GLOBAL int							m_iAmbientGreen;
-DBPRO_GLOBAL int							m_iAmbientBlue;
-DBPRO_GLOBAL float							g_fFogStartDistance;
-DBPRO_GLOBAL float							g_fFogEndDistance;
-DBPRO_GLOBAL DWORD                          g_dwFogColor;
-DBPRO_GLOBAL GlobStruct*					g_pGlob	= NULL;
+namespace
+{
+    typedef IDirect3DDevice9*		( *GFX_GetDirect3DDevicePFN )	( void );
+    typedef D3DXVECTOR3				( *GetVectorPFN )				( int );
+    typedef void					( *SetVectorPFN )				( int, float, float, float );
+    typedef int						( *GetExistPFN )				( int );
+    typedef sObject*            	( *GetObjectPFN )               ( int );
+
+    GetVectorPFN					g_Types_GetVector;
+    SetVectorPFN					g_Types_SetVector;
+    GetExistPFN						g_Types_GetExist;
+    GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;
+    GetObjectPFN                   	g_Basic3D_GetObject;
+    CLightManager					m_LightManager;
+    tagLightData*					m_ptr;
+    LPDIRECT3DDEVICE9				m_pD3D;
+    int								m_iAmbientParcentage;
+    int								m_iAmbientRed;
+    int								m_iAmbientGreen;
+    int								m_iAmbientBlue;
+    float							g_fFogStartDistance;
+    float							g_fFogEndDistance;
+    DWORD                          	g_dwFogColor;
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -167,21 +171,7 @@ DARKSDK void SetSpecularOff ( void )
 
 DARKSDK void DestructorD3D ( void )
 {
-	// delete any items in the list
-	link* pCheck = m_LightManager.m_List.m_start;
-	while ( pCheck )
-	{
-		tagLightData* ptr = NULL;
-		ptr = ( tagLightData* ) m_LightManager.m_List.Get ( pCheck->id );
-		if ( ptr == NULL )
-			continue;
-
-		delete ptr;
-		ptr=NULL;
-
-		pCheck = pCheck->next;
-	}
-	m_LightManager.m_List.DeleteAll ( );
+    m_LightManager.DeleteAll( m_pD3D );
 }
 
 DARKSDK void Destructor ( void )
@@ -236,7 +226,6 @@ DARKSDK void RefreshD3D ( int iMode )
 DARKSDK bool UpdatePtr ( int iID )
 {
 	// update internal data for the sprite
-	m_ptr  = NULL;
 	m_ptr  = m_LightManager.GetData ( iID );
 
 	if ( m_ptr == NULL )
@@ -261,7 +250,7 @@ DARKSDK void Make ( int iID )
 	memset ( &m_Data.light, 0, sizeof ( D3DLIGHT9 ) );
 
 	// set structure data
-	m_Data.iType = 1;
+	m_Data.eType = eDirectionalLight;
 	m_Data.bEnable = true;
 	m_Data.fRange = 1000.0f;
 	m_Data.dwColor = D3DCOLOR_ARGB ( 255,255,255,255 );
@@ -279,11 +268,8 @@ DARKSDK void Make ( int iID )
 
 DARKSDK void Delete ( int iID )
 {
-	// mike - 011005 - disable light when it is deleted
-	m_pD3D->LightEnable ( iID, FALSE );
-
 	// Delete Light
-	m_LightManager.Delete ( iID );
+	m_LightManager.Delete ( iID, m_pD3D );
 }
 
 DARKSDK bool GetExist ( int iID )
@@ -427,7 +413,7 @@ DARKSDK void SetPoint ( int iID, float fX, float fY, float fZ )
 	}
 
 	// fill in data
-	m_ptr->iType = 2;
+	m_ptr->eType = ePointLight;
 	memset ( &m_ptr->light, 0, sizeof ( D3DLIGHT9 ) );
 	m_ptr->light.Type         = D3DLIGHT_POINT;						// set to point light
 	m_ptr->light.Diffuse.r    = 1.0f;								// diffuse colour to reflect all
@@ -463,7 +449,7 @@ DARKSDK void SetSpot ( int iID, float fInner, float fOuter )
 	}
 
 	// fill in data
-	m_ptr->iType = 3;
+	m_ptr->eType = eSpotLight;
 	memset ( &m_ptr->light, 0, sizeof ( D3DLIGHT9 ) );
 	m_ptr->light.Type         = D3DLIGHT_SPOT;						// set to spot light
 	m_ptr->light.Diffuse.r    = 1.0f;								// diffuse colour to reflect all
@@ -504,7 +490,7 @@ DARKSDK void SetDirectional ( int iID, float fX, float fY, float fZ )
 	}
 
 	// lee - 230306 - u6b4 - these settings updated from Basic3D which seemed to overrule the old default start (ie no specular)
-	m_ptr->iType = 1;
+	m_ptr->eType = eDirectionalLight;
 	memset ( &m_ptr->light, 0, sizeof ( D3DLIGHT9 ) );
 	m_ptr->light.Type       = D3DLIGHT_DIRECTIONAL;				// set to directional light
 	m_ptr->light.Diffuse.r  = 1.0f;								// diffuse colour to reflect all
@@ -513,22 +499,6 @@ DARKSDK void SetDirectional ( int iID, float fX, float fY, float fZ )
 	m_ptr->light.Direction  = D3DXVECTOR3 ( fX, fY, fZ );		// light direction
 	m_ptr->light.Range		= 5000.0f;							// defaul range
 	m_ptr->light.Attenuation0 = 1.0f;							// light intensity over distance
-	/* 
-	// fill in properties
-	m_ptr->iType = 1;
-	memset ( &m_ptr->light, 0, sizeof ( D3DLIGHT9 ) );
-	m_ptr->light.Type       = D3DLIGHT_DIRECTIONAL;				// set to directional light
-	m_ptr->light.Diffuse.r  = 1.0f;								// diffuse colour to reflect all
-	m_ptr->light.Diffuse.g  = 1.0f;								// diffuse colour to reflect all
-	m_ptr->light.Diffuse.b  = 1.0f;								// diffuse colour to reflect all
-	m_ptr->light.Diffuse.a  = 1.0f;								// diffuse colour to reflect all
-	m_ptr->light.Direction  = D3DXVECTOR3 ( fX, fY, fZ );		// light direction
-	// set standard specular light
-	m_ptr->light.Specular.r  = 1.0f;
-	m_ptr->light.Specular.g  = 1.0f;
-	m_ptr->light.Specular.b  = 1.0f;
-	m_ptr->light.Specular.a  = 1.0f;
-	*/
 
 	// update light
 	m_pD3D->SetLight ( iID, &m_ptr->light );
@@ -1065,7 +1035,7 @@ DARKSDK int GetTypeEx ( int iID )
 		RunTimeError ( RUNTIMEERROR_B3DLIGHTNOTEXIST );
 		return -1;
 	}
-	return m_ptr->iType;
+	return m_ptr->eType;
 }
 
 DARKSDK DWORD GetXPositionEx ( int iID )
