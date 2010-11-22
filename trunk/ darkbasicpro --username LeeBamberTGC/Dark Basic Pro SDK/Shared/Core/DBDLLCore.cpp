@@ -397,23 +397,6 @@ DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCodeAkaFastSync )
 					{
                         // u74b8 - replace hard-coded calls with a dynamic list of function pointers
                         ExecuteRenderList();
-
-                        /*
-						if(g_Basic3D_UpdateOnce) g_Basic3D_UpdateOnce(); // U70 - 300808 - moved from just above Basic3D (need correct frustrum culling for stencil calc)
-						if(g_Basic3D_StencilRenderStart) g_Basic3D_StencilRenderStart();
-						if(g_World3D_Update) g_World3D_Update();
-						if(g_Camera3D_Update) g_Camera3D_Update();
-						if(g_Light3D_Update) g_Light3D_Update();
-						if(g_LODTerrain_Update) g_LODTerrain_Update();
-						if(g_Matrix3D_Update) g_Matrix3D_Update();
-						if(g_Basic3D_Update) g_Basic3D_Update();
-						if(g_Particles_Update) g_Particles_Update();//240204-moved before nozpdepth(which can wipe Zbuffer)
-						// leefix - 181004 - switched these around fpr U5.8 (so shadows not over nozdepth objects)
-						if(g_Basic3D_UpdateGhostLayer) g_Basic3D_UpdateGhostLayer();
-						if(g_Basic3D_StencilRenderEnd) g_Basic3D_StencilRenderEnd();
-						if(g_Matrix3D_LastUpdate) g_Matrix3D_LastUpdate();	// 280305-movedthisfromafter nozdepth so OBJECTS such as gun is LAST thing to be drawn
-						if(g_Basic3D_UpdateNoZDepth) g_Basic3D_UpdateNoZDepth();
-                        */
 					}
 				}
 				// Next camera or finish..
@@ -1960,10 +1943,22 @@ DARKSDK void PrintCS(LPSTR pString)
 
 DARKSDK LONGLONG PerformanceTimer ( void )
 {
+    LARGE_INTEGER large;
+	if (!QueryPerformanceCounter ( &large ))
+    {
+        large.QuadPart = 0;
+    };
+	return large.QuadPart;
+}
+
+DARKSDK LONGLONG PerformanceFrequency ( void )
+{
 	LARGE_INTEGER large;
-	QueryPerformanceCounter ( &large );
-	LONGLONG longv = (LONGLONG)large.QuadPart;
-	return longv;
+	if (! QueryPerformanceFrequency( &large ))
+    {
+        large.QuadPart = 0;
+    }
+	return large.QuadPart;
 }
 
 DARKSDK LONGLONG InputR(void)
