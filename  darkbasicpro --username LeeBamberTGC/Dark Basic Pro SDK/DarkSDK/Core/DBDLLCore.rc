@@ -291,6 +291,7 @@ BEGIN
     IDS_STRING146           "GET ARRAY TYPE[%LH%?GetArrayType@@YAKK@Z%Array Name(0)"
     IDS_STRING147           "DRAW TO CAMERA%0%?DrawToCamera@@YAXXZ"
     IDS_STRING148           "DRAW TO SCREEN%0%?DrawToScreen@@YAXXZ"
+    IDS_STRING149           "PERFFREQ[%R%?PerformanceFrequency@@YA_JXZ"
 END
 
 #endif    // English (U.K.) resources

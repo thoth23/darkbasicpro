@@ -150,6 +150,7 @@
 #define IDS_STRING146                   146
 #define IDS_STRING147                   147
 #define IDS_STRING148                   148
+#define IDS_STRING149                   149
 
 // Next default values for new objects
 // 
