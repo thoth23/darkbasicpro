@@ -671,7 +671,12 @@ DARKSDK void BoxGradient( int iLeft, int iTop, int iRight, int iBottom, DWORD dw
 
 		m_pD3D->SetRenderState( D3DRS_FOGENABLE, FALSE );
 		m_pD3D->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
-		m_pD3D->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+
+        // Save AA setting, and disable if active
+        DWORD AAEnabled = FALSE;
+        m_pD3D->GetRenderState  ( D3DRS_MULTISAMPLEANTIALIAS, &AAEnabled );
+        if (AAEnabled)
+		    m_pD3D->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
 		
 		m_pD3D->SetVertexShader( NULL  );
 		m_pD3D->SetFVF( D3DFVF_LINES  );
@@ -687,6 +692,10 @@ DARKSDK void BoxGradient( int iLeft, int iTop, int iRight, int iBottom, DWORD dw
 
         // 20091128 v75 - IRM - Render as a fan with 4 polys, not a strip with 2 polys
 		m_pD3D->DrawPrimitive( D3DPT_TRIANGLEFAN, 0 ,4);
+
+        // Re-enable AA if it was previously enabled
+        if (AAEnabled)
+		    m_pD3D->SetRenderState ( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
 	}
 }
 
