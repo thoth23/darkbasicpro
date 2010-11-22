@@ -236,126 +236,98 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Data\CDataC.cpp"
+		<Filter
+			Name="Error"
 			>
-			<FileConfiguration
-				Name="Release|Win32"
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Error\CError.h"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
+			</File>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Error\CRuntimeErrors.h"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="ReleaseVR920|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Data\CDataC.h"
+			</File>
+		</Filter>
+		<Filter
+			Name="Light"
 			>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Error\CError.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightC.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightC.cpp"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightC.h"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="ReleaseVR920|Win32"
+			</File>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightDataC.h"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightC.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightDataC.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightManagerC.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
+			</File>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightManagerC.cpp"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightManagerC.h"
 				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="ReleaseVR920|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Light\CLightManagerC.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Error\CRuntimeErrors.h"
-			>
-		</File>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
