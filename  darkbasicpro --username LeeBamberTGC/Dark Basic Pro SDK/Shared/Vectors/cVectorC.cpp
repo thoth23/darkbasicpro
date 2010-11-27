@@ -219,18 +219,44 @@ DARKSDK bool CheckTypeIsValid ( int iID, int iType )
 
 DARKSDK SDK_BOOL MakeVector2 ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return false;
+    }
+
     m_DataManager.Add( new Vector2, iID );
     return true;
 }
 
 DARKSDK SDK_BOOL DeleteVector2 ( int iID )
 {
-	m_DataManager.Delete ( iID );
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return false;
+    }
+
+    Vector2* pVector = GetVector2Ptr( iID );
+
+    if (!pVector)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
+    m_DataManager.Delete ( iID );
 	return true;
 }
 
 DARKSDK void SetVector2 ( int iID, float fX, float fY )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pVector = GetVector2Ptr( iID );
 
     if (!pVector)
@@ -244,6 +270,12 @@ DARKSDK void SetVector2 ( int iID, float fX, float fY )
 
 DARKSDK void CopyVector2 ( int iDestination, int iSource  )
 {
+    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pSource = GetVector2Ptr( iSource );
     Vector2* pDest   = GetVector2Ptr( iDestination );
 
@@ -258,6 +290,12 @@ DARKSDK void CopyVector2 ( int iDestination, int iSource  )
 
 DARKSDK void AddVector2 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -273,6 +311,12 @@ DARKSDK void AddVector2 ( int iResult, int iA, int iB )
 
 DARKSDK void SubtractVector2 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -288,6 +332,12 @@ DARKSDK void SubtractVector2 ( int iResult, int iA, int iB )
 
 DARKSDK void MultiplyVector2 ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pDest = GetVector2Ptr( iID );
 
     if (!pDest)
@@ -301,6 +351,12 @@ DARKSDK void MultiplyVector2 ( int iID, float fValue )
 
 DARKSDK void DivideVector2 ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pDest = GetVector2Ptr( iID );
 
     if (!pDest)
@@ -364,6 +420,12 @@ DARKSDK SDK_FLOAT GetYVector2 ( int iID )
 
 DARKSDK void GetBaryCentricCoordinatesVector2 ( int iResult, int iA, int iB, int iC, float f, float g )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -381,6 +443,12 @@ DARKSDK void GetBaryCentricCoordinatesVector2 ( int iResult, int iA, int iB, int
 
 DARKSDK void CatmullRomVector2 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -428,6 +496,12 @@ DARKSDK SDK_FLOAT DotProductVector2 ( int iA, int iB )
 
 DARKSDK void HermiteVector2 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -473,6 +547,12 @@ DARKSDK SDK_FLOAT GetLengthSquaredVector2 ( int iID )
 
 DARKSDK void LinearInterpolationVector2 ( int iResult, int iA, int iB, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -488,6 +568,12 @@ DARKSDK void LinearInterpolationVector2 ( int iResult, int iA, int iB, float s )
 
 DARKSDK void MaximizeVector2 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -503,6 +589,12 @@ DARKSDK void MaximizeVector2 ( int iResult, int iA, int iB )
 
 DARKSDK void MinimizeVector2 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pA      = GetVector2Ptr( iA );
     Vector2* pB      = GetVector2Ptr( iB );
@@ -518,6 +610,12 @@ DARKSDK void MinimizeVector2 ( int iResult, int iA, int iB )
 
 DARKSDK void NormalizeVector2 ( int iResult, int iSource )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pSource = GetVector2Ptr( iSource );
 
@@ -532,6 +630,12 @@ DARKSDK void NormalizeVector2 ( int iResult, int iSource )
 
 DARKSDK void ScaleVector2 ( int iResult, int iSource, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pSource = GetVector2Ptr( iSource );
 
@@ -546,13 +650,24 @@ DARKSDK void ScaleVector2 ( int iResult, int iSource, float s )
 
 DARKSDK void TransformVectorCoordinates2 ( int iResult, int iSource, int iMatrix )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector2* pResult = GetVector2Ptr( iResult );
     Vector2* pSource = GetVector2Ptr( iSource );
     Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
 
-    if (!pResult || !pSource || !pMatrix)
+    if (!pResult || !pSource)
     {
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+    if (!pMatrix)
+    {
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -565,18 +680,44 @@ DARKSDK void TransformVectorCoordinates2 ( int iResult, int iSource, int iMatrix
 
 DARKSDK SDK_BOOL MakeVector3 ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return false;
+    }
+
     m_DataManager.Add( new Vector3, iID );
     return true;
 }
 
 DARKSDK SDK_BOOL DeleteVector3 ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return false;
+    }
+
+    Vector3* pVector = GetVector3Ptr( iID );
+
+    if (!pVector)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
 	m_DataManager.Delete ( iID );
 	return true;
 }
 
 DARKSDK void SetVector3 ( int iID, float fX, float fY, float fZ )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pID = GetVector3Ptr( iID );
 
 	if (!pID)
@@ -629,6 +770,12 @@ DARKSDK SDK_FLOAT GetZVector3 ( int iID )
 
 DARKSDK void CopyVector3 ( int iDestination, int iSource )
 {
+    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pSource = GetVector3Ptr( iSource );
     Vector3* pDest   = GetVector3Ptr( iDestination );
 
@@ -643,6 +790,12 @@ DARKSDK void CopyVector3 ( int iDestination, int iSource )
 
 DARKSDK void AddVector3 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -658,6 +811,12 @@ DARKSDK void AddVector3 ( int iResult, int iA, int iB )
 
 DARKSDK void SubtractVector3 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -673,6 +832,12 @@ DARKSDK void SubtractVector3 ( int iResult, int iA, int iB )
 
 DARKSDK void MultiplyVector3 ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pDest = GetVector3Ptr( iID );
 
     if (!pDest)
@@ -686,6 +851,12 @@ DARKSDK void MultiplyVector3 ( int iID, float fValue )
 
 DARKSDK void DivideVector3 ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pDest = GetVector3Ptr( iID );
 
     if (!pDest)
@@ -721,6 +892,12 @@ DARKSDK SDK_BOOL IsNotEqualVector3 ( int iA, int iB )
 
 DARKSDK void GetBaryCentricCoordinatesVector3 ( int iResult, int iA, int iB, int iC, float f, float g )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -738,15 +915,26 @@ DARKSDK void GetBaryCentricCoordinatesVector3 ( int iResult, int iA, int iB, int
 
 DARKSDK void ProjectVector3 ( int iResult, int iSource, int iProjectionMatrix, int iViewMatrix, int iWorldMatrix )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pSource = GetVector3Ptr( iSource );
     Matrix*  pProjM  = GetMatrixPtr ( iProjectionMatrix );
     Matrix*  pViewM  = GetMatrixPtr ( iViewMatrix );
     Matrix*  pWorldM = GetMatrixPtr ( iWorldMatrix );
 
-    if (!pResult || !pSource || !pProjM || !pViewM || !pWorldM )
+    if (!pResult || !pSource)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+    if (!pProjM || !pViewM || !pWorldM)
+    {
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -759,13 +947,24 @@ DARKSDK void ProjectVector3 ( int iResult, int iSource, int iProjectionMatrix, i
 
 DARKSDK void TransformVectorCoordinates3 ( int iResult, int iSource, int iMatrix )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pSource = GetVector3Ptr( iSource );
     Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
 
-    if (!pResult || !pSource || !pMatrix)
+    if (!pResult || !pSource)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+    if (!pMatrix)
+    {
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 	
@@ -774,13 +973,24 @@ DARKSDK void TransformVectorCoordinates3 ( int iResult, int iSource, int iMatrix
 
 DARKSDK void TransformVectorNormalCoordinates3 ( int iResult, int iSource, int iMatrix )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pSource = GetVector3Ptr( iSource );
     Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
 
-    if (!pResult || !pSource || !pMatrix)
+    if (!pResult || !pSource)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+    if (!pMatrix)
+    {
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 	
@@ -789,6 +999,12 @@ DARKSDK void TransformVectorNormalCoordinates3 ( int iResult, int iSource, int i
 
 DARKSDK void CatmullRomVector3 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -806,6 +1022,12 @@ DARKSDK void CatmullRomVector3 ( int iResult, int iA, int iB, int iC, int iD, fl
 
 DARKSDK void CrossProductVector3 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -836,6 +1058,12 @@ DARKSDK SDK_FLOAT DotProductVector3 ( int iA, int iB )
 
 DARKSDK void HermiteVector3 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -881,6 +1109,12 @@ DARKSDK SDK_FLOAT GetLengthSquaredVector3 ( int iID )
 
 DARKSDK void LinearInterpolationVector3 ( int iResult, int iA, int iB, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -896,6 +1130,12 @@ DARKSDK void LinearInterpolationVector3 ( int iResult, int iA, int iB, float s )
 
 DARKSDK void MaximizeVector3 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -911,6 +1151,12 @@ DARKSDK void MaximizeVector3 ( int iResult, int iA, int iB )
 
 DARKSDK void MinimizeVector3 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pA      = GetVector3Ptr( iA );
     Vector3* pB      = GetVector3Ptr( iB );
@@ -926,6 +1172,12 @@ DARKSDK void MinimizeVector3 ( int iResult, int iA, int iB )
 
 DARKSDK void NormalizeVector3 ( int iResult, int iSource )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pSource = GetVector3Ptr( iSource );
 
@@ -940,6 +1192,12 @@ DARKSDK void NormalizeVector3 ( int iResult, int iSource )
 
 DARKSDK void ScaleVector3 ( int iResult, int iSource, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector3* pResult = GetVector3Ptr( iResult );
     Vector3* pSource = GetVector3Ptr( iSource );
 
@@ -958,18 +1216,44 @@ DARKSDK void ScaleVector3 ( int iResult, int iSource, float s )
 
 DARKSDK SDK_BOOL MakeVector4 ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return false;
+    }
+
     m_DataManager.Add( new Vector4, iID );
     return true;
 }
 
 DARKSDK SDK_BOOL DeleteVector4 ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return false;
+    }
+
+    Vector4* pVector = GetVector4Ptr( iID );
+
+    if (!pVector)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
 	m_DataManager.Delete ( iID );
 	return true;
 }
 
 DARKSDK void SetVector4 ( int iID, float fX, float fY, float fZ, float fW )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pID = GetVector4Ptr( iID );
 
 	if (!pID)
@@ -981,8 +1265,14 @@ DARKSDK void SetVector4 ( int iID, float fX, float fY, float fZ, float fW )
 	pID->Get() = D3DXVECTOR4 ( fX, fY, fZ, fW );
 }
 
-DARKSDK void CopyVector4 ( int iSource, int iDestination )
+DARKSDK void CopyVector4 ( int iDestination, int iSource )
 {
+    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pSource = GetVector4Ptr( iSource );
     Vector4* pDest   = GetVector4Ptr( iDestination );
 
@@ -997,6 +1287,12 @@ DARKSDK void CopyVector4 ( int iSource, int iDestination )
 
 DARKSDK void AddVector4 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1012,6 +1308,12 @@ DARKSDK void AddVector4 ( int iResult, int iA, int iB )
 
 DARKSDK void SubtractVector4 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1027,6 +1329,12 @@ DARKSDK void SubtractVector4 ( int iResult, int iA, int iB )
 
 DARKSDK void MultiplyVector4 ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pDest = GetVector4Ptr( iID );
 
     if (!pDest)
@@ -1040,6 +1348,12 @@ DARKSDK void MultiplyVector4 ( int iID, float fValue )
 
 DARKSDK void DivideVector4 ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pDest = GetVector4Ptr( iID );
 
     if (!pDest)
@@ -1127,6 +1441,12 @@ DARKSDK SDK_FLOAT GetWVector4 ( int iID )
 
 DARKSDK void GetBaryCentricCoordinatesVector4 ( int iResult, int iA, int iB, int iC, float f, float g )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1143,6 +1463,12 @@ DARKSDK void GetBaryCentricCoordinatesVector4 ( int iResult, int iA, int iB, int
 
 DARKSDK void CatmullRomVector4 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1160,6 +1486,12 @@ DARKSDK void CatmullRomVector4 ( int iResult, int iA, int iB, int iC, int iD, fl
 
 DARKSDK void HermiteVector4 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1205,6 +1537,12 @@ DARKSDK SDK_FLOAT GetLengthSquaredVector4 ( int iID )
 
 DARKSDK void LinearInterpolationVector4 ( int iResult, int iA, int iB, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1220,6 +1558,12 @@ DARKSDK void LinearInterpolationVector4 ( int iResult, int iA, int iB, float s )
 
 DARKSDK void MaximizeVector4 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1235,6 +1579,12 @@ DARKSDK void MaximizeVector4 ( int iResult, int iA, int iB )
 
 DARKSDK void MinimizeVector4 ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pA      = GetVector4Ptr( iA );
     Vector4* pB      = GetVector4Ptr( iB );
@@ -1250,6 +1600,12 @@ DARKSDK void MinimizeVector4 ( int iResult, int iA, int iB )
 
 DARKSDK void NormalizeVector4 ( int iResult, int iSource )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pSource = GetVector4Ptr( iSource );
 
@@ -1264,6 +1620,12 @@ DARKSDK void NormalizeVector4 ( int iResult, int iSource )
 
 DARKSDK void ScaleVector4 ( int iResult, int iSource, float s )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pSource = GetVector4Ptr( iSource );
 
@@ -1278,15 +1640,26 @@ DARKSDK void ScaleVector4 ( int iResult, int iSource, float s )
 
 DARKSDK void TransformVector4 ( int iResult, int iSource, int iMatrix )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
+        return;
+    }
+
     Vector4* pResult = GetVector4Ptr( iResult );
     Vector4* pSource = GetVector4Ptr( iSource );
     Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
 
-    if (!pResult || !pSource || !pMatrix)
+    if (!pResult || !pSource)
     {
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+    if (!pMatrix)
+    {
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		return;
+    }
 
     D3DXVec4Transform ( &pResult->Get(), &pSource->Get(), &pMatrix->Get() );
 }
@@ -1297,6 +1670,12 @@ DARKSDK void TransformVector4 ( int iResult, int iSource, int iMatrix )
 
 DARKSDK SDK_BOOL MakeMatrix ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return false;
+    }
+
     Matrix* pMatrix = new Matrix;
     m_DataManager.Add( pMatrix, iID );
 	return true;
@@ -1305,11 +1684,17 @@ DARKSDK SDK_BOOL MakeMatrix ( int iID )
 
 DARKSDK void GetWorldMatrix ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pMatrix = GetMatrixPtr( iID );
 
     if (!pMatrix)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1318,11 +1703,17 @@ DARKSDK void GetWorldMatrix ( int iID )
 
 DARKSDK void GetViewMatrix ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pMatrix = GetMatrixPtr( iID );
 
     if (!pMatrix)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1335,11 +1726,17 @@ DARKSDK void GetViewMatrix ( int iID )
 
 DARKSDK void GetProjectionMatrix ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pMatrix = GetMatrixPtr( iID );
 
     if (!pMatrix)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1352,18 +1749,38 @@ DARKSDK void GetProjectionMatrix ( int iID )
 
 DARKSDK SDK_BOOL DeleteMatrix ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return false;
+    }
+
+    Matrix* pMatrix = GetMatrixPtr( iID );
+
+    if (!pMatrix)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		return false;
+	}
+
 	m_DataManager.Delete ( iID );
 	return SDK_TRUE;
 }
 
-DARKSDK void CopyMatrix ( int iSource, int iDestination )
+DARKSDK void CopyMatrix ( int iDestination, int iSource )
 {
+    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pSource = GetMatrixPtr( iSource );
     Matrix* pDest   = GetMatrixPtr( iDestination );
 
     if (!pSource || !pDest)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1372,13 +1789,19 @@ DARKSDK void CopyMatrix ( int iSource, int iDestination )
 
 DARKSDK void AddMatrix ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pResult = GetMatrixPtr( iResult );
     Matrix* pA      = GetMatrixPtr( iA );
     Matrix* pB      = GetMatrixPtr( iB );
 
     if (!pA || !pB || !pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1387,13 +1810,19 @@ DARKSDK void AddMatrix ( int iResult, int iA, int iB )
 
 DARKSDK void SubtractMatrix ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pResult = GetMatrixPtr( iResult );
     Matrix* pA      = GetMatrixPtr( iA );
     Matrix* pB      = GetMatrixPtr( iB );
 
     if (!pA || !pB || !pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1402,13 +1831,19 @@ DARKSDK void SubtractMatrix ( int iResult, int iA, int iB )
 
 DARKSDK void MultiplyMatrix ( int iResult, int iA, int iB )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pResult = GetMatrixPtr( iResult );
     Matrix* pA      = GetMatrixPtr( iA );
     Matrix* pB      = GetMatrixPtr( iB );
 
     if (!pA || !pB || !pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1417,11 +1852,17 @@ DARKSDK void MultiplyMatrix ( int iResult, int iA, int iB )
 
 DARKSDK void MultiplyMatrix ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pDest = GetMatrixPtr( iID );
 
     if (!pDest)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1430,11 +1871,17 @@ DARKSDK void MultiplyMatrix ( int iID, float fValue )
 
 DARKSDK void DivideMatrix ( int iID, float fValue )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pDest = GetMatrixPtr( iID );
 
     if (!pDest)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1448,7 +1895,7 @@ DARKSDK SDK_BOOL IsEqualMatrix ( int iA, int iB )
 
     if (!pA || !pB)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return false;
 	}
 
@@ -1465,11 +1912,17 @@ DARKSDK SDK_BOOL IsNotEqualMatrix ( int iA, int iB )
 
 DARKSDK void SetIdentityMatrix ( int iID )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pID = GetMatrixPtr( iID );
 
     if (!pID)
     {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 	
@@ -1478,12 +1931,18 @@ DARKSDK void SetIdentityMatrix ( int iID )
 
 DARKSDK SDK_FLOAT InverseMatrix ( int iResult, int iSource )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return 0;
+    }
+
     Matrix* pResult = GetMatrixPtr( iResult );
     Matrix* pSource = GetMatrixPtr( iSource );
 
     if (!pResult || !pSource)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return false;
 	}
 
@@ -1500,7 +1959,7 @@ DARKSDK SDK_BOOL IsIdentityMatrix ( int iID )
 
     if (!pID)
     {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return false;
 	}
 
@@ -1512,12 +1971,24 @@ DARKSDK SDK_BOOL IsIdentityMatrix ( int iID )
 
 DARKSDK void BuildLookAtRHMatrix ( int iResult, int iVectorEye, int iVectorAt, int iVectorUp )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
     Vector3* pVectorEye = GetVector3Ptr( iVectorEye );
     Vector3* pVectorAt  = GetVector3Ptr( iVectorAt );
     Vector3* pVectorUp  = GetVector3Ptr( iVectorUp );
 
-    if (!pResult || !pVectorEye || !pVectorAt || !pVectorUp)
+    if (!pResult)
+	{
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		return;
+	}
+
+    if (!pVectorEye || !pVectorAt || !pVectorUp)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
@@ -1528,12 +1999,24 @@ DARKSDK void BuildLookAtRHMatrix ( int iResult, int iVectorEye, int iVectorAt, i
 
 DARKSDK void BuildLookAtLHMatrix ( int iResult, int iVectorEye, int iVectorAt, int iVectorUp )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
     Vector3* pVectorEye = GetVector3Ptr( iVectorEye );
     Vector3* pVectorAt  = GetVector3Ptr( iVectorAt );
     Vector3* pVectorUp  = GetVector3Ptr( iVectorUp );
 
-    if (!pResult || !pVectorEye || !pVectorAt || !pVectorUp)
+    if (!pResult)
+	{
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		return;
+	}
+
+    if (!pVectorEye || !pVectorAt || !pVectorUp)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
@@ -1544,11 +2027,17 @@ DARKSDK void BuildLookAtLHMatrix ( int iResult, int iVectorEye, int iVectorAt, i
 
 DARKSDK void BuildOrthoRHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
 
     if (!pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1557,11 +2046,17 @@ DARKSDK void BuildOrthoRHMatrix ( int iResult, float fWidth, float fHeight, floa
 
 DARKSDK void BuildOrthoLHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
 
     if (!pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1570,11 +2065,17 @@ DARKSDK void BuildOrthoLHMatrix ( int iResult, float fWidth, float fHeight, floa
 
 DARKSDK void BuildPerspectiveRHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
 
     if (!pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1583,11 +2084,17 @@ DARKSDK void BuildPerspectiveRHMatrix ( int iResult, float fWidth, float fHeight
 
 DARKSDK void BuildPerspectiveLHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
 
     if (!pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1596,11 +2103,17 @@ DARKSDK void BuildPerspectiveLHMatrix ( int iResult, float fWidth, float fHeight
 
 DARKSDK void BuildPerspectiveFovRHMatrix ( int iResult, float fFOV, float fAspect, float fZNear, float fZFar )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
 
     if (!pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1609,11 +2122,17 @@ DARKSDK void BuildPerspectiveFovRHMatrix ( int iResult, float fFOV, float fAspec
 
 DARKSDK void BuildPerspectiveFovLHMatrix ( int iResult, float fFOV, float fAspect, float fZNear, float fZFar )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
 
     if (!pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1622,11 +2141,17 @@ DARKSDK void BuildPerspectiveFovLHMatrix ( int iResult, float fFOV, float fAspec
 
 DARKSDK void BuildReflectionMatrix ( int iResult, float a, float b, float c, float d )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult    = GetMatrixPtr ( iResult );
 
     if (!pResult)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1635,10 +2160,21 @@ DARKSDK void BuildReflectionMatrix ( int iResult, float a, float b, float c, flo
 
 DARKSDK void BuildRotationAxisMatrix ( int iResult, int iVectorAxis, float fAngle )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix*  pResult     = GetMatrixPtr ( iResult );
     Vector3* pVectorAxis = GetVector3Ptr( iVectorAxis );
 
-    if (!pResult || !pVectorAxis)
+    if (!pResult)
+	{
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		return;
+	}
+    if (!pVectorAxis)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
@@ -1649,11 +2185,17 @@ DARKSDK void BuildRotationAxisMatrix ( int iResult, int iVectorAxis, float fAngl
 
 DARKSDK void RotateXMatrix ( int iID, float fAngle )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pID = GetMatrixPtr ( iID );
 
     if (!pID)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1662,11 +2204,17 @@ DARKSDK void RotateXMatrix ( int iID, float fAngle )
 
 DARKSDK void RotateYMatrix ( int iID, float fAngle )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pID = GetMatrixPtr ( iID );
 
     if (!pID)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1675,11 +2223,17 @@ DARKSDK void RotateYMatrix ( int iID, float fAngle )
 
 DARKSDK void RotateZMatrix ( int iID, float fAngle )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pID = GetMatrixPtr ( iID );
 
     if (!pID)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1688,11 +2242,17 @@ DARKSDK void RotateZMatrix ( int iID, float fAngle )
 
 DARKSDK void RotateYawPitchRollMatrix ( int iID, float fYaw, float fPitch, float fRoll )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pID = GetMatrixPtr ( iID );
 
     if (!pID)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1701,11 +2261,17 @@ DARKSDK void RotateYawPitchRollMatrix ( int iID, float fYaw, float fPitch, float
 
 DARKSDK void ScaleMatrix ( int iID, float fX, float fY, float fZ )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pID = GetMatrixPtr ( iID );
 
     if (!pID)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1714,11 +2280,17 @@ DARKSDK void ScaleMatrix ( int iID, float fX, float fY, float fZ )
 
 DARKSDK void TranslateMatrix ( int iID, float fX, float fY, float fZ )
 {
+    if (iID < 1 || iID > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pID = GetMatrixPtr ( iID );
 
     if (!pID)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
@@ -1727,12 +2299,18 @@ DARKSDK void TranslateMatrix ( int iID, float fX, float fY, float fZ )
 
 DARKSDK void TransposeMatrix ( int iResult, int iSource )
 {
+    if (iResult < 1 || iResult > MAXIMUMVALUE)
+    {
+        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
+        return;
+    }
+
     Matrix* pResult = GetMatrixPtr( iResult );
     Matrix* pSource = GetMatrixPtr( iSource );
 
 	if (!pResult || !pSource)
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return;
 	}
 
