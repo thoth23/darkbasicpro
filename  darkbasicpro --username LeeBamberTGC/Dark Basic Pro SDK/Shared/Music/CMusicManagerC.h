@@ -1,30 +1,31 @@
 #ifndef _CMUSICMANAGER_H_
 #define _CMUSICMANAGER_H_
 
-#include ".\..\data\cdatac.h"
-#include "CMusicDataC.h"
+#include "BasePlayer.h"
 
 #define SAFE_DELETE( p )       { if ( p ) { delete ( p );       ( p ) = NULL; } }
 #define SAFE_RELEASE( p )      { if ( p ) { ( p )->Release ( ); ( p ) = NULL; } }
 #define SAFE_DELETE_ARRAY( p ) { if ( p ) { delete [ ] ( p );   ( p ) = NULL; } }
 
-class CMusicManager : private CData
+#include <map>
+
+class CMusicManager
 {
-	public:
-		CData	m_List;	
+private:
+    typedef std::map<int, DBP_Music::BasePlayer*>      MusicStore;
+    typedef MusicStore::iterator            MusicPtr;
 
-	public:
-		CMusicManager  ( );			// constructor
-		~CMusicManager ( );			// destructor
+    MusicStore  m_List;
 
-		bool Add    ( tagMusicData* pData, int iID );
-		bool Delete ( int iID );
+public:
+	bool Add    ( DBP_Music::BasePlayer* pData, int iID );
+	bool Delete ( int iID );
 
-		tagMusicData* GetData ( int iID );
+	DBP_Music::BasePlayer* GetData ( int iID );
 
-		void Update ( void );
+	void Update ( void );
 
-		void ShutDown ( void );
+	void ShutDown ( void );
 };
 
 #endif _CMUSICMANAGER_H_
