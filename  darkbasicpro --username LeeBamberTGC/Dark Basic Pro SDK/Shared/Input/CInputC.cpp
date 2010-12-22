@@ -7,6 +7,7 @@
 #include "controller.h"
 #include ".\..\..\Shared\Error\cerror.h"
 #include ".\..\..\Shared\Core\globstruct.h"
+#include "time.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 // GLOBALS ///////////////////////////////////////////////////////////////////////
@@ -1039,7 +1040,12 @@ DARKSDK int GetMouseClick ( void )
 	{
 		if ( g_pGlob->dwWindowsMouseLeftTouchPersist != 0 ) 
 		{
-			iCount |= 1;
+			// U76 - Windows 7 touch has no 'touch-release' via WM_MOUSE commands
+			// so we wait 250ms and then switch it off anyway
+			if ( timeGetTime() > g_pGlob->dwWindowsMouseLeftTouchPersist )
+				g_pGlob->dwWindowsMouseLeftTouchPersist=0;
+			else
+				iCount |= 1;
 		}
 	}
 
