@@ -73,7 +73,7 @@ public:
 	CSound* CloneSound ( CSound* pSound );
 
 	// mike 260705
-	LPDIRECTSOUNDBUFFER* LoadOggVorbis ( char* dwFileName );
+	LPDIRECTSOUNDBUFFER* LoadOggVorbis ( char* dwFileName, DWORD* pdwSizeOfSound );
 };
 
 

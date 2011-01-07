@@ -907,7 +907,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="dsound.lib dxguid.lib odbc32.lib odbccp32.lib"
-				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\DBProSoundDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\Dark Basic Professional\Projects\OGGLoopAndPlay\DBProSoundDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""

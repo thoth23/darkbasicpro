@@ -154,6 +154,17 @@ DARKSDK void Update ( void )
 		ptr = (sSoundData*)check->data;
 		if ( ptr == NULL ) continue;
 
+		// detect OGG finish
+		DWORD dwSoundSize = ptr->pSound->GetBufferSize();
+		if ( ptr->bPlaying && dwSoundSize>0 )
+		{
+			// detect OGG finish
+			DWORD pos, wpos;
+			ptr->pSound->GetBuffer(0)->GetCurrentPosition(&pos, &wpos);
+			if ( pos>dwSoundSize )
+				ptr->bPlaying = false;
+		}
+
 		// if sound is looping and active, check forced looping
 		if(ptr->bPlaying && ptr->bLoop)
 		{
@@ -365,7 +376,9 @@ DARKSDK void LoadRawSoundCoreOgg ( LPSTR szFilename, int iID, bool b3DSound, int
 	}
 
 	m_ptr->pSound = new CSound;
-	m_ptr->pSound->m_apDSBuffer = g_pSoundManager->LoadOggVorbis ( szFilename );
+	DWORD dwSizeOfSound = 0; // 070111 - OGG needs size to detect end!
+	m_ptr->pSound->m_apDSBuffer = g_pSoundManager->LoadOggVorbis ( szFilename, &dwSizeOfSound );
+	m_ptr->pSound->m_dwDSBufferSize = dwSizeOfSound;
 
 	// LEEFIX - 191102 - fill with default sound data
 	m_ptr->iVolume	= 100;
