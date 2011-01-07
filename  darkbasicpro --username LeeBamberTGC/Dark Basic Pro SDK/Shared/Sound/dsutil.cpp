@@ -37,7 +37,7 @@ extern GlobStruct* g_pGlob;
 #pragma comment ( lib, "vorbis/lib/vorbisfile_static.lib" )
 #pragma comment ( lib, "vorbis/lib/vorbisenc_static.lib"  )
 
-LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName )
+LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName, DWORD* pdwSizeOfSound )
 {
 	LPDIRECTSOUNDBUFFER* pDSBuffer = NULL;
 
@@ -129,6 +129,9 @@ LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName )
 
 	// unlock the buffer
 	pDSBuffer [ 0 ]->Unlock ( pSoundBuffer, ( int ) iSize, NULL, NULL );
+
+	// record the size of the buffer (OGG cannot detect END of sound = no loop no playing()=0!)
+	*pdwSizeOfSound = (DWORD)iSize / wfm.nBlockAlign; // might not be wfm.nBlockAlign, might be wBitsPerSample/8
 
 	// close the file
 	fclose ( fp );
