@@ -64,7 +64,8 @@ namespace
         // Confirm it exists and is of the correct type
         if (!pVector)
         {
-		    RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+			//silent error as 3DMATH has no way to determine if vector exists in code
+		    //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		    return 0;
         }
 
@@ -241,7 +242,8 @@ DARKSDK SDK_BOOL DeleteVector2 ( int iID )
 
     if (!pVector)
     {
-        RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		//silent fail - no way to detect if vector exists in DBP code!
+        //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return false;
 	}
 
@@ -702,7 +704,8 @@ DARKSDK SDK_BOOL DeleteVector3 ( int iID )
 
     if (!pVector)
     {
-        RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		//silent fail - no way to detect if vector exists in DBP code!
+        //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return false;
 	}
 
@@ -1238,7 +1241,8 @@ DARKSDK SDK_BOOL DeleteVector4 ( int iID )
 
     if (!pVector)
     {
-        RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		//silent fail - no way to detect if vector exists in DBP code!
+        //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return false;
 	}
 
