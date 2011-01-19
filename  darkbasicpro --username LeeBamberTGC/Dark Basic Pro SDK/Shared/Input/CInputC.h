@@ -109,13 +109,16 @@ DARKSDK void 			WriteToRegistry						( LPSTR, LPSTR, int );		// write to registr
 DARKSDK DWORD			GetClipboard						( DWORD );					// get from clipboard
 DARKSDK int 			GetRegistry							( LPSTR, LPSTR );				// get from registry
 DARKSDK void 			WriteToRegistryS					( LPSTR pfolder, LPSTR valuekey, DWORD pString );
+DARKSDK void 			WriteToRegistrySL					( LPSTR pfolder, LPSTR valuekey, DWORD pString, int iCurrentUserMode );
 DARKSDK DWORD 			GetRegistryS						( DWORD pDestStr, LPSTR pfolder, LPSTR valuekey );
+DARKSDK DWORD 			GetRegistrySL						( DWORD pDestStr, LPSTR pfolder, LPSTR valuekey, int iCurrentUserMode );
 
 // mouse commands
 DARKSDK void 			HideMouse     						( void );	// hide
 DARKSDK void 			ShowMouse     						( void );	// show
 DARKSDK void 			PositionMouse 						( int, int );// position
 DARKSDK void 			ChangeMouse   						( int );		// change
+DARKSDK void			ChangeMouse							( int, int );	// 13/01/11 - touch friendly flag
 DARKSDK int  			GetMouseX     						( void );	// get x position
 DARKSDK int  			GetMouseY     						( void );	// get y position
 DARKSDK int  			GetMouseZ     						( void );	// get z position ( mouse wheel )
