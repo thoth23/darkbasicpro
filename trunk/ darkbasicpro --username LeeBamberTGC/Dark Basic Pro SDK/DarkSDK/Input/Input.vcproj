@@ -806,8 +806,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="dxguid.lib dinput.lib dinput8.lib odbc32.lib odbccp32.lib"
-				OutputFile="C:\Program Files (x86)\The Game Creators\Dark Basic Professional\Projects\TestTouch\DBProInputDebug.dll"
+				AdditionalDependencies="winmm.lib dxguid.lib dinput.lib dinput8.lib odbc32.lib odbccp32.lib"
+				OutputFile="C:\Program Files (x86)\The Game Creators\Dark Basic Professional\Projects\DEM-Database\DBProInputDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=" "

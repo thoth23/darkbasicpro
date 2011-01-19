@@ -199,6 +199,14 @@ BEGIN
     IDS_STRING74            "CONTROL DEVICE INDEX[%L%?JoystickIndex@@YAHXZ"
     IDS_STRING75            "JOYSTICK INFORMATION[%LL%?JoystickInformation@@YAHH@Z%Information mode"
     IDS_STRING76            "SET JOYSTICK DEADZONE%L%?SetJoystickDeadzone@@YAXH@Z%Percentage deadzone"
+    IDS_STRING77            "CHANGE MOUSE%LL%?ChangeMouse@@YAXHH@Z%Cursor Number, Touch Friendly"
+    IDS_STRING78            "SET REGISTRY HKEY%L%?SetRegistryHKEY@@YAXH@Z%Current User Mode"
+    IDS_STRING79            "WRITE STRING TO REGISTRY%SSSL%?WriteToRegistrySL@@YAXPAD0KH@Z%Folder Name, Key Name, String, Current User Mode"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING80            "GET REGISTRY$[%SSSL%?GetRegistrySL@@YAKKPAD0H@Z%Folder Name, Key Name, Current User Mode"
 END
 
 #endif    // English (U.K.) resources

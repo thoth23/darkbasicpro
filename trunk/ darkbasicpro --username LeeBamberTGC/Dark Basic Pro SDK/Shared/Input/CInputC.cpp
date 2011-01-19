@@ -90,6 +90,8 @@ DBPRO_GLOBAL GlobStruct*					g_pGlob								= NULL;					// glob struct
 
 DBPRO_GLOBAL PTR_FuncCreateStr		g_pCreateDeleteStringFunction	= NULL;
 
+DBPRO_GLOBAL int			g_iTouchFriendly					= 0;
+
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -982,6 +984,12 @@ DARKSDK void ChangeMouse( int iCursorID )
 	if(g_pGlob) g_pGlob->ChangeMouseFunction( (DWORD)iCursorID );
 }
 
+DARKSDK void ChangeMouse( int iCursorID, int iTouchFriendly )
+{
+	if(g_pGlob) g_pGlob->ChangeMouseFunction( (DWORD)iCursorID );
+	g_iTouchFriendly = iTouchFriendly;
+}
+
 DARKSDK int GetMouseX ( void )
 {
 	// return the mouse x position
@@ -1046,6 +1054,17 @@ DARKSDK int GetMouseClick ( void )
 				g_pGlob->dwWindowsMouseLeftTouchPersist=0;
 			else
 				iCount |= 1;
+
+			if ( g_iTouchFriendly==0 )
+			{
+				// for U77 - old style, none persistent
+				g_pGlob->dwWindowsMouseLeftTouchPersist=0;
+				iCount |= 1;
+			}
+			else
+			{
+				// persistent is touch friendly
+			}
 		}
 	}
 
@@ -1280,6 +1299,12 @@ DARKSDK void WriteToRegistryS ( LPSTR pfolder, LPSTR valuekey, DWORD pString )
 	}
 }
 
+DARKSDK void WriteToRegistrySL ( LPSTR pfolder, LPSTR valuekey, DWORD pString, int iCurrentUserMode )
+{
+	SetRegistryHKEY ( iCurrentUserMode );
+	return WriteToRegistryS ( pfolder, valuekey, pString );
+}
+
 DARKSDK DWORD GetRegistryS ( DWORD pDestStr, LPSTR pfolder, LPSTR valuekey )
 {
 	LPSTR pString=NULL;
@@ -1305,6 +1330,12 @@ DARKSDK DWORD GetRegistryS ( DWORD pDestStr, LPSTR pfolder, LPSTR valuekey )
 
 	// Return String
 	return (DWORD)pString;
+}
+
+DARKSDK DWORD GetRegistrySL ( DWORD pDestStr, LPSTR pfolder, LPSTR valuekey, int iCurrentUserMode )
+{
+	SetRegistryHKEY ( iCurrentUserMode );
+	return GetRegistryS ( pDestStr, pfolder, valuekey );
 }
 
 //
