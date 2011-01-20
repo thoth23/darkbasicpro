@@ -61,13 +61,13 @@ namespace
     {
         T* pVector = m_DataManager.GetData<T>( iID );
 
-        // Confirm it exists and is of the correct type
-        if (!pVector)
-        {
+		// Confirm it exists and is of the correct type
+		//if (!pVector)
+		//{
 			//silent error as 3DMATH has no way to determine if vector exists in code
-		    //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		    return 0;
-        }
+			//RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+			//return 0;
+		//}
 
         // Cast to the proper type and return the pointer
         return pVector;
@@ -1763,7 +1763,8 @@ DARKSDK SDK_BOOL DeleteMatrix ( int iID )
 
     if (!pMatrix)
     {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		//silent fail - no way to detect if matrix exists in DBP code!
+		//RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
 		return false;
 	}
 
