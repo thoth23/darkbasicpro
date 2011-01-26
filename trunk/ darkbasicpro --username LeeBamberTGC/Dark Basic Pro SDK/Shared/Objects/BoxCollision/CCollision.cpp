@@ -132,178 +132,185 @@ bool GetRayCollision ( sObject* pObject, float fX, float fY, float fZ, float fNe
 	DWORD dwVertex1IndexOfHitPoly = 0;
 	DWORD dwVertex2IndexOfHitPoly = 0;
 	D3DXVECTOR3 vec0Hit, vec1Hit, vec2Hit;
-
 	D3DXVECTOR3 vecHitPoint;
-	// leenote - need to include this for U6!
-	//D3DXVECTOR3 vecNormal;
-	//D3DXVECTOR3 vecReflectedNormal;
 
-	// Check aligned line against object meshes
-	for ( int iFrame=0; iFrame<pActualObject->iFrameCount; iFrame++ )
+	// TRADITIONAL POLYGON TEST AGAINST RAY
+	int iUseLimbBounds = 0;
+	if ( iUseLimbBounds==0 )
 	{
-		// get frame ptr
-		sFrame* pFrame = pActualObject->ppFrameList[iFrame];
-		sMesh* pMesh = pFrame->pMesh;
-		if ( pMesh )
+		// Check aligned line against object meshes
+		for ( int iFrame=0; iFrame<pActualObject->iFrameCount; iFrame++ )
 		{
-			// leeadd - 310305 - this is set if the object is not culled
-			bool bRejectCulledPolysPointAway=false;
-
-			// mike - 041005 - we can't do this, even polygons facing away must be tested
-			//if ( pMesh->bCull==true ) bRejectCulledPolysPointAway=true;
-
-			// leeadd - 010604 - if instance limb visibility hidden, skip now
-			if ( pObject->pInstanceMeshVisible )
+			// get frame ptr
+			sFrame* pFrame = pActualObject->ppFrameList[iFrame];
+			sMesh* pMesh = pFrame->pMesh;
+			if ( pMesh )
 			{
-				// if limb in instance hidden, skip
-				if ( pObject->pInstanceMeshVisible [ iFrame ]==false )
-					continue;
-			}
+				// leeadd - 310305 - this is set if the object is not culled
+				bool bRejectCulledPolysPointAway=false;
 
-			// leefix - 280305 - sphere uses tristrip by default, switch it if collision required on it
-			ConvertLocalMeshToTriList ( pMesh );
+				// mike - 041005 - we can't do this, even polygons facing away must be tested
+				//if ( pMesh->bCull==true ) bRejectCulledPolysPointAway=true;
 
-			// leeadd - 280504 - calculate correct absolute world matrix
-			CalculateAbsoluteWorldMatrix ( pObject, pFrame, pMesh );
-
-			// Calculate inverse based on limb world orientation
-			D3DXMATRIX matInv;
-			D3DXMATRIX matWorld = pFrame->matAbsoluteWorld;
-			D3DXMatrixInverse(&matInv, NULL, &matWorld );
-
-			// Calculate actual line vectors based on position of target object
-			D3DXVECTOR3 StartVector = D3DXVECTOR3( fX, fY, fZ );
-			D3DXVECTOR3 EndVector = D3DXVECTOR3( fNewX, fNewY, fNewZ );
-			D3DXVECTOR3 OriginalVector = EndVector - StartVector;
-			float fOriginalLength = D3DXVec3Length ( &OriginalVector );
-			D3DXVec3TransformCoord( &StartVector, &StartVector, &matInv );
-			D3DXVec3TransformCoord( &EndVector, &EndVector, &matInv );
-			D3DXVECTOR3 DirVector = EndVector - StartVector;
-			float fOrientedLength = D3DXVec3Length ( &DirVector );
-			D3DXVec3Normalize( &DirVector, &DirVector );
-			float fDistanceModifier = fOriginalLength/fOrientedLength;
-
-			// Check for intersect with triangle in mesh
-			BYTE* Ptr = pMesh->pVertexData;
-			if ( Ptr )
-			{
-				// vertex data vars
-				float* pV = (float*)Ptr;
-				DWORD dwSizeInFloats = (DWORD)(pMesh->dwFVFSize/4);
-
-				// index data vars
-				unsigned short*	IndexPtr = pMesh->pIndices;
-				if ( IndexPtr==NULL )
+				// leeadd - 010604 - if instance limb visibility hidden, skip now
+				if ( pObject->pInstanceMeshVisible )
 				{
-					// no index - standard 3vert faces
-					int iVertexIndex = 0;
+					// if limb in instance hidden, skip
+					if ( pObject->pInstanceMeshVisible [ iFrame ]==false )
+						continue;
+				}
 
-					// load polygon information into structures
-					for ( int i = 0; i < pMesh->iDrawPrimitives; i++ )
+				// leefix - 280305 - sphere uses tristrip by default, switch it if collision required on it
+				ConvertLocalMeshToTriList ( pMesh );
+
+				// leeadd - 280504 - calculate correct absolute world matrix
+				CalculateAbsoluteWorldMatrix ( pObject, pFrame, pMesh );
+
+				// Calculate inverse based on limb world orientation
+				D3DXMATRIX matInv;
+				D3DXMATRIX matWorld = pFrame->matAbsoluteWorld;
+				D3DXMatrixInverse(&matInv, NULL, &matWorld );
+
+				// Calculate actual line vectors based on position of target object
+				D3DXVECTOR3 StartVector = D3DXVECTOR3( fX, fY, fZ );
+				D3DXVECTOR3 EndVector = D3DXVECTOR3( fNewX, fNewY, fNewZ );
+				D3DXVECTOR3 OriginalVector = EndVector - StartVector;
+				float fOriginalLength = D3DXVec3Length ( &OriginalVector );
+				D3DXVec3TransformCoord( &StartVector, &StartVector, &matInv );
+				D3DXVec3TransformCoord( &EndVector, &EndVector, &matInv );
+				D3DXVECTOR3 DirVector = EndVector - StartVector;
+				float fOrientedLength = D3DXVec3Length ( &DirVector );
+				D3DXVec3Normalize( &DirVector, &DirVector );
+				float fDistanceModifier = fOriginalLength/fOrientedLength;
+
+				// Check for intersect with triangle in mesh
+				BYTE* Ptr = pMesh->pVertexData;
+				if ( Ptr )
+				{
+					// vertex data vars
+					float* pV = (float*)Ptr;
+					DWORD dwSizeInFloats = (DWORD)(pMesh->dwFVFSize/4);
+
+					// index data vars
+					unsigned short*	IndexPtr = pMesh->pIndices;
+					if ( IndexPtr==NULL )
 					{
-						// triangle indices
-						//leefix - 040803 - for vertexdata only, can use DWORD and not WORD!
-						DWORD v0 = iVertexIndex+0;
-						DWORD v1 = iVertexIndex+1;
-						DWORD v2 = iVertexIndex+2;
-						iVertexIndex+=3;
+						// no index - standard 3vert faces
+						int iVertexIndex = 0;
 
-						// triangle vertice ptrs
-						D3DXVECTOR3* pVec0 = (D3DXVECTOR3*)(pV+((v0*dwSizeInFloats)));
-						D3DXVECTOR3* pVec1 = (D3DXVECTOR3*)(pV+((v1*dwSizeInFloats)));
-						D3DXVECTOR3* pVec2 = (D3DXVECTOR3*)(pV+((v2*dwSizeInFloats)));
-
-						// leeadd - 310305 - check if ray facing poly, or the poly is culled (on a flag)
-						if ( bRejectCulledPolysPointAway==true )
+						// load polygon information into structures
+						for ( int i = 0; i < pMesh->iDrawPrimitives; i++ )
 						{
-							// direction of polygon
-							D3DXVECTOR3 vNormal;
-							D3DXVec3Cross ( &vNormal, &( *pVec2 - *pVec1 ), &( *pVec1 - *pVec0 ) );
-							D3DXVec3Normalize ( &vNormal, &vNormal );
-							float fDotProduct = D3DXVec3Dot ( &vNormal, &DirVector );
-							if ( fDotProduct < 0.0f )
-								continue;
-						}
+							// triangle indices
+							//leefix - 040803 - for vertexdata only, can use DWORD and not WORD!
+							DWORD v0 = iVertexIndex+0;
+							DWORD v1 = iVertexIndex+1;
+							DWORD v2 = iVertexIndex+2;
+							iVertexIndex+=3;
 
-						// check tri
-						float fU, fV, fThisDistance;
-						if ( D3DXIntersectTri(pVec0,pVec1,pVec2,&StartVector,&DirVector,&fU,&fV,&fThisDistance) == TRUE )
-						{
-							// always use actual distance (not scaled version)
-							fThisDistance *= fDistanceModifier;
+							// triangle vertice ptrs
+							D3DXVECTOR3* pVec0 = (D3DXVECTOR3*)(pV+((v0*dwSizeInFloats)));
+							D3DXVECTOR3* pVec1 = (D3DXVECTOR3*)(pV+((v1*dwSizeInFloats)));
+							D3DXVECTOR3* pVec2 = (D3DXVECTOR3*)(pV+((v2*dwSizeInFloats)));
 
-							// record smallest distance of intersect
-							if ( fDistToIntersect==0.0f
-							|| ( fThisDistance>0.0f && fThisDistance < fDistToIntersect ) )
+							// leeadd - 310305 - check if ray facing poly, or the poly is culled (on a flag)
+							if ( bRejectCulledPolysPointAway==true )
 							{
-								fDistToIntersect = fThisDistance;
-								iFrameCollision = iFrame;
-								pMeshThatHasBeenHitRef = pMesh;
-								dwVertex0IndexOfHitPoly = v0;
-								dwVertex1IndexOfHitPoly = v1;
-								dwVertex2IndexOfHitPoly = v2;
-								vec0Hit = *pVec0;
-								vec1Hit = *pVec1;
-								vec2Hit = *pVec2;
+								// direction of polygon
+								D3DXVECTOR3 vNormal;
+								D3DXVec3Cross ( &vNormal, &( *pVec2 - *pVec1 ), &( *pVec1 - *pVec0 ) );
+								D3DXVec3Normalize ( &vNormal, &vNormal );
+								float fDotProduct = D3DXVec3Dot ( &vNormal, &DirVector );
+								if ( fDotProduct < 0.0f )
+									continue;
+							}
+
+							// check tri
+							float fU, fV, fThisDistance;
+							if ( D3DXIntersectTri(pVec0,pVec1,pVec2,&StartVector,&DirVector,&fU,&fV,&fThisDistance) == TRUE )
+							{
+								// always use actual distance (not scaled version)
+								fThisDistance *= fDistanceModifier;
+
+								// record smallest distance of intersect
+								if ( fDistToIntersect==0.0f
+								|| ( fThisDistance>0.0f && fThisDistance < fDistToIntersect ) )
+								{
+									fDistToIntersect = fThisDistance;
+									iFrameCollision = iFrame;
+									pMeshThatHasBeenHitRef = pMesh;
+									dwVertex0IndexOfHitPoly = v0;
+									dwVertex1IndexOfHitPoly = v1;
+									dwVertex2IndexOfHitPoly = v2;
+									vec0Hit = *pVec0;
+									vec1Hit = *pVec1;
+									vec2Hit = *pVec2;
+								}
 							}
 						}
 					}
-				}
-				else
-				{
-					// load polygon information into structures
-					for ( int i = 0; i < pMesh->iDrawPrimitives; i++ )
+					else
 					{
-						// triangle indices
-						unsigned short v0 = *(IndexPtr+0);
-						unsigned short v1 = *(IndexPtr+1);
-						unsigned short v2 = *(IndexPtr+2);
-						IndexPtr+=3;
-
-						// triangle vertice ptrs
-						D3DXVECTOR3* pVec0 = (D3DXVECTOR3*)(pV+((v0*dwSizeInFloats)));
-						D3DXVECTOR3* pVec1 = (D3DXVECTOR3*)(pV+((v1*dwSizeInFloats)));
-						D3DXVECTOR3* pVec2 = (D3DXVECTOR3*)(pV+((v2*dwSizeInFloats)));
-
-						// leeadd - 310305 - check if ray facing poly, or the poly is culled (on a flag)
-						if ( bRejectCulledPolysPointAway==true )
+						// load polygon information into structures
+						for ( int i = 0; i < pMesh->iDrawPrimitives; i++ )
 						{
-							// direction of polygon
-							D3DXVECTOR3 vNormal;
-							D3DXVec3Cross ( &vNormal, &( *pVec2 - *pVec1 ), &( *pVec1 - *pVec0 ) );
-							D3DXVec3Normalize ( &vNormal, &vNormal );
-							float fDotProduct = D3DXVec3Dot ( &vNormal, &DirVector );
-							if ( fDotProduct < 0.0f )
-								continue;
-						}
+							// triangle indices
+							unsigned short v0 = *(IndexPtr+0);
+							unsigned short v1 = *(IndexPtr+1);
+							unsigned short v2 = *(IndexPtr+2);
+							IndexPtr+=3;
 
-						// check tri
-						float fU, fV, fThisDistance;
-						if ( D3DXIntersectTri(pVec0,pVec1,pVec2,&StartVector,&DirVector,&fU,&fV,&fThisDistance) == TRUE )
-						{
-							// always use actual distance (not scaled version)
-							fThisDistance *= fDistanceModifier;
+							// triangle vertice ptrs
+							D3DXVECTOR3* pVec0 = (D3DXVECTOR3*)(pV+((v0*dwSizeInFloats)));
+							D3DXVECTOR3* pVec1 = (D3DXVECTOR3*)(pV+((v1*dwSizeInFloats)));
+							D3DXVECTOR3* pVec2 = (D3DXVECTOR3*)(pV+((v2*dwSizeInFloats)));
 
-							// record smallest distance of intersect
-							if ( fDistToIntersect==0.0f
-							|| ( fThisDistance>0.0f && fThisDistance < fDistToIntersect ) )
+							// leeadd - 310305 - check if ray facing poly, or the poly is culled (on a flag)
+							if ( bRejectCulledPolysPointAway==true )
 							{
-								// store usefuk info
-								fDistToIntersect = fThisDistance;
-								iFrameCollision = iFrame;
-								pMeshThatHasBeenHitRef = pMesh;
-								dwVertex0IndexOfHitPoly = v0;
-								dwVertex1IndexOfHitPoly = v1;
-								dwVertex2IndexOfHitPoly = v2;
-								vec0Hit = *pVec0;
-								vec1Hit = *pVec1;
-								vec2Hit = *pVec2;
+								// direction of polygon
+								D3DXVECTOR3 vNormal;
+								D3DXVec3Cross ( &vNormal, &( *pVec2 - *pVec1 ), &( *pVec1 - *pVec0 ) );
+								D3DXVec3Normalize ( &vNormal, &vNormal );
+								float fDotProduct = D3DXVec3Dot ( &vNormal, &DirVector );
+								if ( fDotProduct < 0.0f )
+									continue;
+							}
+
+							// check tri
+							float fU, fV, fThisDistance;
+							if ( D3DXIntersectTri(pVec0,pVec1,pVec2,&StartVector,&DirVector,&fU,&fV,&fThisDistance) == TRUE )
+							{
+								// always use actual distance (not scaled version)
+								fThisDistance *= fDistanceModifier;
+
+								// record smallest distance of intersect
+								if ( fDistToIntersect==0.0f
+								|| ( fThisDistance>0.0f && fThisDistance < fDistToIntersect ) )
+								{
+									// store usefuk info
+									fDistToIntersect = fThisDistance;
+									iFrameCollision = iFrame;
+									pMeshThatHasBeenHitRef = pMesh;
+									dwVertex0IndexOfHitPoly = v0;
+									dwVertex1IndexOfHitPoly = v1;
+									dwVertex2IndexOfHitPoly = v2;
+									vec0Hit = *pVec0;
+									vec1Hit = *pVec1;
+									vec2Hit = *pVec2;
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+	}
+	else
+	{
+		// 200111 - NEW LIMB BOUNDS TEST (USE FRAME LIMBS TO WORK OUT BOUNDS)
+		// iUseLimbBounds=1 - not implemented as need very accurate per-polygon
+		// detection for sniper ray shots, boxes are too chunky - no benefit!
 	}
 
 	// copy distance to output param

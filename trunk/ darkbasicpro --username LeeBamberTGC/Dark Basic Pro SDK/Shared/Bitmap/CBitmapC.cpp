@@ -68,7 +68,8 @@ namespace
         if (pBitmap != m_List.end())
         {
             SAFE_RELEASE( pBitmap->second->lpSurface );
-            SAFE_DELETE( pBitmap->second->lpDepth );
+            // SAFE_DELETE( pBitmap->second->lpDepth ); 240111 - crashes XP infrequently
+            SAFE_RELEASE( pBitmap->second->lpDepth );
             delete pBitmap->second;
 
             m_List.erase(pBitmap);

@@ -144,6 +144,7 @@ DARKSDK void SetEffectOn				( int iID, SDK_LPSTR pFilename, int iUseDefaultTextu
 DARKSDK void LoadEffect					( SDK_LPSTR pFilename, int iEffectID, int iUseDefaultTextures );
 DARKSDK void LoadEffectEx				( SDK_LPSTR pFilename, int iEffectID, int iUseDefaultTextures, int iDoNotGenerateExtraData );
 DARKSDK void DeleteEffect				( int iEffectID );
+DARKSDK void SetObjectEffectCore		( int iID, int iEffectID, int iForceCPUAnimationMode );
 DARKSDK void SetObjectEffect			( int iID, int iEffectID );
 DARKSDK void SetLimbEffect				( int iID, int iLimbID, int iEffectID );
 DARKSDK void PerformChecklistForEffectValues ( int iEffectID );

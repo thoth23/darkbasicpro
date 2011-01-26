@@ -488,6 +488,7 @@ STRINGTABLE
 BEGIN
     IDS_STRING304           "SET OBJECT FRAME%LLFL%?SetFrameEx@@YAXHHMH@Z%Object Number, Limb, Frame, Recalculate Bounds"
     IDS_STRING305           "SET OBJECT MASK%LLLLL%?SetMask@@YAXHHHHH@Z%Object Number, Camera Mask Bits, Shadow Mask, Cubemap Mask, Fore Color Wipe Mask"
+    IDS_STRING306           "SET OBJECT EFFECT%LLL%?SetObjectEffectCore@@YAXHHH@Z%Object Number, Effect Number, Force CPU Animation"
     IDS_STRING316           "SET EFFECT ON%LSL%?SetEffectOn@@YAXHKH@Z%Object Number, Effect Filename, Texture Flag"
     IDS_STRING317           "TEXTURE OBJECT%LLL%?SetTextureStage@@YAXHHH@Z%Object Number, Stage Number, Image Number"
     IDS_STRING318           "ENABLE OBJECT ZREAD%L%?EnableZRead@@YAXH@Z%Object Number"

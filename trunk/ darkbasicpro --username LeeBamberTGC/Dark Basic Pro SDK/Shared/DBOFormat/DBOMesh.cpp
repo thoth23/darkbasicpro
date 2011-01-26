@@ -2827,7 +2827,7 @@ bool AnimateBoneMesh ( sObject* pObject, sFrame* pFrame, sMesh* pMesh )
 			}
 
 			// failing MDL, Animate model as BONE animation (if not done in HW)
-			if ( pMesh->bShaderBoneSkinning==false )
+			if ( pMesh->bShaderBoneSkinning==false || pMesh->dwForceCPUAnimationMode==1 )
 				AnimateBoneMeshBONE ( pObject, pFrame, pMesh );
 		}
 	}

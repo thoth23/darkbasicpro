@@ -420,7 +420,7 @@ struct sMeshShader
 	char							pEffectName [ MAX_STRING ];
 
 	// reserved members
-	DWORD							dwReservedMS1;								// reserved - maintain plugin compat.
+	DWORD							dwForceCPUAnimationMode;					// 200111 - force CPU to take over bone animation (for ray cast intersect detection even if GPU using bone animation)
 	DWORD							dwReservedMS2;								// reserved - maintain plugin compat.
 	DWORD							dwReservedMS3;								// reserved - maintain plugin compat.
 };

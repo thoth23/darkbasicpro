@@ -3380,7 +3380,7 @@ DARKSDK_DLL void DeleteEffect ( int iEffectID )
 	SAFE_DELETE ( m_EffectList [ iEffectID ] );
 }
 
-DARKSDK_DLL void SetObjectEffect ( int iID, int iEffectID )
+DARKSDK_DLL void SetObjectEffectCore ( int iID, int iEffectID, int iForceCPUAnimationMode )
 {
 	// check the object exists
 	g_pGlob->dwInternalFunctionCode=10001;
@@ -3421,6 +3421,7 @@ DARKSDK_DLL void SetObjectEffect ( int iID, int iEffectID )
 			sMesh* pMesh = pObject->ppMeshList [ iMesh ];
 			SetSpecialEffect ( pMesh, pEffectItem->pEffectObj );
 			pMesh->bVertexShaderEffectRefOnly = true;
+			pMesh->dwForceCPUAnimationMode = (DWORD)iForceCPUAnimationMode;
 		}
 	}
 	else
@@ -3433,6 +3434,7 @@ DARKSDK_DLL void SetObjectEffect ( int iID, int iEffectID )
 			g_pGlob->dwInternalFunctionCode=12001+iMesh;
 			sMesh* pMesh = pObject->ppMeshList [ iMesh ];
 			SetSpecialEffect ( pMesh, NULL );
+			pMesh->dwForceCPUAnimationMode = 0;
 		}
 	}
 
@@ -3441,6 +3443,12 @@ DARKSDK_DLL void SetObjectEffect ( int iID, int iEffectID )
 	m_ObjectManager.RemoveObjectFromBuffers ( pObject );
 	m_ObjectManager.AddObjectToBuffers ( pObject );
 	g_pGlob->dwInternalFunctionCode=13002;
+}
+
+DARKSDK_DLL void SetObjectEffect ( int iID, int iEffectID )
+{
+	// call master core function for this
+	SetObjectEffectCore ( iID, iEffectID, 0 );
 }
 
 DARKSDK_DLL void SetLimbEffect ( int iID, int iLimbID, int iEffectID )
