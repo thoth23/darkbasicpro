@@ -1069,8 +1069,18 @@ void cSpecialEffect::ApplyEffect ( sMesh* pMesh )
 			// update all bone matrices
 			DWORD dwBoneMax = pMesh->dwBoneCount;
 			if ( dwBoneMax > 60 ) dwBoneMax = 60; // leefix - 090809 - increased allowance to shader limit!
-			for ( DWORD dwMatrixIndex = 0; dwMatrixIndex < pMesh->dwBoneCount; dwMatrixIndex++ )
-				D3DXMatrixMultiply ( &g_EffectConstant.matBoneMatrixPalette [ dwMatrixIndex ], &pMesh->pBones [ dwMatrixIndex ].matTranslation, pMesh->pFrameMatrices [ dwMatrixIndex ] );
+			if ( pMesh->dwForceCPUAnimationMode==1 )
+			{
+				// CPU does animation
+				for ( DWORD dwMatrixIndex = 0; dwMatrixIndex < pMesh->dwBoneCount; dwMatrixIndex++ )
+					D3DXMatrixIdentity ( &g_EffectConstant.matBoneMatrixPalette [ dwMatrixIndex ] );
+			}
+			else
+			{
+				// GPU needs matrices to do animation
+				for ( DWORD dwMatrixIndex = 0; dwMatrixIndex < pMesh->dwBoneCount; dwMatrixIndex++ )
+					D3DXMatrixMultiply ( &g_EffectConstant.matBoneMatrixPalette [ dwMatrixIndex ], &pMesh->pBones [ dwMatrixIndex ].matTranslation, pMesh->pFrameMatrices [ dwMatrixIndex ] );
+			}
 
 			// send matrix array to effect (column-based is default by FX compiler)
             m_pEffect->SetMatrixTransposeArray ( m_BoneMatrixPaletteHandle, g_EffectConstant.matBoneMatrixPalette, pMesh->dwBoneCount );
