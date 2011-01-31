@@ -460,6 +460,7 @@ bool cSpecialEffect::AssignValueHookCore ( LPSTR pName, D3DXHANDLE hParam, DWORD
 	// vectors
 	ASSIGNNAME ( "cameraposition", m_VecCameraPosEffectHandle );
 	ASSIGNNAME ( "eyeposition", m_VecEyePosEffectHandle );
+	ASSIGNNAME ( "clipplane", m_VecClipPlaneEffectHandle );
 
 	// MS lighting
 	ASSIGNNAME ( "UIDirectional", m_LightDirHandle );
@@ -906,6 +907,8 @@ void cSpecialEffect::ApplyEffect ( sMesh* pMesh )
 	// Get camera psition
     g_EffectConstant.vecCameraPosition = D3DXVECTOR4( g_EffectConstant.matViewInv._41, g_EffectConstant.matViewInv._42, g_EffectConstant.matViewInv._43, 1.0f );
 	g_EffectConstant.vecEyePos = g_EffectConstant.vecCameraPosition;
+	// 260111 - this is set for each effect used by a camera with a clip plane
+	//g_EffectConstant.vecClipPlane;
 
 	// Alpha override component
 	if ( m_AlphaOverrideHandle )
@@ -1042,6 +1045,7 @@ void cSpecialEffect::ApplyEffect ( sMesh* pMesh )
 		{
             m_pEffect->SetVector( m_VecEyePosEffectHandle, &g_EffectConstant.vecEyePos );
 		}
+		//m_VecClipPlaneEffectHandle - used directly in ObjectManager.cpp
 
 		// misclanious values
 		if( m_TimeEffectHandle != NULL )

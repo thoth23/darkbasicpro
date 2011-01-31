@@ -132,6 +132,7 @@ class cSpecialEffect
 		D3DXHANDLE			m_LightPosHandle;
 		D3DXHANDLE			m_VecCameraPosEffectHandle;
 		D3DXHANDLE			m_VecEyePosEffectHandle;
+		D3DXHANDLE			m_VecClipPlaneEffectHandle; // 270111
 		D3DXHANDLE			m_AlphaOverrideHandle;
 
 		D3DXHANDLE			m_TimeEffectHandle;

@@ -73,6 +73,9 @@ struct sRenderStates
 	// U75 - 060410 - control whether scene uses a color instead of textures/effects
 	bool			bOverrideAllTexturesAndEffects;	
 	DWORD			dwOverrideAllWithColor;
+
+	// U77 - 270111 - override control for clipplane (HLSL and FF mutually exclusive)
+	bool			bOverriddenClipPlaneforHLSL;	
 };
 
 struct sStencilStates
