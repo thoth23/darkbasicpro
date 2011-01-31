@@ -2708,6 +2708,18 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 		if ( pMesh->pVertexShaderEffect->m_bUsesAtLeastOneRT==true )
 			m_pD3D->GetRenderTarget( 0, &pCurrentRenderTarget );
 
+	// if rendering with an effect
+	if ( bEffectRendering )
+	{
+		// FF affects HLSL pipeline (and vice versa), so switch off
+		// the automated clipping plane (FF will stop clipping for HLSLs)
+		if ( m_RenderStates.bOverriddenClipPlaneforHLSL==false )
+		{
+			m_pD3D->SetRenderState ( D3DRS_CLIPPLANEENABLE, 0x00 );
+			m_RenderStates.bOverriddenClipPlaneforHLSL = true;
+		}
+	}
+
 	// each mesh can have several render passes
     for(UINT uPass = 0; uPass < uPasses; uPass++)
     {
@@ -2734,11 +2746,14 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 			// U75 - 200310 - if using RT, determine if should switch to RT or final render target (current)
 			if ( bEffectRendering )
 			{
+				// commit var
+				LPD3DXEFFECT pEffect = pMesh->pVertexShaderEffect->m_pEffect;
+				bool bMustCommit = false;
+
 				// only if RT flagged (saves performance)
 				if ( pMesh->pVertexShaderEffect->m_bUsesAtLeastOneRT==true )
 				{
 					// ensure technique exists
-					LPD3DXEFFECT pEffect = pMesh->pVertexShaderEffect->m_pEffect;
 					D3DXHANDLE hTech = pEffect->GetTechnique(0);//this may mess up multi-technique shaders??
 
 					// get rendercolortarget string from this pass
@@ -2812,6 +2827,33 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 					}
 
 					// once textures established, commit effect state changes and begin this pass
+					bMustCommit = true;
+				}
+
+				// U77 - 270111 - pass clipping data to shader (automatic)
+				if ( pMesh->pVertexShaderEffect->m_VecClipPlaneEffectHandle )
+				{
+					tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( g_pGlob->dwRenderCameraID );
+					if ( m_Camera_Ptr->iClipPlaneOn==1 )
+					{
+						// special mode which creates plane but does not use RenderState to set clip
+						// as you cannot mix FF clip and HLSL clip in same scene (artefacts)
+						D3DXVECTOR4 vec = (D3DXVECTOR4)m_Camera_Ptr->planeClip;
+						pEffect->SetVector( pMesh->pVertexShaderEffect->m_VecClipPlaneEffectHandle, &vec );
+					}
+					else
+					{
+						// ensure shader stops using clip plane when not being clipped!
+						D3DXVECTOR4 vec = D3DXVECTOR4( 0.0f, 1.0f, 0.0f, 99999.0f );
+						pEffect->SetVector( pMesh->pVertexShaderEffect->m_VecClipPlaneEffectHandle, &vec );
+					}
+					bMustCommit = true;
+				}
+
+				// when flagged, we must update effect with changes we made
+				if ( bMustCommit==true )
+				{
+					// commit effect state changes to begin this pass
 					pEffect->CommitChanges( );
 				}
 			}
@@ -2834,6 +2876,7 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 			if ( bEffectRendering )
 			{
 				// SHADER EFFECT
+
 				// u64 - 180107 - effects CAN use 'texture object' textures if the effect 
 				// did not assign a specfic texture to them (paul request for DarkSHADER)
 				if ( pMesh->pTextures )
@@ -2870,6 +2913,18 @@ bool CObjectManager::DrawMesh ( sMesh* pMesh )
 			else
 			{
 				// FIXED FUNCTION TEXTURING
+
+				// FF affects HLSL pipeline (and vice versa), so switch on
+				// the automated clipping plane if end of override
+				if ( m_RenderStates.bOverriddenClipPlaneforHLSL==true )
+				{
+					tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( g_pGlob->dwRenderCameraID );
+					if ( m_Camera_Ptr->iClipPlaneOn!=0 )
+						m_pD3D->SetRenderState ( D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0 );
+					else
+						m_pD3D->SetRenderState ( D3DRS_CLIPPLANEENABLE, 0x00 );
+					m_RenderStates.bOverriddenClipPlaneforHLSL = false;
+				}
 
 				// call the texturestate function
 				if ( !SetMeshTextureStates ( pMesh ) )
@@ -3609,7 +3664,8 @@ bool CObjectManager::Reset ( void )
 	m_RenderStates.bOverrideAllTexturesAndEffects = false;
 	m_RenderStates.dwOverrideAllWithColor = m_Camera_Ptr->dwForegroundColor;
 	if ( m_RenderStates.dwOverrideAllWithColor != 0 ) m_RenderStates.bOverrideAllTexturesAndEffects = true;
-	
+	m_RenderStates.bOverriddenClipPlaneforHLSL = false;
+
 	return true;
 }
 

@@ -807,7 +807,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProCameraDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProCameraDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Microsoft DirectX SDK (October 2006)\Lib\x86&quot;"
