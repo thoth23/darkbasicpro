@@ -1462,7 +1462,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="odbc32.lib odbccp32.lib winmm.lib dxguid.lib d3d9.lib dxerr9.lib"
-				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProBasic3DDebug.dll"
+				OutputFile="C:\TGC\BUILD2010-FPGC\Wise Installer\The Game Creators\First Person Game Creator\DBProBasic3DDebug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
