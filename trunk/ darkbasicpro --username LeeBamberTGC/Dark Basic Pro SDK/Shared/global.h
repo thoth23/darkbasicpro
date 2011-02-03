@@ -10,7 +10,7 @@
 #define SAFE_FREE(x)			if(x) { GlobalFree(x); x=NULL; }
 
 #ifndef MAX_STRING
- #define MAX_STRING				256
+ #define MAX_STRING				256 
 #endif
 
 #ifdef DARKSDK_COMPILE
