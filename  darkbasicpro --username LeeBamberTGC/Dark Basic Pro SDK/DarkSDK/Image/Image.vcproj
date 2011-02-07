@@ -875,7 +875,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator FIRE BUILD MODE\DBProImageDebug.dll"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProImageDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
