@@ -2129,8 +2129,17 @@ void OpenImageBlock	( char* szFilename, int iMode )
 	g_bImageBlockActive = true;
 	g_iImageBlockMode = iMode;
 
-	// Load imageblock
-	if ( g_iImageBlockMode==1 )
+	// U77 - 060211 - does previously written image block exist, if so, we append to it
+	bool bPreviousImageBlockExists = false;
+	HANDLE hFile = CreateFile ( g_iImageBlockFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+	if ( hFile!=INVALID_HANDLE_VALUE )
+	{
+		bPreviousImageBlockExists = true;
+		CloseHandle ( hFile );
+	}
+
+	// Load imageblock (for reading or to load last imageblock from previous write)
+	if ( g_iImageBlockMode==1 || bPreviousImageBlockExists==true )
 	{
 		// open to read
 		HANDLE hFile = CreateFile ( g_iImageBlockFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
