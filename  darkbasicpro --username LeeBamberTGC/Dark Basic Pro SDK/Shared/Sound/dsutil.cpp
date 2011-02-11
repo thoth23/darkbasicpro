@@ -75,8 +75,8 @@ LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName, DWORD* pdw
 	}
 
 	// get the size of the PCM file and multiply by 4
-	iSize  = ov_pcm_total ( &OggVorbis ,-1 );
-	iSize *= 4;
+	int iPCMTotalSize = ov_pcm_total ( &OggVorbis ,-1 );
+	iSize = iPCMTotalSize * 4;
 
 	// get information about the file
     OggVorbisInfo = ov_info ( &OggVorbis, -1 );
@@ -131,7 +131,8 @@ LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName, DWORD* pdw
 	pDSBuffer [ 0 ]->Unlock ( pSoundBuffer, ( int ) iSize, NULL, NULL );
 
 	// record the size of the buffer (OGG cannot detect END of sound = no loop no playing()=0!)
-	*pdwSizeOfSound = (DWORD)iSize / wfm.nBlockAlign; // might not be wfm.nBlockAlign, might be wBitsPerSample/8
+	// 110211 - correct calculation of size for end detection is PCM * BA
+	*pdwSizeOfSound = (DWORD)iPCMTotalSize * wfm.nBlockAlign;
 
 	// close the file
 	fclose ( fp );
