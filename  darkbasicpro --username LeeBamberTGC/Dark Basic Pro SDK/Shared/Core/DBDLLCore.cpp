@@ -4284,6 +4284,14 @@ DARKSDK void Sync(void)
 	g_bCanRenderNow = true;
 }
 
+DARKSDK void Sync(int iProcessMessages)
+{
+	ExternalDisplaySync(0);
+	if ( iProcessMessages==1 ) ProcessMessagesOnly();
+	ConstantNonDisplayUpdate();
+	g_bCanRenderNow = true;
+}
+
 DARKSDK void FastSync(void)
 {
 	ExternalDisplaySync(1);
