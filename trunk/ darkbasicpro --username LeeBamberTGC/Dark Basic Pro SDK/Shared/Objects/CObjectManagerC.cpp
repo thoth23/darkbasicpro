@@ -39,6 +39,9 @@ bool										g_bRenderVeryEarlyObjects		= false;
 // U74 - 120409 - during LOD QUAD transition, use ZBIAS to move quad out of way when 3D fades in/out by THIS amount in total
 float										g_fZBiasEpsilon					= 0.0005f;
 
+// U77 - 110211 - detect AnisotropyLevel
+int											g_iAnisotropyLevel				= -1;
+
 //////////////////////////////////////////////////////////////////////////////////
 // MANAGER FUNCTIONS /////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -1975,6 +1978,17 @@ bool CObjectManager::PreSceneSettings ( void )
 	m_pD3D->SetRenderState ( D3DRS_CULLMODE,	m_RenderStates.dwCullDirection );
 	m_RenderStates.bCull						= true;
 	m_RenderStates.iCullMode					= 0;	
+
+	// U77 - 110210 - allow anistropic filtering to look better when used
+	if ( g_iAnisotropyLevel==-1 )
+	{
+		// best card can give
+		D3DCAPS9 pCaps;
+		m_pD3D->GetDeviceCaps(&pCaps);
+		g_iAnisotropyLevel = pCaps.MaxAnisotropy;
+	}
+	for ( int texturestage=0; texturestage<8; texturestage++)
+		m_pD3D->SetSamplerState ( texturestage, D3DSAMP_MAXANISOTROPY, g_iAnisotropyLevel );
 
 	// okay
 	return true;
