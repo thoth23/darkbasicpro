@@ -774,7 +774,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\MyGames\simple\DBProVectorsDebug.dll"
+				OutputFile="C:\TGC\BUILD2010-FPGC\Wise Installer\The Game Creators\First Person Game Creator\MyGames\simple\DBProVectorsDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
