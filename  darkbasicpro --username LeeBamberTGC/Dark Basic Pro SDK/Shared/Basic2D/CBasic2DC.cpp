@@ -413,11 +413,83 @@ DARKSDK void Dot ( int iX, int iY )
 
 DARKSDK void Box ( int iLeft, int iTop, int iRight, int iBottom )
 {
+	/* This does not work for all NVidia systems, so replace with a render.
 	D3DRECT	rect = { iLeft, iTop, iRight, iBottom };
-
-	// mike - 041005 - color needs to be changed
-	//g_pGlob->dwForeColor = 0x11111111;
 	m_pD3D->Clear ( 1, &rect, D3DCLEAR_TARGET, g_pGlob->dwForeColor, 0.0f, 0 );
+	*/
+
+	tagLinesVertexDesc * v = 0;
+
+    if (m_pLineVB)
+    	m_pLineVB->Lock( 0, 0, (void**)&v, 0 );
+
+    if (v)
+	{
+		v[0].x      = (float)iLeft;
+        v[0].y      = (float)iBottom;
+		v[0].z      = 10.0f;
+        v[0].rhw    = 1.0f;
+		v[0].dwColour  = g_pGlob->dwForeColor;
+
+		v[1].x      = (float)iLeft;
+        v[1].y      = (float)iTop;
+		v[1].z      = 10.0f;
+        v[1].rhw    = 1.0f;
+		v[1].dwColour  = g_pGlob->dwForeColor;
+
+		v[2].x      = (float)iRight;
+        v[2].y      = (float)iTop;
+		v[2].z      = 10.0f;
+        v[2].rhw    = 1.0f;
+		v[2].dwColour  = g_pGlob->dwForeColor;
+
+		v[3].x      = (float)iRight;
+        v[3].y      = (float)iBottom;
+		v[3].z      = 10.0f;
+        v[3].rhw    = 1.0f;
+		v[3].dwColour  = g_pGlob->dwForeColor;
+
+		m_pLineVB->Unlock();
+
+		m_pD3D->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+		m_pD3D->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );		
+
+		m_pD3D->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+		m_pD3D->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+		m_pD3D->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+		m_pD3D->SetRenderState( D3DRS_ZENABLE, FALSE );
+
+		m_pD3D->SetRenderState( D3DRS_DITHERENABLE, FALSE );
+		m_pD3D->SetRenderState( D3DRS_LIGHTING, FALSE );
+		m_pD3D->SetRenderState( D3DRS_COLORVERTEX, TRUE );
+		m_pD3D->SetRenderState( D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1 );
+		m_pD3D->SetRenderState( D3DRS_SPECULARENABLE, FALSE );
+
+		m_pD3D->SetRenderState( D3DRS_FOGENABLE, FALSE );
+		m_pD3D->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
+
+        DWORD AAEnabled = FALSE;
+        m_pD3D->GetRenderState  ( D3DRS_MULTISAMPLEANTIALIAS, &AAEnabled );
+        if (AAEnabled)
+		    m_pD3D->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+		
+		m_pD3D->SetVertexShader( NULL  );
+		m_pD3D->SetFVF( D3DFVF_LINES  );
+		m_pD3D->SetStreamSource( 0, m_pLineVB, 0, sizeof(tagLinesVertexDesc) );
+
+		m_pD3D->SetTexture( 0, NULL );
+		m_pD3D->SetTextureStageState ( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+		m_pD3D->SetTextureStageState ( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE );
+		m_pD3D->SetTextureStageState ( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+		m_pD3D->SetTextureStageState ( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+		m_pD3D->SetTextureStageState ( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+		m_pD3D->SetTextureStageState ( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+
+		m_pD3D->DrawPrimitive( D3DPT_TRIANGLEFAN, 0 ,2 );
+
+        if (AAEnabled)
+		    m_pD3D->SetRenderState ( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
+	}
 }
 
 DARKSDK void Line ( int iXa, int iYa, int iXb, int iYb )
