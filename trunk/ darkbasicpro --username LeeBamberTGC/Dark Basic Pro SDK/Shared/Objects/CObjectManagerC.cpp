@@ -3642,10 +3642,8 @@ bool CObjectManager::PostDrawRestores ( void )
 		m_RenderStates.fObjectFOV = 0.0f;
 	}
 
-
     if ( g_pGlob && g_pGlob->iFogState == 1 )
     {
-
 	    m_pD3D->SetRenderState ( D3DRS_FOGENABLE, TRUE );
     	m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, m_RenderStates.dwFogColor );
     }
@@ -4366,7 +4364,13 @@ bool CObjectManager::Update ( void )
 	
 	// Render Scene from Universe
 	if ( g_pUniverse )
+	{
+		// U77 - 090411 - soetimes some universe renders can WIPE OUT fog color (needed for subsequent 3D passes)
+		DWORD dwRememberFogColor;
+		m_pD3D->GetRenderState ( D3DRS_FOGCOLOR, &dwRememberFogColor );
 		g_pUniverse->Render ( );
+		m_pD3D->SetRenderState ( D3DRS_FOGCOLOR, dwRememberFogColor );
+	}
 
 	// Main layer render
 	UpdateLayer ( 0 );
