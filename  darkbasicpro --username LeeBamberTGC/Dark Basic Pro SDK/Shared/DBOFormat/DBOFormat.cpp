@@ -475,7 +475,7 @@ bool cSpecialEffect::AssignValueHookCore ( LPSTR pName, D3DXHANDLE hParam, DWORD
 	// rogue scalars
 	ASSIGNNAME ( "time", m_TimeEffectHandle );
 	ASSIGNNAME ( "sintime", m_SinTimeEffectHandle );
-	ASSIGNNAME ( "meshradius", m_fMeshRadius );
+//	ASSIGNNAME ( "meshradius", m_fMeshRadius ); // gave up its life to create clip plane (above) - invisible segment fix - 130411
 
 	//
 	// DBPRO UNTWEAKABLES
@@ -1061,11 +1061,13 @@ void cSpecialEffect::ApplyEffect ( sMesh* pMesh )
 			m_pEffect->SetFloat( m_SinTimeEffectHandle, fSinTime );
 		}
 
+		/* This gave its life on 130411 to protect size of DBO (in favour of clip plane)
 		// mesh specific values into shader
 		if ( m_fMeshRadius != NULL )
 		{
 			m_pEffect->SetFloat( m_fMeshRadius, pMesh->Collision.fLargestRadius );
 		}
+		*/
 
 		// set bone matrix palette if required
 		if ( m_BoneMatrixPaletteHandle )

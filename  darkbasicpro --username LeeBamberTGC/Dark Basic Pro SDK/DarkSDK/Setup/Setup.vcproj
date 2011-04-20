@@ -909,7 +909,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
-				OutputFile="C:\TGC\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\DBProSetupDebug.dll"
+				OutputFile="C:\TGC\BUILD2010-FPGC\Wise Installer\The Game Creators\First Person Game Creator\MyGames\simple\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
