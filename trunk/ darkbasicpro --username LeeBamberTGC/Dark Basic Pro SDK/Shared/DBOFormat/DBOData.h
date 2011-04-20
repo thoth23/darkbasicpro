@@ -132,12 +132,12 @@ class cSpecialEffect
 		D3DXHANDLE			m_LightPosHandle;
 		D3DXHANDLE			m_VecCameraPosEffectHandle;
 		D3DXHANDLE			m_VecEyePosEffectHandle;
-		D3DXHANDLE			m_VecClipPlaneEffectHandle; // 270111
 		D3DXHANDLE			m_AlphaOverrideHandle;
 
 		D3DXHANDLE			m_TimeEffectHandle;
 		D3DXHANDLE			m_SinTimeEffectHandle;
-		D3DXHANDLE			m_fMeshRadius;
+		//D3DXHANDLE			m_fMeshRadius; // gave it's life for m_VecClipPlaneEffectHandle
+		D3DXHANDLE			m_VecClipPlaneEffectHandle; // 270111, then 140411 (this added 4 bytes to DBO, messes up all plugins)
 
 		D3DXHANDLE			m_BoneMatrixPaletteHandle;
 

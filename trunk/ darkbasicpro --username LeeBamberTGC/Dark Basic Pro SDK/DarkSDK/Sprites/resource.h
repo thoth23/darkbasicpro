@@ -51,6 +51,7 @@
 #define IDS_STRING47                    47
 #define IDS_STRING48                    48
 #define IDS_STRING49                    49
+#define IDS_STRING50                    50
 
 // Next default values for new objects
 // 

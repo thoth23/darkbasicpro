@@ -168,6 +168,7 @@ STRINGTABLE
 BEGIN
     IDS_STRING48            "SPRITE PRIORITY[%LL%?GetPriority@@YAHH@Z%Sprite Number"
     IDS_STRING49            "SET SPRITE FILTER MODE%L%?SetSpriteFilterMode@@YAXH@Z%Clamp Mode"
+    IDS_STRING50            "SET SPRITE RESIZE%LFF%?SetSpriteResize@@YAXHMM@Z%Mode, Global X Offset, Global X Scale"
 END
 
 #endif    // English (U.K.) resources

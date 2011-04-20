@@ -26,8 +26,6 @@
 // GLOBALS ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
-
-
 // Global Shared Data Pointer (passed in from core)
 DBPRO_GLOBAL GlobStruct*	g_pGlob = NULL;
 DBPRO_GLOBAL LPDIRECT3DDEVICE9			m_pD3D = NULL;						// pointer to D3D device
@@ -58,6 +56,10 @@ namespace
 
     // mike - 041005 - special option to resize sprites automatically
     int g_iSpriteResizeMode = 0;
+
+	// Can globally squash the X of all sprites (for side by side steroscopics)
+	float g_fGlobalSpriteOffsetX = 0;
+	float g_fGlobalSpriteStretchX = 1.0f;
 }
 
 // Forward declarations
@@ -454,9 +456,11 @@ DARKSDK void CreateSprite( int iID, int iX, int iY, int iImage )
 DARKSDK void SetVertexPosDataForSprite ( int iX, int iY )
 {
 	// get sprite information
-	int iWidth  = (int)(m_ptr->iWidth * m_ptr->fXScale);
+	float fX = (float)iX * g_fGlobalSpriteStretchX;
+	fX+= g_fGlobalSpriteOffsetX;
+	int iWidth  = (int)(m_ptr->iWidth * m_ptr->fXScale * g_fGlobalSpriteStretchX);
 	int iHeight = (int)(m_ptr->iHeight * m_ptr->fYScale);
-	int iXOffset  = (int)(m_ptr->iXOffset * m_ptr->fXScale);
+	int iXOffset  = (int)(m_ptr->iXOffset * m_ptr->fXScale * g_fGlobalSpriteStretchX);
 	int iYOffset = (int)(m_ptr->iYOffset * m_ptr->fYScale);
 
 	// Apply a per-pixel bias to screen coordinates (dx8 recommends 0.5)
@@ -466,19 +470,10 @@ DARKSDK void SetVertexPosDataForSprite ( int iX, int iY )
 	// assign vertex data
 	if(m_ptr->iXSize==0)
 	{
-// leefix - 250303 - additional bias to improve sprite accuracy during rotation!
-//		m_ptr->lpVertices [ 0 ].x = (float)(iX - iXOffset);
-//		m_ptr->lpVertices [ 1 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
-//		m_ptr->lpVertices [ 2 ].x = (float)(iX - iXOffset);
-//		m_ptr->lpVertices [ 3 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
-//		m_ptr->lpVertices [ 0 ].y = (float)(iY - iYOffset);
-//		m_ptr->lpVertices [ 1 ].y = (float)(iY - iYOffset);
-//		m_ptr->lpVertices [ 2 ].y = (float)(iY - iYOffset)+iHeight-0.5f;
-//		m_ptr->lpVertices [ 3 ].y = (float)(iY - iYOffset)+iHeight-0.5f;
-		m_ptr->lpVertices [ 0 ].x = (float)(iX - iXOffset)-0.5f;
-		m_ptr->lpVertices [ 1 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
-		m_ptr->lpVertices [ 2 ].x = (float)(iX - iXOffset)-0.5f;
-		m_ptr->lpVertices [ 3 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
+		m_ptr->lpVertices [ 0 ].x = (float)(fX - iXOffset)-0.5f;
+		m_ptr->lpVertices [ 1 ].x = (float)(fX - iXOffset)+iWidth-0.5f;
+		m_ptr->lpVertices [ 2 ].x = (float)(fX - iXOffset)-0.5f;
+		m_ptr->lpVertices [ 3 ].x = (float)(fX - iXOffset)+iWidth-0.5f;
 		m_ptr->lpVertices [ 0 ].y = (float)(iY - iYOffset)-0.5f;
 		m_ptr->lpVertices [ 1 ].y = (float)(iY - iYOffset)-0.5f;
 		m_ptr->lpVertices [ 2 ].y = (float)(iY - iYOffset)+iHeight-0.5f;
@@ -486,19 +481,12 @@ DARKSDK void SetVertexPosDataForSprite ( int iX, int iY )
 	}
 	else
 	{
-// leefix - 250303 - remove bias to improve sprite accuracy during rotation!
-//		m_ptr->lpVertices [ 0 ].x = (float)(iX - m_ptr->iXOffset);
-//		m_ptr->lpVertices [ 1 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
-//		m_ptr->lpVertices [ 2 ].x = (float)(iX - m_ptr->iXOffset);
-//		m_ptr->lpVertices [ 3 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
-//		m_ptr->lpVertices [ 0 ].y = (float)(iY - m_ptr->iYOffset);
-//		m_ptr->lpVertices [ 1 ].y = (float)(iY - m_ptr->iYOffset);
-//		m_ptr->lpVertices [ 2 ].y = (float)(iY + m_ptr->iYSize - m_ptr->iYOffset)-0.5f;
-//		m_ptr->lpVertices [ 3 ].y = (float)(iY + m_ptr->iYSize - m_ptr->iYOffset)-0.5f;
-		m_ptr->lpVertices [ 0 ].x = (float)(iX - m_ptr->iXOffset)-0.5f;
-		m_ptr->lpVertices [ 1 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
-		m_ptr->lpVertices [ 2 ].x = (float)(iX - m_ptr->iXOffset)-0.5f;
-		m_ptr->lpVertices [ 3 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
+		float fXSize = m_ptr->iXSize * g_fGlobalSpriteStretchX;
+		float fXOffset = m_ptr->iXOffset * g_fGlobalSpriteStretchX;
+		m_ptr->lpVertices [ 0 ].x = (float)(fX - fXOffset)-0.5f;
+		m_ptr->lpVertices [ 1 ].x = (float)(fX + fXSize - m_ptr->iXOffset)-0.5f;
+		m_ptr->lpVertices [ 2 ].x = (float)(fX - fXOffset)-0.5f;
+		m_ptr->lpVertices [ 3 ].x = (float)(fX + fXSize - m_ptr->iXOffset)-0.5f;
 		m_ptr->lpVertices [ 0 ].y = (float)(iY - m_ptr->iYOffset)-0.5f;
 		m_ptr->lpVertices [ 1 ].y = (float)(iY - m_ptr->iYOffset)-0.5f;
 		m_ptr->lpVertices [ 2 ].y = (float)(iY + m_ptr->iYSize - m_ptr->iYOffset)-0.5f;
@@ -558,7 +546,7 @@ DARKSDK void RotateSpriteAtPtr( void )
 	}
 }
 
-DARKSDK void SetVertexDataForSprite ( int iX, int iY )
+DARKSDK void SetVertexDataForSprite( int iX, int iY )
 {
 	// if angled, must transform vertex data
 	if( m_ptr->fAngle!=0.0 )
@@ -1074,6 +1062,17 @@ DARKSDK void Paste ( int iID, int iX, int iY )
 		return;
 	}
 
+	// U77 - 130411 - support for stereo side by side
+	D3DVIEWPORT9 SaveViewport;
+	if ( g_fGlobalSpriteStretchX != 1.0f )
+	{
+		m_pD3D->GetViewport(&SaveViewport);
+		D3DVIEWPORT9 StretchedViewport = SaveViewport;
+		StretchedViewport.X = (int)g_fGlobalSpriteOffsetX;
+		StretchedViewport.Width = (int)(SaveViewport.Width * g_fGlobalSpriteStretchX);
+		m_pD3D->SetViewport(&StretchedViewport);
+	}
+
 	// now update the vertices based on this info
 	SetVertexDataForSprite( iX, iY );
 
@@ -1089,6 +1088,10 @@ DARKSDK void Paste ( int iID, int iX, int iY )
 
 	// mike - 220406 - must update original sprite again
 	Rotate ( iID, m_ptr->fAngle );
+
+	// U77 - 130411 - support for stereo side by side
+	if ( g_fGlobalSpriteStretchX != 1.0f )
+		m_pD3D->SetViewport(&SaveViewport);
 }
 
 DARKSDK void Paste ( int iID, int iX, int iY, int iDrawImmediately )
@@ -1507,10 +1510,17 @@ DARKSDK void SetDiffuse ( int iID, int iR, int iG, int iB )
 	m_ptr->lpVertices [ 3 ].color = D3DCOLOR_ARGB ( m_ptr->iAlpha, m_ptr->iRed, m_ptr->iGreen, m_ptr->iBlue );
 }
 
+DARKSDK void SetSpriteResize ( int iMode, float fOffsetX, float fScaleX )
+{
+	g_iSpriteResizeMode = iMode;
+	g_fGlobalSpriteOffsetX = fOffsetX;
+	g_fGlobalSpriteStretchX = fScaleX;
+}
+
 DARKSDK void SetSpriteResize ( int iMode )
 {
 	// mike - 041005 - special option to resize sprites automatically
-	g_iSpriteResizeMode = iMode;
+	SetSpriteResize ( iMode, 0.0f, 1.0f );
 }
 
 DARKSDK void SetImage ( int iID, int iImage )
