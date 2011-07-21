@@ -4,6 +4,7 @@
 
 // Standard Includes
 #define _CRT_SECURE_NO_DEPRECATE
+#define WINVER 0x0601
 #include "windows.h"
 #include "math.h"
 #include "time.h"
@@ -26,6 +27,9 @@ extern CRuntimeErrorHandler* g_pErrorHandler;
 // Prototypes
 LPSTR GetTypePatternCore ( LPSTR dwTypeName, DWORD dwTypeIndex );
 DWORD GetNextSyncDelay();
+
+// Touch System works under XP and Win7 now
+bool bDetectAndActivateWindows7TouchSystem = false;
 
 // Global Core Vars
 DBPRO_GLOBAL LPSTR			g_pVarSpace					= NULL;
@@ -595,6 +599,32 @@ LRESULT CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 //					}
 				}
 			}
+
+			// 20/7/11 - Win7 - ensure we register for TOUCH over GESTURE (also allows LBUTTONDOWN to happen instantly!)
+			if ( bDetectAndActivateWindows7TouchSystem==false )
+			{
+				bDetectAndActivateWindows7TouchSystem = true;
+				OSVERSIONINFO osvi;
+				BOOL bIsWindows7orLater;
+				ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+				osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+				GetVersionEx(&osvi);
+				bIsWindows7orLater = ( (osvi.dwMajorVersion > 6) || ( (osvi.dwMajorVersion == 6) && (osvi.dwMinorVersion >= 1) ));
+				if ( bIsWindows7orLater==TRUE )
+				{
+					// must dynamically find the user32.dll function and call it IF Windows 7 (allows Windows XP to run)
+					// RegisterTouchWindow(g_Glob.hWnd, 0);
+					typedef UINT (CALLBACK* sRegisterTouchWindowFnc)(HWND,ULONG);
+					HMODULE hWinUserDLL = LoadLibrary ( "user32.dll" );
+					if ( hWinUserDLL )
+					{
+						sRegisterTouchWindowFnc pRegTouchWin = (sRegisterTouchWindowFnc) GetProcAddress ( hWinUserDLL, "RegisterTouchWindow" );
+						if ( pRegTouchWin ) BOOL bRes = pRegTouchWin ( g_Glob.hWnd, 0 );
+						FreeLibrary ( hWinUserDLL );
+					}
+				}
+			}
+
 			break;
 		}
 
