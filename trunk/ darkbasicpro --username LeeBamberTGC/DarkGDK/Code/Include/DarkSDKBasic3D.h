@@ -53,6 +53,7 @@ void		dbColorObject							( int iID, DWORD dwRGB );
 void		dbSetObjectFrame						( int iID, int iFrame );
 void		dbSetObjectFrame						( int iID, float fFrame );
 void		dbSetObjectFrame						( int iID, float fFrame, int iRecalculateBounds );
+void		dbSetObjectFrame						( int iID, int iLimbID, float fFrame, int iEnableOverride );
 void		dbSetObjectSpeed						( int iID, int iSpeed );
 void		dbSetObjectInterpolation				( int iID, int iJump );
 void		dbSetObjectRotationXYZ					( int iID );
