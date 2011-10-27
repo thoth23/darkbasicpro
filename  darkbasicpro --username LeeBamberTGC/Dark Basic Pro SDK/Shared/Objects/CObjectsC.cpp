@@ -8670,6 +8670,11 @@ void dbSetObjectFrame ( int iID, float fFrame, int iRecalculateBounds )
 	SetFrameEx ( iID, fFrame, iRecalculateBounds );
 }
 
+void dbSetObjectFrame ( int iID, int iLimbID, float fFrame, int iEnableOverride )
+{
+	SetFrameEx( iID, iLimbID, fFrame, iEnableOverride );
+}
+
 void dbSetObjectSpeed ( int iID, int iSpeed )
 {
 	SetSpeed ( iID, iSpeed );
