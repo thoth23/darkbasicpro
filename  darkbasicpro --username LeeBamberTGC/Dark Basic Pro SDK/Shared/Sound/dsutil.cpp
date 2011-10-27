@@ -140,7 +140,7 @@ LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName, DWORD* pdw
 	return pDSBuffer;
 }
 #else
-LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName )
+LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName, DWORD* pdwSizeOfSound )
 {
 	return NULL;
 }
