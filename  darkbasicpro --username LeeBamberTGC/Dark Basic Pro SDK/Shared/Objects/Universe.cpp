@@ -4041,6 +4041,18 @@ int cUniverse::CollisionRayCast ( float fX, float fY, float fZ, float fNewX, flo
 	if ( fNewY>vecMax.y ) vecMax.y=fNewY;
 	if ( fNewZ>vecMax.z ) vecMax.z=fNewZ;
 
+	// V119 - 081211 - bug meaning we ignore meshes in meshref (large meshes that intersect an areabox, but the
+	// areabox containing them is not intersected by the ray bound box!
+	// so we clear some flags and tranverse the meshref meshes too, only once
+	if ( m_pMasterMeshList.size()>0 )
+	{
+		for ( int iMeshIndex = 0; iMeshIndex < (int)m_pMasterMeshList.size ( ); iMeshIndex++ )
+		{
+			sMesh* pMesh = m_pMasterMeshList [ iMeshIndex ];
+			pMesh->dwTempFlagUsedDuringUniverseRayCast = 0;
+		}
+	}
+
 	// go through all areaboxes that touch boundbox
 	for ( int iAreaBox = 0; iAreaBox < (int)m_pAreaList.size ( ); iAreaBox++ )
 	{
@@ -4059,31 +4071,40 @@ int cUniverse::CollisionRayCast ( float fX, float fY, float fZ, float fNewX, flo
 			{
 				// new collision against meshgroups
 				// each area box has within and ahred meshgroups
-				for ( int iBothMeshGroups=0; iBothMeshGroups<2; iBothMeshGroups++ )
+				//for ( int iBothMeshGroups=0; iBothMeshGroups<2; iBothMeshGroups++ ) // V119 also checking meshref now
+				for ( int iBothMeshGroups=0; iBothMeshGroups<3; iBothMeshGroups++ )
 				{
 					int iIndexMax = 0;
 					if ( iBothMeshGroups==0 ) iIndexMax = pArea->meshgroups.size ( );
 					if ( iBothMeshGroups==1 ) iIndexMax = pArea->sharedmeshgroups.size ( );
+					if ( iBothMeshGroups==2 ) iIndexMax = pArea->meshgroupref.size();
 					for ( int iIndex = 0; iIndex < iIndexMax; iIndex++ )
 					{
 						sMesh* pMesh = NULL;
 						if ( iBothMeshGroups==0 ) pMesh = pArea->meshgroups [ iIndex ]->pMesh;
 						if ( iBothMeshGroups==1 ) pMesh = pArea->sharedmeshgroups [ iIndex ]->pMesh;
+						if ( iBothMeshGroups==2 ) pMesh = pArea->meshgroupref [ iIndex ]->pMesh;
 						if ( pMesh )
 						{
-							if ( CollisionBoundBoxTest ( &vecMin, &vecMax, &pMesh->Collision.vecMin, &pMesh->Collision.vecMax ) )
+							// V119 optmise - only check each mesh once for this ray check!
+							if ( pMesh->dwTempFlagUsedDuringUniverseRayCast==0 )
 							{
-								// raycast against mesh
-								if ( CollisionSingleRayCast ( pMesh, fX, fY, fZ, fNewX, fNewY, fNewZ,
-															  &fBestDistance, &fBestU, &fBestV, &pBestMesh, &iBestTriangle, true ) )
+								// we check this mesh ONCE to see if the ray intersects it
+								pMesh->dwTempFlagUsedDuringUniverseRayCast = 1;
+								if ( CollisionBoundBoxTest ( &vecMin, &vecMax, &pMesh->Collision.vecMin, &pMesh->Collision.vecMax ) )
 								{
-									// store node of successful collision thus far
-									D3DXVECTOR3 vecRayDist = vecMax - vecMin;
-									float fRayDist = D3DXVec3Length ( &vecRayDist );
-									if ( fBestDistance<fRayDist )
+									// raycast against mesh
+									if ( CollisionSingleRayCast ( pMesh, fX, fY, fZ, fNewX, fNewY, fNewZ,
+																  &fBestDistance, &fBestU, &fBestV, &pBestMesh, &iBestTriangle, true ) )
 									{
-										iBestReturnDistance = (int)fBestDistance;;
-										if ( iBestReturnDistance<1 ) iBestReturnDistance=1;
+										// store node of successful collision thus far
+										D3DXVECTOR3 vecRayDist = vecMax - vecMin;
+										float fRayDist = D3DXVec3Length ( &vecRayDist );
+										if ( fBestDistance<fRayDist )
+										{
+											iBestReturnDistance = (int)fBestDistance;;
+											if ( iBestReturnDistance<1 ) iBestReturnDistance=1;
+										}
 									}
 								}
 							}

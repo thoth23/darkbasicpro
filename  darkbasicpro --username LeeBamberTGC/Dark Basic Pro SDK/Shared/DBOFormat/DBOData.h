@@ -521,7 +521,7 @@ struct sMesh : public sMeshFVF,
 	sCollisionData					Collision;									// collision information
 
 	// reserved members
-	DWORD							dwReservedM1;								// reserved - maintain plugin compat.
+	DWORD							dwTempFlagUsedDuringUniverseRayCast;		// V119 to fix bugged universe ray cast of large meshes
 	DWORD							dwReservedM2;								// reserved - maintain plugin compat.
 	DWORD							dwReservedM3;								// reserved - maintain plugin compat.
 
