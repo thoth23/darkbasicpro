@@ -4612,6 +4612,10 @@ void CObjectManager::DoStencilRenderEnd ( void )
 			m_pD3D->SetTextureStageState ( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
 			m_pD3D->SetTextureStageState ( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
 
+			// U77 - 110112 - fog CANNOT be part of shadow!
+			m_pD3D->SetRenderState ( D3DRS_FOGENABLE, FALSE );
+			m_RenderStates.bFog = false;
+
 			// render shades for shadow overlap
 			m_pD3D->SetVertexShader	( NULL );
 			m_pD3D->SetFVF			( D3DFVF_SHADOWVERTEX );
