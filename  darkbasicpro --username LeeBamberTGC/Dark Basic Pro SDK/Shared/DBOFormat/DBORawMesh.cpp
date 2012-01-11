@@ -7,6 +7,7 @@
 // DBORAWMESH HEADER ////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 #include "DBORawMesh.h"
+#include "DBOMesh.h"
 
 // Mesh Load Functions
 
@@ -71,6 +72,9 @@ DARKSDK_DLL bool SaveRawMesh ( LPSTR pFilename, sMesh* pMesh )
 {
 	// result
 	bool bResult=false;
+
+	// if mesh exists
+	if ( !pMesh ) return false;
 
 	// get dx mesh from local mesh
 	LPD3DXMESH pDXMesh = LocalMeshToDXMesh ( pMesh, NULL, 0 );

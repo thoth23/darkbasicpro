@@ -2038,7 +2038,8 @@ DARKSDK void ShiftUp ( int iID )
 
 	iZ=0;
 	iOffset = m_ptr->iZSegmentedFull - 1;
-	iOffset = iOffset - 1; // leefix - 270206 - u60 - we're copying from unshifted temp data (extra -1!)
+	// leefix - 211211 - u78 - not sure where these extra -1 came from, not needed RE DarkGDK
+	// iOffset = iOffset - 1; // leefix - 270206 - u60 - we're copying from unshifted temp data (extra -1!)
 	for ( iX = 0; iX < m_ptr->iXSegmentedFull; iX++ )
 	{
 		SetHeight ( iID, iX, iZ,	m_ptr->pfVert [ iX + ( iOffset * m_ptr->iXSegmentedFull ) ].y );
@@ -2122,7 +2123,9 @@ DARKSDK void ShiftLeft ( int iID )
 		else
 			// lee - 270206 - u60 - from unshifted buffer data, extra 1
 //			iOffset = 0;
-			iOffset = 1;
+//			iOffset = 1;
+			// lee - u78 - 211211 - seems the 2006 correction copied the WRONG line to the rightmost column (DarkGDK report)
+			iOffset = 0;
 
 		for ( iX = 0; iX < iXMax; iX++ )
 		{
@@ -2195,7 +2198,8 @@ DARKSDK void ShiftRight ( int iID )
 
 	// copy rightmost data to left side
 	iZ = 0;
-	iOffset = iZMax - 1 - 1; // leefix - 270206 - u60 - we're copying from unshifted temp data (extra -1!)
+	//iOffset = iZMax - 1 - 1; // leefix - 270206 - u60 - we're copying from unshifted temp data (extra -1!)
+	iOffset = iZMax - 1; // leefix - 211211 - u78 - no need for extra -1 according to DarkGDK
 	for ( iX = 0; iX < iXMax; iX++ )
 	{
 		SetHeight ( iID, iZ, iX, m_ptr->pfVert [ iOffset + ( iX * m_ptr->iXSegmentedFull ) ].y );
@@ -2253,7 +2257,6 @@ DARKSDK void ShiftDown ( int iID )
 	int iX    = 0;
 	int iZ	  = 0;
 	int iTemp = 0;
-
 	int iOffset = 0;
 
 	// copy all of the height properties across to the temp buffer
@@ -2273,7 +2276,9 @@ DARKSDK void ShiftDown ( int iID )
 		else
 			// lee - 270206 - u60 - from unshifted buffer data, extra 1
 //			iOffset = 0;
-			iOffset = 1;
+//			iOffset = 1;
+			// lee - u78 - 211211 - seems the 2006 correction copied the WRONG line to the top row (DarkGDK report)
+			iOffset = 0;
 
 		for ( iX = 0; iX < m_ptr->iXSegmentedFull; iX++ )
 		{

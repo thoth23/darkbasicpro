@@ -263,16 +263,238 @@ DARKSDK_DLL void Save ( SDK_LPSTR szFilename, int iID )
 	LPSTR pDBPFilename = (LPSTR)szFilename;
 	if ( pDBPFilename )
 	{
-		// ensure filename uses DBO extension
-		if ( strnicmp ( pDBPFilename + strlen(pDBPFilename) - 4, ".dbo", 4 )!=NULL )
+		// U78 - if OBJ extension detected, switch to OBJ exporter
+		// OBJ is a static format (no transforms, no animation, not much really)
+		if ( strnicmp ( pDBPFilename + strlen(pDBPFilename) - 4, ".obj", 4 )==NULL )
 		{
-			RunTimeError ( RUNTIMEERROR_B3DMUSTUSEDBOEXTENSION );
-			return;
-		}
+			// vertex indices are global to the file
+			DWORD dwStartOfVertexBatch = 1;
 
-		// save the object as DBO
-		if ( !SaveDBO ( pDBPFilename, pObject ) )
-			return;
+			// Get just the name
+			char pJustObjName[512];
+			strcpy ( pJustObjName, pDBPFilename );
+			pJustObjName[strlen(pJustObjName)-4]=0;
+
+			// MTL file
+			char pMTLFilename[512];
+			strcpy ( pMTLFilename, pJustObjName );
+			strcat ( pMTLFilename, ".mtl" );
+
+			// open MTL file for writing
+			HANDLE hMTLfile = CreateFile ( pMTLFilename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+			if ( hMTLfile != INVALID_HANDLE_VALUE )
+			{
+				// write OBJ format
+				LPSTR pLine = 0;
+				DWORD byteswritten=0;
+				HANDLE hfile = CreateFile ( pDBPFilename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+				if ( hfile != INVALID_HANDLE_VALUE )
+				{
+					// header
+					pLine = "# OBJ Model File converted by the mighty Game Creators\n";
+					WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+					pLine = "# more tools found at www.thegamecreators.com\n";
+					WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+					pLine = "\n";
+					WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+
+					// material file name
+					pLine = "# Material library\n";
+					WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+					char pDynLine[512];
+					sprintf ( pDynLine, "mtllib %s\n\n", pMTLFilename );
+					WriteFile( hfile, pDynLine, strlen(pDynLine), &byteswritten, NULL );
+
+					// object name
+					pLine = "# Object\n";
+					WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+					sprintf ( pDynLine, "o %s\n", pJustObjName );
+					WriteFile( hfile, pDynLine, strlen(pDynLine), &byteswritten, NULL );
+					pLine = "\n";
+					WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+
+					// only one mesh
+					for ( int iMeshIndex=0; iMeshIndex<pObject->iMeshCount; iMeshIndex++ )
+					{
+						// make a new mesh from the original mesh, and ensure it's verts only
+						sMesh* pVertOnlyMesh = new sMesh;
+						sMesh* pMesh = pObject->ppMeshList[iMeshIndex];
+						MakeMeshFromOtherMesh       ( true, pVertOnlyMesh, pMesh, NULL );
+						ConvertLocalMeshToVertsOnly ( pVertOnlyMesh );
+
+						// group name
+						pLine = "# Mesh\n";
+						WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+						pLine = "g mesh\n";
+						WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+						pLine = "\n";
+						WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+
+						// vertices
+						pLine = "# Vertex list\n";
+						WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+
+						// for each vertex
+						BYTE* pVertData = pVertOnlyMesh->pVertexData;
+						for ( DWORD dwV=0; dwV<pVertOnlyMesh->dwVertexCount; dwV++ )
+						{
+							sprintf ( pDynLine, "v %f %f %f\n", (float)*((float*)pVertData+0), (float)*((float*)pVertData+1), (float)*((float*)pVertData+2) );
+							WriteFile( hfile, pDynLine, strlen(pDynLine), &byteswritten, NULL );
+							pVertData+=pVertOnlyMesh->dwFVFSize;
+						}
+						pVertData = pVertOnlyMesh->pVertexData;
+						for ( DWORD dwV=0; dwV<pVertOnlyMesh->dwVertexCount; dwV++ )
+						{
+							float fReverseVCoordForOBJ = -(float)*((float*)pVertData+7);
+							sprintf ( pDynLine, "vt %f %f\n", (float)*((float*)pVertData+6), fReverseVCoordForOBJ );
+							WriteFile( hfile, pDynLine, strlen(pDynLine), &byteswritten, NULL );
+							pVertData+=pVertOnlyMesh->dwFVFSize;
+						}
+						pVertData = pVertOnlyMesh->pVertexData;
+						for ( DWORD dwV=0; dwV<pVertOnlyMesh->dwVertexCount; dwV++ )
+						{
+							sprintf ( pDynLine, "vn %f %f %f\n", (float)*((float*)pVertData+3), (float)*((float*)pVertData+4), (float)*((float*)pVertData+5) );
+							WriteFile( hfile, pDynLine, strlen(pDynLine), &byteswritten, NULL );
+							pVertData+=pVertOnlyMesh->dwFVFSize;
+						}
+						pLine = "\n";
+						WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+
+						// faces
+						pLine = "# Face list\n";
+						WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL );
+
+						// texture filename
+						// no guarentee its in the X file - but we try first
+						// else we use the name of the model file
+						char pFileOnlyNoExt[512];
+						for ( int iTry=0; iTry<2; iTry++ )
+						{
+							LPSTR pOrigPathAndFile = NULL;
+							if ( iTry==0 ) pOrigPathAndFile = pMesh->pTextures[0].pName;
+							if ( iTry==1 ) pOrigPathAndFile = pDBPFilename;
+							strcpy ( pFileOnlyNoExt, "" );
+							if ( pOrigPathAndFile )
+							{
+								// trim off any paths first
+								strcpy ( pFileOnlyNoExt, pOrigPathAndFile );
+								for ( int n=strlen(pOrigPathAndFile)-1; n>0; n-- )
+								{
+									if ( pOrigPathAndFile[n]=='\\' || pOrigPathAndFile[n]=='/' )
+									{
+										strcpy ( pFileOnlyNoExt, pOrigPathAndFile+n+1 );
+										n=0; break;
+									}
+								}
+
+								// now we see if any variations of this filename exists
+								if ( strlen(pFileOnlyNoExt)>4 )
+								{
+									pFileOnlyNoExt[strlen(pFileOnlyNoExt)-4]=0;
+									strcat ( pFileOnlyNoExt, ".png" );
+									HANDLE hExists = CreateFile( pFileOnlyNoExt, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+									if ( hExists!=INVALID_HANDLE_VALUE )
+									{
+										// this texture file exists - we have our texture name
+										CloseHandle( hExists );
+										iTry=99;
+									}
+									else
+									{
+										// the PNG of the named texture does not exist, but sometimes
+										// texture names are truncated (chair_a.x) so need to be sliced
+										// up to find which part of the end is the actual texture (up to 32 chars)
+										char pSlicedVariant[512];
+										for ( int n=32; n>5; n-- )
+										{
+											strcpy ( pSlicedVariant, pFileOnlyNoExt+strlen(pFileOnlyNoExt)-n );
+											hExists = CreateFile( pSlicedVariant, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+											if ( hExists!=INVALID_HANDLE_VALUE )
+											{
+												// this texture file exists - we have our texture name
+												strcpy ( pFileOnlyNoExt, pSlicedVariant);
+												CloseHandle( hExists );
+												iTry=99;
+												n=0;
+											}
+										}
+									}
+								}
+							}
+						}
+
+						// remove spaces from material record
+						char pNoSpacesFile[512];
+						strcpy ( pNoSpacesFile, pFileOnlyNoExt );
+						for ( DWORD n=0; n<strlen(pNoSpacesFile); n++ )
+							if ( pNoSpacesFile[n]==' ' ) pNoSpacesFile[n]='_';
+
+						// write material(texture) for this collecion of faces(mesh)
+						sprintf ( pDynLine, "usemtl %s\n", pNoSpacesFile );
+						WriteFile( hfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+
+						// also write this into the MTL file
+						sprintf ( pDynLine, "newmtl %s\n", pNoSpacesFile );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+						sprintf ( pDynLine, "    Ns 20\n" );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+						sprintf ( pDynLine, "    d 1\n" );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+						sprintf ( pDynLine, "    illum 2\n" );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+						sprintf ( pDynLine, "    Kd 1.0 1.0 1.0\n" );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+						sprintf ( pDynLine, "    Ks 0 0 0\n" );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+						sprintf ( pDynLine, "    Ka 0 0 0\n" );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+						sprintf ( pDynLine, "    map_Kd %s\n\n", pNoSpacesFile );
+						WriteFile( hMTLfile, pDynLine, strlen(pDynLine), &byteswritten, NULL ); 
+
+						// for each face
+						for ( DWORD dwV=0; dwV<pVertOnlyMesh->dwVertexCount; dwV+=3 )
+						{
+							int iA = dwV+dwStartOfVertexBatch+0;
+							int iB = dwV+dwStartOfVertexBatch+1;
+							int iC = dwV+dwStartOfVertexBatch+2;
+							sprintf ( pDynLine, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", iA, iA, iA, iB, iB, iB, iC, iC, iC );
+							WriteFile( hfile, pDynLine, strlen(pDynLine), &byteswritten, NULL );
+						}
+						pLine = "\n";
+						WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+
+						// Advance global start marker for vertice indices
+						dwStartOfVertexBatch+=pVertOnlyMesh->dwVertexCount;
+
+						// free temp mesh
+						SAFE_DELETE ( pVertOnlyMesh );
+					}
+
+					// End of file marker
+					pLine = "# End of file\n";
+					WriteFile( hfile, pLine, strlen(pLine), &byteswritten, NULL ); 
+					
+					// finish file
+					CloseHandle ( hfile );
+				}
+
+				// finish file
+				CloseHandle ( hMTLfile );
+			}
+		}
+		else
+		{
+			// ensure filename uses DBO extension
+			if ( strnicmp ( pDBPFilename + strlen(pDBPFilename) - 4, ".dbo", 4 )!=NULL )
+			{
+				RunTimeError ( RUNTIMEERROR_B3DMUSTUSEDBOEXTENSION );
+				return;
+			}
+
+			// save the object as DBO
+			if ( !SaveDBO ( pDBPFilename, pObject ) )
+				return;
+		}
 	}
 }
 
