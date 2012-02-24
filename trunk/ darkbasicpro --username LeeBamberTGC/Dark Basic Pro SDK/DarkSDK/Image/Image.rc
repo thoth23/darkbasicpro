@@ -134,6 +134,7 @@ BEGIN
     IDS_STRING21            "PERFORM CHECKLIST FOR IMAGEBLOCK FILES%0%?PerformChecklistForImageBlockFiles@@YAXXZ"
     IDS_STRING22            "IMAGE FILE EXIST[%LS%?GetImageFileExist@@YAHPAD@Z%Filename"
     IDS_STRING23            "EXCLUDE FROM IMAGEBLOCK%S%?ExcludeFromImageBlock@@YAXPAD@Z%Exclude Path"
+    IDS_STRING24            "LOAD IMAGE%SLLLL%?LoadEx@@YAXPADHHHH@Z%Filename, Image Number, Texture Flag, Divide Texture Size, Silent Error"
 END
 
 #endif    // English (U.K.) resources

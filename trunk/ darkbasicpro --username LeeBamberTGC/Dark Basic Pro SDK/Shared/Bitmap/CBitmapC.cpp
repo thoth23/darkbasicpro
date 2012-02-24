@@ -48,6 +48,7 @@ namespace
     DWORD							g_CommonSurfaceDepth;
     DWORD							g_CSBPP;
     bool							g_bOffscreenBitmap			= false;
+    bool							g_bSupressErrorMessage		= false;
 
     GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;
     CAMERA3D_GetInternalDataPFN		g_Camera3D_GetInternalData;
@@ -375,7 +376,8 @@ DARKSDK LPDIRECT3DSURFACE9 MakeFormat ( int iID, int iWidth, int iHeight, D3DFOR
 		hr = m_pD3D->CreateOffscreenPlainSurface( iWidth, iHeight, g_CommonSurfaceFormat, D3DPOOL_SYSTEMMEM, &test->lpSurface, NULL);
 		if ( FAILED ( hr ) )
 		{
-			Error ( "Failed to create new bitmap" );
+			if ( g_bSupressErrorMessage==false )
+				Error ( "Failed to create new bitmap" );
 			SAFE_DELETE(test);
 			return NULL;
 		}
@@ -389,7 +391,8 @@ DARKSDK LPDIRECT3DSURFACE9 MakeFormat ( int iID, int iWidth, int iHeight, D3DFOR
 		hr = m_pD3D->CreateRenderTarget( iWidth, iHeight, g_CommonSurfaceFormat, D3DMULTISAMPLE_NONE, 0, TRUE, &test->lpSurface, NULL);
 		if ( FAILED ( hr ) )
 		{
-			Error ( "Failed to create new bitmap" );
+			if ( g_bSupressErrorMessage==false )
+				Error ( "Failed to create new bitmap" );
 			SAFE_DELETE(test);
 			return NULL;
 		}
@@ -851,11 +854,14 @@ DARKSDK bool DirectFade(LPDIRECT3DSURFACE9 pFromSurface, int percentage, DWORD w
 // Command Functions
 //
 
-DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemoryMode )
+DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemoryMode, int iSilentError )
 {
+	// 200112 - silent error mode
+	if ( iSilentError==1 ) g_bSupressErrorMessage = true;
+
 	if(iID<1 || iID>MAXIMUMVALUE)
 	{
-		RunTimeError(RUNTIMEERROR_BITMAPILLEGALNUMBER);
+		if ( g_bSupressErrorMessage==false ) RunTimeError(RUNTIMEERROR_BITMAPILLEGALNUMBER);
 		return;
 	}
 
@@ -873,6 +879,14 @@ DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemor
 
 	// now clear the bitmap
 	m_pD3D->Clear(0,NULL,D3DCLEAR_TARGET,0,1,0);
+
+	// 200112 - silent error mode
+	g_bSupressErrorMessage = false;
+}
+
+DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemoryMode )
+{
+	CreateBitmapEx ( iID, iWidth, iHeight, iSystemMemoryMode, 0 );
 }
 
 DARKSDK void CreateBitmap ( int iID, int iWidth, int iHeight )

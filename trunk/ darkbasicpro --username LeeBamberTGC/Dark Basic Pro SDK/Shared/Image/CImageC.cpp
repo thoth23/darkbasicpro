@@ -1826,14 +1826,22 @@ DARKSDK void Delete ( int iID )
 // Command Functions
 //
 
-DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iTextureFlag, int iDivideTextureSize )
+DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iTextureFlag, int iDivideTextureSize, int iSilentError )
 {
 	if(Load( szFilename, iID, iTextureFlag, false, iDivideTextureSize )==false)
 	{
-		char pCWD[256]; _getcwd ( pCWD, 256 );
-		char pErr[256]; sprintf ( pErr, "CWD:%s\nLOAD IMAGE %s,%d,%d,%d", pCWD, szFilename, iID, iTextureFlag, iDivideTextureSize);
-		RunTimeError(RUNTIMEERROR_IMAGELOADFAILED,pErr);
+		if ( iSilentError==0 )
+		{
+			char pCWD[256]; _getcwd ( pCWD, 256 );
+			char pErr[256]; sprintf ( pErr, "CWD:%s\nLOAD IMAGE %s,%d,%d,%d", pCWD, szFilename, iID, iTextureFlag, iDivideTextureSize);
+			RunTimeError(RUNTIMEERROR_IMAGELOADFAILED,pErr);
+		}
 	}
+}
+
+DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iKindOfTexture, int iDivideTextureSize )
+{
+	return LoadEx ( szFilename, iID, iKindOfTexture, 0, 0 );
 }
 
 DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iKindOfTexture )
