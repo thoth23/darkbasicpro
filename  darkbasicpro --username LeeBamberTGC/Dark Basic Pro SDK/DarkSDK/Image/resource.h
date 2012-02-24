@@ -25,6 +25,7 @@
 #define IDS_STRING21                    21
 #define IDS_STRING22                    22
 #define IDS_STRING23                    23
+#define IDS_STRING24                    24
 
 // Next default values for new objects
 // 

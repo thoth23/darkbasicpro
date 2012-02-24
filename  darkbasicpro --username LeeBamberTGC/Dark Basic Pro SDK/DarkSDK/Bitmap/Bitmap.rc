@@ -156,6 +156,7 @@ BEGIN
     IDS_STRING24            "BITMAP DEPTH[%L%?BitmapDepth@@YAHXZ%Bitmap Number"
     IDS_STRING25            "BITMAP MIRRORED[%L%?BitmapMirrored@@YAHXZ%Bitmap Number"
     IDS_STRING26            "BITMAP FLIPPED[%L%?BitmapFlipped@@YAHXZ%Bitmap Number"
+    IDS_STRING27            "CREATE BITMAP%LLLLL%?CreateBitmapEx@@YAXHHHHH@Z%Bitmap Number,Width,Height,SystemMemoryMode,Silent Error"
     IDS_STRING30            "FLIP BITMAP%L%?FlipBitmap@@YAXH@Z%Bitmap Number"
     IDS_STRING31            "SET BITMAP FORMAT%L%?SetBitmapFormat@@YAXH@Z%Bitmap Format Value"
 END

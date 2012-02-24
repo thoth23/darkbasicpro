@@ -1430,6 +1430,10 @@
 			RelativePath="Image.rc"
 			>
 		</File>
+		<File
+			RelativePath=".\resource.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
