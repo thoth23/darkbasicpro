@@ -218,27 +218,25 @@ DARKSDK int TMEMAvailable(void)
 
 DARKSDK int DMEMAvailable(void)
 {
-	// mike - 240604 - new code for getting total video memory
-	CDxDiagInfo* info;
+	// IRM 20120301 - Function cleanup
+	//              - Also, subsequent checks will not change the amount of video memory, so don't repeat.
+	static int Memory = -1;
 
-	// lee - 140306 - u60b3 - ensure creation of DXDIAG valid.
-	info = new CDxDiagInfo();
-	if ( info )
+	if (Memory < 0)
 	{
-		info->Init( TRUE );
-		info->QueryDxDiagViaDll();
+		Memory = 0;
+		CDxDiagInfo* info = new CDxDiagInfo();
+		if ( info )
+		{
+			if ( SUCCEEDED(info->Init( TRUE )) && SUCCEEDED(info->QueryDxDiagViaDll()) && !info->m_vDisplayInfo.empty() )
+			{
+				Memory = atoi( info->m_vDisplayInfo[ 0 ]->m_szDisplayMemoryLocalized );
+			}
+			delete info;
+		}
 	}
 
-	// report memory (validate first)
-	char szMem [ 256 ];
-	strcpy ( szMem, "" );
-	if ( info->m_vDisplayInfo.size()>0 )
-		if ( info->m_vDisplayInfo [ 0 ]->m_szDisplayMemoryLocalized )
-			strcpy ( szMem, info->m_vDisplayInfo [ 0 ]->m_szDisplayMemoryLocalized );
-
-	int a = atoi( szMem );
-	delete info;
-	return a;
+	return Memory;
 }
 
 DARKSDK int SMEMAvailable(void)
