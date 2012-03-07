@@ -1525,83 +1525,94 @@ bool CObjectManager::SortVisibilityList ( void )
 		// get a pointer to the object from the sorted draw list
 		sObject* pObject = m_ppSortedObjectList [ iSort ];
 
-		
-		// mike - 130405 - skip objects if they are excluded, I changed the way
-		//				 - exclusion works because in driving test by ravey it highlighted
-		//				 - a few problems
-		if ( pObject->bExcluded )
-			continue;
-
-		// actual object or instance of object
-		sObject* pActualObject = pObject;
-		if ( pActualObject->pInstanceOfObject )
-			pActualObject=pActualObject->pInstanceOfObject;
-
 		// VISIBILITY CULLING CHECK PROCESS
 		bool bIsVisible=false;
 
-		// locked objects are always visible
-		// glued objects are always visible (deferred to parent visibility)
-		int iGluedToObj = pObject->position.iGluedToObj;
-		if ( pObject->bLockedObject || iGluedToObj!=0 )
+		// 20120307 IRM
+		// If the object is a parent to an instance and is animating, then always
+		// count it as visible to ensure that any instance animations continue.
+		// This is true even if the object is off-screen, hidden or even excluded.
+		if (pObject->position.bParentOfInstance && pObject->bAnimPlaying)
 		{
-			// leefix -040803- maintenance check, if glued to object that has been deleted, deal with it
-			if ( iGluedToObj!=0 )
-			{
-				sObject* pParentObject = g_ObjectList [ iGluedToObj ];
-				if ( pParentObject==NULL )
-				{
-					// wipe out glue assignment
-					pObject->position.bGlued		= false;
-					pObject->position.iGluedToObj	= 0;
-					pObject->position.iGluedToMesh	= 0;
-				}
-			}
-
-			// locked objects and glued are visible
-			bIsVisible=true;
+			bIsVisible = true;
 		}
 		else
 		{
-			// send the position of the object and it's radius to the "CheckSphere" function, if this returns true the object will be visible
-			float fScaledRadius = pActualObject->collision.fScaledLargestRadius;
-			if ( fScaledRadius<=0.0f )
+			// Otherwise, need to check for actual visibility
+			// mike - 130405 - skip objects if they are excluded, I changed the way
+			//				 - exclusion works because in driving test by ravey it highlighted
+			//				 - a few problems
+			if ( pObject->bExcluded )
+				continue;
+
+			// actual object or instance of object
+			sObject* pActualObject = pObject;
+			if ( pActualObject->pInstanceOfObject )
+				pActualObject=pActualObject->pInstanceOfObject;
+
+			// locked objects are always visible
+			// glued objects are always visible (deferred to parent visibility)
+			int iGluedToObj = pObject->position.iGluedToObj;
+			if ( pObject->bLockedObject || iGluedToObj!=0 )
 			{
-				// objects with no mesh scope are visible
+				// leefix -040803- maintenance check, if glued to object that has been deleted, deal with it
+				if ( iGluedToObj!=0 )
+				{
+					sObject* pParentObject = g_ObjectList [ iGluedToObj ];
+					if ( pParentObject==NULL )
+					{
+						// wipe out glue assignment
+						pObject->position.bGlued		= false;
+						pObject->position.iGluedToObj	= 0;
+						pObject->position.iGluedToMesh	= 0;
+					}
+				}
+
+				// locked objects and glued are visible
 				bIsVisible=true;
 			}
 			else
 			{
-				// ensure have latest object center
-				UpdateColCenter ( pObject );
-
-				// get center of the object
-				D3DXVECTOR3 vecRealCenter = pObject->position.vecPosition + pObject->collision.vecColCenter;
-
-				// leeadd - 100805 - add in offset from first frame (limb zero), as this moves whole object render)
-				if ( pObject->ppFrameList )
+				// send the position of the object and it's radius to the "CheckSphere" function, if this returns true the object will be visible
+				float fScaledRadius = pActualObject->collision.fScaledLargestRadius;
+				if ( fScaledRadius<=0.0f )
 				{
-					sFrame* pRootFrame = pObject->ppFrameList [ 0 ];
-					if ( pRootFrame )
+					// objects with no mesh scope are visible
+					bIsVisible=true;
+				}
+				else
+				{
+					// ensure have latest object center
+					UpdateColCenter ( pObject );
+
+					// get center of the object
+					D3DXVECTOR3 vecRealCenter = pObject->position.vecPosition + pObject->collision.vecColCenter;
+
+					// leeadd - 100805 - add in offset from first frame (limb zero), as this moves whole object render)
+					if ( pObject->ppFrameList )
 					{
-						// leeadd - 211008 - u71 - added flag to NOT shift object bounds by frame zero matrix
-						if ( (pRootFrame->dwStatusBits && 1)==0 ) 
+						sFrame* pRootFrame = pObject->ppFrameList [ 0 ];
+						if ( pRootFrame )
 						{
-							// offset center to account for movement of the object by limb zero (root frame)
-							vecRealCenter.x += pRootFrame->matUserMatrix._41;
-							vecRealCenter.y += pRootFrame->matUserMatrix._42;
-							vecRealCenter.z += pRootFrame->matUserMatrix._43;
+							// leeadd - 211008 - u71 - added flag to NOT shift object bounds by frame zero matrix
+							if ( (pRootFrame->dwStatusBits && 1)==0 ) 
+							{
+								// offset center to account for movement of the object by limb zero (root frame)
+								vecRealCenter.x += pRootFrame->matUserMatrix._41;
+								vecRealCenter.y += pRootFrame->matUserMatrix._42;
+								vecRealCenter.z += pRootFrame->matUserMatrix._43;
+							}
 						}
 					}
+
+					// objects within frustrum are visible
+					if ( CheckSphere ( vecRealCenter.x, vecRealCenter.y, vecRealCenter.z, fScaledRadius ) )
+						bIsVisible=true;
+
+					// lerfix - 221008 - u71 - if reflection shading in effect, frustrum cull is not required
+					if ( g_pGlob->dwStencilMode==2 )
+						bIsVisible=true;
 				}
-
-				// objects within frustrum are visible
-				if ( CheckSphere ( vecRealCenter.x, vecRealCenter.y, vecRealCenter.z, fScaledRadius ) )
-					bIsVisible=true;
-
-				// lerfix - 221008 - u71 - if reflection shading in effect, frustrum cull is not required
-				if ( g_pGlob->dwStencilMode==2 )
-					bIsVisible=true;
 			}
 		}
 
