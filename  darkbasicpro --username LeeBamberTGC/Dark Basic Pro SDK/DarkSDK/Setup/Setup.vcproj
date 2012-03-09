@@ -1152,18 +1152,18 @@
 				>
 			</File>
 			<Filter
-				Name="VR920"
+				Name="Wrap920"
 				>
 				<File
-					RelativePath="..\..\Shared\Setup\VR920\IWRFilterTracking.cpp"
+					RelativePath="..\..\Shared\Setup\Wrap920\IWRFilterTracking.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Shared\Setup\VR920\IWRsdk.c"
+					RelativePath="..\..\Shared\Setup\Wrap920\IWRsdk.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Shared\Setup\VR920\IWRsdk.h"
+					RelativePath="..\..\Shared\Setup\Wrap920\IWRsdk.h"
 					>
 				</File>
 			</Filter>

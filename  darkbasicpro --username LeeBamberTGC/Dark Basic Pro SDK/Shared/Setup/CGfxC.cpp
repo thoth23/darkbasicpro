@@ -527,6 +527,32 @@ UINT IWRIsVR920Connected( bool *PrimaryDevice )
 	// Step 1: Find VR920 Device+Adapter
 	*PrimaryDevice = false;
 	DisplayDevice.cb = MonitorDevice.cb = sizeof( DISPLAY_DEVICE );
+	for( int i=0; EnumDisplayDevices(NULL, i, &DisplayDevice, 0x0 ); i++ )
+	{
+		// Ignore mirrored devices and only look at desktop attachments.
+		if( !(DisplayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) &&
+			(DisplayDevice.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP) )
+		{
+			for( int j=0; EnumDisplayDevices(DisplayDevice.DeviceName, j, &MonitorDevice, 0x0 ); j++ )
+			{
+				if( (MonitorDevice.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP) &&
+					(strstr( MonitorDevice.DeviceID, "IWR0002" ) ||  // VR920 id
+					 strstr( MonitorDevice.DeviceID, "IWR0149" ))) { // Wrap920 id
+					// Found the VR920 PnP id.
+					if( DisplayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE ) 
+						*PrimaryDevice = true; // VR920 is the primary display device.
+					return IWR_IS_CONNECTED;
+				}
+			}
+		}
+	}
+	// VR920 does not appear to be on any accessible adapters.
+	return IWR_NOT_CONNECTED;
+
+	/* old one
+	// Step 1: Find VR920 Device+Adapter
+	*PrimaryDevice = false;
+	DisplayDevice.cb = MonitorDevice.cb = sizeof( DISPLAY_DEVICE );
 	for( int i=0; EnumDisplayDevices(NULL, i, &DisplayDevice, 0x0 ); i++ ) {
 		// Ignore mirrored devices and only look at desktop attachments.
 		if( !(DisplayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) &&
@@ -544,6 +570,7 @@ UINT IWRIsVR920Connected( bool *PrimaryDevice )
 		}
 	// VR920 does not appear to be on any accessible adapters.
 	return IWR_NOT_CONNECTED;
+	*/
 }
 //-----------------------------------------------------------------------------
 // Provide for a method in (Windowed Mode) to poll the adapters Vertical Sync function.
@@ -2914,37 +2941,45 @@ DARKSDK int Create ( HWND hWnd, D3DPRESENT_PARAMETERS* d3dpp )
 
 	// Use stereo switching technique (attempt to)
 	// g_VR920StereoMethod is set in SET DISPLAY MODE extended command
-	g_StereoEnabled	= g_VR920StereoMethod;
+	g_StereoEnabled = false;
 	if ( g_VR920StereoMethod==true )
 	{
-		// Create query interfaces to sync well with GPU
-		m_pD3DDevice->CreateQuery(D3DQUERYTYPE_EVENT, &g_pLeftEyeQuery);
-		m_pD3DDevice->CreateQuery(D3DQUERYTYPE_EVENT, &g_pRightEyeQuery);
-		memset ( &g_d3dcaps, 0, sizeof ( g_d3dcaps ) );
-		m_pD3DDevice->GetDeviceCaps ( &g_d3dcaps );
-
 		// Determine if the VR920 is plugged into a Video Adapter.
 		bool bPrimaryInterface = false;
 		if( IWRIsVR920Connected( &bPrimaryInterface ) != IWR_NOT_CONNECTED )
+		{
+			// VR hardware/driver found
 			g_VR920AdapterAvailable = true;
+			g_StereoEnabled	= g_VR920StereoMethod;
+
+			// Create query interfaces to sync well with GPU
+			m_pD3DDevice->CreateQuery(D3DQUERYTYPE_EVENT, &g_pLeftEyeQuery);
+			m_pD3DDevice->CreateQuery(D3DQUERYTYPE_EVENT, &g_pRightEyeQuery);
+			memset ( &g_d3dcaps, 0, sizeof ( g_d3dcaps ) );
+			m_pD3DDevice->GetDeviceCaps ( &g_d3dcaps );
+
+			// Open the VR920's tracker driver.
+			HRESULT	iwr_status = IWRLoadDll();
+			if( iwr_status != IWR_OK )
+				g_VR920AdapterAvailable = false;
+
+			// Open a handle to the VR920's stereo driver.
+			g_StereoHandle = IWRSTEREO_Open();
+			if( g_StereoHandle == INVALID_HANDLE_VALUE )
+				g_VR920AdapterAvailable = false;
+
+			// Select MONO or STEREO
+			if( g_StereoEnabled ) 
+				IWRSTEREO_SetStereo( g_StereoHandle, IWR_STEREO_MODE );
+			else 
+				IWRSTEREO_SetStereo( g_StereoHandle, IWR_MONO_MODE );
+		}
 		else
-			g_VR920AdapterAvailable = false;
-
-		// Open the VR920's tracker driver.
-		HRESULT	iwr_status = IWRLoadDll();
-		if( iwr_status != IWR_OK )
-			g_VR920AdapterAvailable = false;
-
-		// Open a handle to the VR920's stereo driver.
-		g_StereoHandle = IWRSTEREO_Open();
-		if( g_StereoHandle == INVALID_HANDLE_VALUE )
-			g_VR920AdapterAvailable = false;
-
-		// Select MONO or STEREO
-		if( g_StereoEnabled ) 
-			IWRSTEREO_SetStereo( g_StereoHandle, IWR_STEREO_MODE );
-		else 
-			IWRSTEREO_SetStereo( g_StereoHandle, IWR_MONO_MODE );
+		{
+			MessageBox ( NULL, "VR920 does not appear to be on any accessible adapters", "VR Error", MB_OK );
+			g_VR920StereoMethod=false;
+			g_StereoEnabled	= g_VR920StereoMethod;
+		}
 	}
 	#endif
 
@@ -3866,6 +3901,41 @@ DARKSDK void SetDisplayModeEx ( int iWidth, int iHeight, int iDepth )
 {
 	// Inform all DLLs to release resources
 	InformDLLsOfD3DChange(0);
+
+	// lee - 090312 - Detect if want to force OS to change resolution (not friendly) (an alternative to full screen mode)
+	if ( iWidth<0 || iHeight<0 )
+	{
+		// restore resolution to positive values
+		iWidth=abs(iWidth);
+		iHeight=abs(iHeight);
+
+		// now force the OS to this resolution
+		DEVMODE NewDevice;
+		NewDevice.dmSize = sizeof(DEVMODE);
+		NewDevice.dmPelsWidth = iWidth;
+		NewDevice.dmPelsHeight = iHeight;
+		NewDevice.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+		HRESULT hRes = ChangeDisplaySettings(&NewDevice, 0);//CDS_GLOBAL | CDS_UPDATEREGISTRY);
+		if ( hRes==DISP_CHANGE_SUCCESSFUL )
+		{
+			// successfully changed the resolution
+		}
+		else
+		{
+			LPSTR pError = "Unknown Change Display Settings Error";
+			switch ( hRes )
+			{
+				case DISP_CHANGE_BADDUALVIEW : pError = "The settings change was unsuccessful because the system is DualView capable."; break;
+				case DISP_CHANGE_BADFLAGS : pError = "An invalid set of flags was passed in."; break;
+				case DISP_CHANGE_BADMODE : pError = "The graphics mode is not supported."; break;
+				case DISP_CHANGE_BADPARAM : pError = "An invalid parameter was passed in. This can include an invalid flag or combination of flags."; break;
+				case DISP_CHANGE_FAILED : pError = "The display driver failed the specified graphics mode."; break;
+				case DISP_CHANGE_NOTUPDATED : pError = "Unable to write settings to the registry."; break;
+				case DISP_CHANGE_RESTART : pError = "The computer must be restarted for the graphics mode to work."; break;
+			}
+			MessageBox ( NULL, pError, "Change Display Settings Error", MB_OK );
+		}
+	}
 
 	// Sets window size in any event
 	m_iWidth = iWidth;
