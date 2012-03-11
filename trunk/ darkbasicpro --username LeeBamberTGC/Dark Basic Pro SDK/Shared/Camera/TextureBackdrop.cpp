@@ -57,6 +57,12 @@ void DrawTextureBackdrop ( int iMode, LPDIRECT3DSURFACE9 resultingSurface0, LPDI
 		m_pBackdropVertex[3].tv  = 1;    
 	}
 
+	// 20120311 IanM - Save fog state, then ensure that fog is disabled
+	DWORD dwFogState = FALSE;
+	m_pD3D->GetRenderState(D3DRS_FOGENABLE, &dwFogState);
+	if (dwFogState)
+		m_pD3D->SetRenderState(D3DRS_FOGENABLE, FALSE);
+
 	// set render states
 	m_pD3D->SetTexture(0, pImage);
 	m_pD3D->SetSamplerState(0, D3DSAMP_SRGBTEXTURE, 1);
@@ -81,6 +87,10 @@ void DrawTextureBackdrop ( int iMode, LPDIRECT3DSURFACE9 resultingSurface0, LPDI
 	m_pD3D->SetTexture(0, NULL);
 	m_pD3D->SetPixelShader(NULL);
 	m_pD3D->SetRenderTarget(0, NULL);
+
+	// 20120311 IanM - Re-enable the fog if it was disabled earlier
+	if (dwFogState)
+		m_pD3D->SetRenderState(D3DRS_FOGENABLE, TRUE);
 }
 
 void FreeTextureBackdrop ( void )
