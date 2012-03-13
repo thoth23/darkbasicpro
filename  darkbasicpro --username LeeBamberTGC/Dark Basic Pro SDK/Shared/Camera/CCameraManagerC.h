@@ -1,13 +1,21 @@
 #ifndef _CCAMERAMANAGER_H_
 #define _CCAMERAMANAGER_H_
 
-#include ".\..\data\cdatac.h"
-#include "CCameraDatac.h"
+#include <map>
 
-class CCameraManager : private CData
+// 20120311 IanM - Use std::map instead of cData class.
+//               - Removal of dead code.
+
+struct tagCameraData;
+
+class CCameraManager
 {
 	public:
-		CData	m_List;	
+		typedef std::map<int, tagCameraData*>   mStore;
+		typedef mStore::iterator				mitStore;
+
+	private:
+		mStore m_List;
 
 	public:
 		CCameraManager  ( );
@@ -15,12 +23,8 @@ class CCameraManager : private CData
 
 		bool Add    ( tagCameraData* pData, int iID );
 		bool Delete ( int iID );
-		void Sort	( void );
 
 		tagCameraData* GetData ( int iID );
-
-		void Update ( void );
-
 		int GetNextID ( int iIDHave );
 };
 

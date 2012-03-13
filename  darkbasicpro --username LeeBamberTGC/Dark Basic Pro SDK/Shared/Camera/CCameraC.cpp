@@ -224,19 +224,15 @@ DARKSDK void FreeCameraSurfaces ( void )
 
 DARKSDK void DestructorD3D ( void )
 {
-	// delete any image cameras
-	link* pCheck = m_CameraManager.m_List.m_start;
-	while(pCheck)
+	for (int iID = m_CameraManager.GetNextID( -1 ); iID != -1; iID = m_CameraManager.GetNextID( iID ))
 	{
-		tagCameraData* ptr = NULL;
-		ptr = m_CameraManager.GetData ( pCheck->id );
-		if ( ptr == NULL ) continue;
+		tagCameraData* ptr = m_CameraManager.GetData( iID );
 
-		// free camera surfaces
-		m_ptr = ptr; FreeCameraSurfaces();
-
-		// next camera
-		pCheck = pCheck->next;
+		if (ptr)
+		{
+			m_ptr = ptr;
+			FreeCameraSurfaces();
+		}
 	}
 
 	// delete any items in the list
@@ -311,11 +307,6 @@ DARKSDK IDirect3DTexture9* GetStereoscopicFinalTexture ( void )
 {
 	// U70 - 180608 - WOW autostereo
 	return g_pStereoscopicFinalTexture;
-}
-
-DARKSDK void Update ( void )
-{
-	 // this is a redundant function
 }
 
 DARKSDK void SetViewportForSurface ( D3DVIEWPORT9* pvp, LPDIRECT3DSURFACE9 pSurface )
@@ -553,37 +544,7 @@ DARKSDK int FinishSceneEx ( bool bKnowInAdvanceCameraIsUsed )
 		// update the pointer for Next Camera
 		UpdatePtr ( m_iRenderCamera );
 
-		// leeadd - 130906 - u63 - can skip whole render target init if we know cam is not going to be used
-		if ( bKnowInAdvanceCameraIsUsed==true )
-		{
-			// camera to image handling
-			if ( CameraToImage () )
-			{
-				// restore camera output to current bitmap
-				m_pD3D->SetRenderTarget ( 0, g_pGlob->pCurrentBitmapSurface );
-				m_pD3D->SetDepthStencilSurface ( g_pGlob->pHoldDepthBufferPtr );
-				g_bCameraOutputToImage=false;
-			}
-
-			// Update Camera
-			InternalUpdate( m_iRenderCamera );
-
-			// set viewport for new camera
-			D3DVIEWPORT9 vp = m_ptr->viewPort3D;
-			if ( m_ptr->iCameraToImage > 0 )
-				SetViewportForSurface ( &vp, m_ptr->pCameraToImageSurface );
-			else
-				SetViewportForSurface ( &vp, g_pGlob->pCurrentBitmapSurface );
-
-			// leeadd - 310506 - u62 - optional camera clipping operation
-			HandleClippingPlane();
-
-			// clear the screen
-			if(m_ptr->iBackdropState==1)
-				m_pD3D->Clear ( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, m_ptr->dwBackdropColor, 1.0f, 0 );
-			else
-				m_pD3D->Clear ( 0, NULL, D3DCLEAR_ZBUFFER, m_ptr->dwBackdropColor, 1.0f, 0 );
-		}
+		// 20120313 IanM - all code from here moved into the Update function
 
 		// another camera to render
 		return 0;
@@ -655,6 +616,47 @@ DARKSDK int FinishScene ( void )
 	// assume next camera is valid, so we set it up and clear render target
 	// leenote - 130906 - u63 - discovered this would wipe out previous camera is using multiple SYNC MASK calls (post-process tricks)
 	return FinishSceneEx ( true );
+}
+
+
+DARKSDK void Update ( void )
+{
+	// 20120313 IanM - This code taken from FinishSceneEx.
+	// Core may determine that eg camera 1 is not in the mask and instruct FinishSceneEx
+	// that the 'next' camera will not be rendered too, except that if camera 1 doesn't
+	// exist then the next camera will then mistakenly not be rendered.
+
+	// m_iRenderCamera and mptr have been updated by the FinishSceneEx function,
+	// so no need to do so again.
+	// This function is now called as the first item in the renderlist in core, so
+	// will prep everything ready for rendering.
+	if ( CameraToImage () )
+	{
+		// restore camera output to current bitmap
+		m_pD3D->SetRenderTarget ( 0, g_pGlob->pCurrentBitmapSurface );
+		m_pD3D->SetDepthStencilSurface ( g_pGlob->pHoldDepthBufferPtr );
+		g_bCameraOutputToImage=false;
+	}
+
+	// Update Camera
+	InternalUpdate( m_iRenderCamera );
+
+	// set viewport for new camera
+	D3DVIEWPORT9 vp = m_ptr->viewPort3D;
+	if ( m_ptr->iCameraToImage > 0 )
+		SetViewportForSurface ( &vp, m_ptr->pCameraToImageSurface );
+	else
+		SetViewportForSurface ( &vp, g_pGlob->pCurrentBitmapSurface );
+
+	// leeadd - 310506 - u62 - optional camera clipping operation
+	HandleClippingPlane();
+
+	// clear the screen
+	if(m_ptr->iBackdropState==1)
+		m_pD3D->Clear ( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, m_ptr->dwBackdropColor, 1.0f, 0 );
+	else
+		m_pD3D->Clear ( 0, NULL, D3DCLEAR_ZBUFFER, m_ptr->dwBackdropColor, 1.0f, 0 );
+	 // this is a redundant function
 }
 
 DARKSDK int GetRenderCamera ( void )
@@ -1489,7 +1491,8 @@ DARKSDK void Create ( int iID )
 	m_CameraManager.Add ( &cData, iID );
 
 	// leefix - 140906 - u63 - sort cameras in list, coreDLL needs cameras in index-order (predictive sync mask)
-	m_CameraManager.Sort ( );
+	// 20120311 IanM - No need for sort any more - m_CameraManager is kept sorted automatically
+	// m_CameraManager.Sort ( );
 
 	// setup default values
 	Reset ( iID );
