@@ -999,10 +999,14 @@ DARKSDK bool SetDBDLLExtCalls(void)
 
 	// U75 - 120809 - Stack up render calls in order for SETUP/DISPLAY rendering
 	#ifndef DARKSDK_COMPILE
+	// 20120313 IanM - Camera update not being used for anything else, so
+	//                 now using to prepare the rendering surface instead of using
+	//                 FinishSceneEx to do it.
+    if (g_Glob.g_Camera3D)      AddToRenderList( g_Camera3D_Update,                0 );
     if (g_Glob.g_Basic3D)       AddToRenderList( g_Basic3D_UpdateOnce,          1000 );
     if (g_Glob.g_Basic3D)       AddToRenderList( g_Basic3D_StencilRenderStart,  2000 );
     if (g_Glob.g_World3D)       AddToRenderList( g_World3D_Update,              3000 );
-    if (g_Glob.g_Camera3D)      AddToRenderList( g_Camera3D_Update,             4000 );
+//  if (g_Glob.g_Camera3D)      AddToRenderList( g_Camera3D_Update,             4000 );
     if (g_Glob.g_Light3D)       AddToRenderList( g_Light3D_Update,              5000 );
     if (g_Glob.g_LODTerrain)    AddToRenderList( g_LODTerrain_Update,           6000 );
     if (g_Glob.g_Matrix3D)      AddToRenderList( g_Matrix3D_Update,             7000 );
@@ -1013,10 +1017,14 @@ DARKSDK bool SetDBDLLExtCalls(void)
     if (g_Glob.g_Matrix3D)      AddToRenderList( g_Matrix3D_LastUpdate,         12000 );
     if (g_Glob.g_Basic3D)       AddToRenderList( g_Basic3D_UpdateNoZDepth,      13000 );
 	#else
+	// 20120313 IanM - Camera update not being used for anything else, so
+	//                 now using to prepare the rendering surface instead of using
+	//                 FinishSceneEx to do it.
+    if (g_Camera3D_Update)				AddToRenderList( g_Camera3D_Update,                0 );
     if (g_Basic3D_UpdateOnce)			AddToRenderList( g_Basic3D_UpdateOnce,          1000 );
     if (g_Basic3D_StencilRenderStart)	AddToRenderList( g_Basic3D_StencilRenderStart,  2000 );
     if (g_World3D_Update)				AddToRenderList( g_World3D_Update,              3000 );
-    if (g_Camera3D_Update)				AddToRenderList( g_Camera3D_Update,             4000 );
+//  if (g_Camera3D_Update)				AddToRenderList( g_Camera3D_Update,             4000 );
     if (g_Light3D_Update)				AddToRenderList( g_Light3D_Update,              5000 );
     if (g_LODTerrain_Update)			AddToRenderList( g_LODTerrain_Update,           6000 );
     if (g_Matrix3D_Update)				AddToRenderList( g_Matrix3D_Update,             7000 );
