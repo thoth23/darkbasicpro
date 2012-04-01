@@ -14,8 +14,12 @@ cLightMaps::~cLightMaps ( )
 	// destructor for light map class
 
 	// free allocs within lumel list
-	for ( int i=0; i<(int)m_dwLightmapPolys; i++)
-		SAFE_DELETE ( m_ppdwLightMapLumels [ i ] );
+	// 20120401 IanM - Only free the array if it exists.
+	if (m_ppdwLightMapLumels)
+	{
+		for ( int i=0; i<(int)m_dwLightmapPolys; i++)
+			SAFE_DELETE ( m_ppdwLightMapLumels [ i ] );
+	}
 
 	// delete texture array
 	SAFE_DELETE_ARRAY ( m_ppdwLightMapLumels );
@@ -451,7 +455,9 @@ bool cLightMaps::SetupObject ( sMesh* pMesh )
 	GenerateNormals             ( pMesh );												// generate normals
 
 	// clear out colour array
-	memset ( &m_dwLumelColour, 0, sizeof ( m_dwLumelColour ) );
+	// 20120326 IanM - Correctly initialise the array
+	memset ( m_dwLumelColour, 0, sizeof ( m_dwLumelColour ) );
+	//memset ( &m_dwLumelColour, 0, sizeof ( m_dwLumelColour ) );
 
 	// allocate lumel array list
 	m_dwLightmapPolys = pMesh->dwVertexCount / 3;
@@ -1322,7 +1328,24 @@ bool cLightMaps::LineOfSight ( sMesh* pMesh, D3DXVECTOR3 vecStart, D3DXVECTOR3 v
 
 cLightMapConsolidation::cLightMapConsolidation ( )
 {
-	memset ( this, 0, sizeof ( cLightMapConsolidation ) );
+//	memset ( this, 0, sizeof ( cLightMapConsolidation ) );
+	// 20120326 IanM - Properly construct the object
+	m_dwLumelStore = 0;
+	m_iTextureCount = 0;
+	m_iSize = 0;
+	m_iLMWidth = 0;
+	m_iLMHeight = 0;
+	m_pMesh = 0;
+	m_pMasterTexture = 0;
+	m_pMasterTextureDDS = 0;
+	m_pMasterPixels = 0;
+	m_dwMasterWidth = 0;
+	m_dwMasterHeight = 0;
+	m_dwMasterPitch = 0;
+	m_pPathForLightMaps = 0;
+
+	memset(m_rect, 0, sizeof(m_rect));
+	memset(m_pLMFile, 0, sizeof(m_pLMFile));
 }
 
 cLightMapConsolidation::~cLightMapConsolidation ( )
