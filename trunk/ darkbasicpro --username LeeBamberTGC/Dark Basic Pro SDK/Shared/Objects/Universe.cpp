@@ -45,7 +45,9 @@ cUniverse::sNode::~sNode ( )
 cUniverse::sPortal::sPortal ( )
 {
 	// clear out the vertex list
-	memset ( &vertices, 0, sizeof ( vertices ) );
+	// 20120327 IanM - Correctly clear the array
+	memset ( vertices, 0, sizeof ( vertices ) );
+//	memset ( &vertices, 0, sizeof ( vertices ) );
 
 	// set both visible flags to true
 	bVisible                 = true;
