@@ -19,6 +19,33 @@ C3DCollision NewCol;
 // Internal Functions
 //
 
+namespace
+{
+	// 20120404 IanM - Common method of calculating the object rotation matrix
+	D3DXMATRIX CalcObjectRotationMatrix(sObject* Obj)
+	{
+		D3DXMATRIX matRotation;
+		if ( Obj->position.bFreeFlightRotation )
+			matRotation = Obj->position.matFreeFlightRotate;
+		else
+		{
+			D3DXMATRIX matRotateX, matRotateY, matRotateZ;
+			D3DXMatrixRotationX ( &matRotateX, D3DXToRadian ( Obj->position.vecRotate.x ) );	// x rotation
+			D3DXMatrixRotationY ( &matRotateY, D3DXToRadian ( Obj->position.vecRotate.y ) );	// y rotation
+			D3DXMatrixRotationZ ( &matRotateZ, D3DXToRadian ( Obj->position.vecRotate.z ) );	// z rotation
+
+			matRotation = matRotateX * matRotateY * matRotateZ;
+		}
+		// 20120404 IanM - Apply any pivot to the rotation matrix
+		if (Obj->position.bApplyPivot)
+		{
+			matRotation *= Obj->position.matPivot;
+		}
+		return matRotation;
+	}
+}
+
+
 int CheckWorldBoxCollision ( D3DXVECTOR3 box1p, D3DXMATRIX matARotation, sCollisionData* pCollisionA, D3DXVECTOR3 box2p, D3DXMATRIX matBRotation, sCollisionData* pCollisionB )
 {
 	// Box 1
@@ -184,6 +211,10 @@ int CheckAdjustedAagainstB ( D3DXVECTOR3 box1p, sObject* pA, sObject* pB )
 	box1s.x *= pA->position.vecScale.x;
 	box1s.y *= pA->position.vecScale.y;
 	box1s.z *= pA->position.vecScale.z;
+
+	// 20120404 IanM - Use common method of calculating the object rotation matrix
+	D3DXMATRIX matARotation = CalcObjectRotationMatrix( pA );
+/*
 	D3DXMATRIX matARotation;
 	if ( pA->position.bFreeFlightRotation )
 	{
@@ -198,6 +229,7 @@ int CheckAdjustedAagainstB ( D3DXVECTOR3 box1p, sObject* pA, sObject* pB )
 		// build final rotation matrix
 		matARotation = matRotateX * matRotateY * matRotateZ;
 	}
+*/
 	D3DXVec3TransformCoord ( &box1offset, &box1offset,  &matARotation );
 	box1p+=box1offset;
 
@@ -220,6 +252,10 @@ int CheckAdjustedAagainstB ( D3DXVECTOR3 box1p, sObject* pA, sObject* pB )
 	box2s.x *= pB->position.vecScale.x;
 	box2s.y *= pB->position.vecScale.y;
 	box2s.z *= pB->position.vecScale.z;
+
+	// 20120404 IanM - Use common method of calculating the object rotation matrix
+	D3DXMATRIX matBRotation = CalcObjectRotationMatrix( pB );
+/*
 	D3DXMATRIX matBRotation;
 	if ( pB->position.bFreeFlightRotation )
 	{
@@ -234,6 +270,7 @@ int CheckAdjustedAagainstB ( D3DXVECTOR3 box1p, sObject* pA, sObject* pB )
 		// build final rotation matrix
 		matBRotation = matRotateX * matRotateY * matRotateZ;
 	}
+*/
 	D3DXVec3TransformCoord ( &box2offset, &box2offset,  &matBRotation );
 	box2p+=box2offset;
 
@@ -245,8 +282,11 @@ int CheckBoxPairSystemCollision( sObject* pA, sObject* pB )
 {
 	// Check if either box is rotated
 	bool bYesRotated=true;
-	if(pA->collision.bFixedBoxCheck==true && pB->collision.bFixedBoxCheck==true)
-		bYesRotated=false;
+
+	// 20120404 IanM - Need to use rotated collision check if a pivot has been applied
+	if(pA->position.bApplyPivot == false && pB->position.bApplyPivot == false)
+		if(pA->collision.bFixedBoxCheck==true && pB->collision.bFixedBoxCheck==true)
+			bYesRotated=false;
 
 	// lee - 240306 - u6b4 - any sphere types use fixed box for non-rotating sliding
 	if(pA->collision.eCollisionType==COLLISION_SPHERE || pA->collision.eCollisionType==COLLISION_SPHERE )
@@ -284,6 +324,9 @@ int CheckBoxPairSystemCollision( sObject* pA, sObject* pB )
 				D3DXMatrixIdentity ( &matARotation );
 			else
 			{
+				// 20120404 IanM - Use common method of calculating the object rotation matrix
+				matARotation = CalcObjectRotationMatrix( pA );
+/*
 				if ( pA->position.bFreeFlightRotation )
 					matARotation = pA->position.matFreeFlightRotate;
 				else
@@ -293,6 +336,7 @@ int CheckBoxPairSystemCollision( sObject* pA, sObject* pB )
 					D3DXMatrixRotationZ ( &matRotateZ, D3DXToRadian ( pA->position.vecRotate.z ) );	// z rotation
 					matARotation = matRotateX * matRotateY * matRotateZ;
 				}
+*/
 			}
 			D3DXVec3TransformCoord ( &box1offset, &box1offset,  &matARotation );
 			box1p = pA->position.vecLastPosition;//forslidingcalc, need old A pos
@@ -315,6 +359,9 @@ int CheckBoxPairSystemCollision( sObject* pA, sObject* pB )
 				D3DXMatrixIdentity ( &matBRotation );
 			else
 			{
+				// 20120404 IanM - Use common method of calculating the object rotation matrix
+				matBRotation = CalcObjectRotationMatrix( pB );
+/*
 				if ( pB->position.bFreeFlightRotation )
 					matBRotation = pB->position.matFreeFlightRotate;
 				else
@@ -324,6 +371,7 @@ int CheckBoxPairSystemCollision( sObject* pA, sObject* pB )
 					D3DXMatrixRotationZ ( &matRotateZ, D3DXToRadian ( pB->position.vecRotate.z ) );	// z rotation
 					matBRotation = matRotateX * matRotateY * matRotateZ;
 				}
+*/
 			}
 			D3DXVec3TransformCoord ( &box2offset, &box2offset,  &matBRotation );
 			box2p+=box2offset;
