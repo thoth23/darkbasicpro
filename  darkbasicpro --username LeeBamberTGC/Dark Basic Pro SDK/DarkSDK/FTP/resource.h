@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by FTP.rc
+// Used by Ftp.rc
 //
 #define IDS_STRING1                     1
 #define IDS_STRING2                     2
@@ -28,6 +28,7 @@
 #define IDS_STRING24                    24
 #define IDS_STRING25                    25
 #define IDS_STRING26                    26
+#define IDS_STRING27                    27
 
 // Next default values for new objects
 // 

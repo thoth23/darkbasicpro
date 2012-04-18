@@ -137,6 +137,7 @@ BEGIN
     IDS_STRING24            "HTTP REQUEST DATA[%SSSS%?HTTPRequestData@@YAKKKKK@Z%Verb, Object, String To Send"
     IDS_STRING25            "HTTP CONNECT%SL%?HTTPConnect@@YAXKK@Z%URL String, Port"
     IDS_STRING26            "HTTP REQUEST DATA[%SSSSL%?HTTPRequestData@@YAKKKKKK@Z%Verb, Object, String To Send, Access Flag"
+    IDS_STRING27            "HTTP CONNECT%SLL%?HTTPConnect@@YAXKKH@Z%URL String, Port, Secure Flag"
 END
 
 #endif    // English (U.K.) resources

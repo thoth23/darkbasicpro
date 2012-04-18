@@ -215,28 +215,52 @@ DARKSDK int GetProgress(void)
 
 DARKSDK void HTTPConnect ( DWORD dwUrl )
 {
-	// connect to start data exchange with secure HTTP server
-	if ( HTTP_Connect ( (char*)dwUrl ) )
-		return;
+	char* lpUrl = (char*)dwUrl;
+	if (lpUrl && *lpUrl)
+		HTTP_Connect ( lpUrl );
 }
 
 DARKSDK void HTTPConnect ( DWORD dwUrl, DWORD port )
 {
-	// connect to start data exchange with secure HTTP server
-	if ( HTTP_Connect ( (char*)dwUrl ), port )
-		return;
+	char* lpUrl = (char*)dwUrl;
+	if (lpUrl && *lpUrl)
+		HTTP_Connect ( lpUrl, port );
+}
+
+DARKSDK void HTTPConnect ( DWORD dwUrl, DWORD port, int secure )
+{
+	char* lpUrl = (char*)dwUrl;
+	if (lpUrl && *lpUrl)
+		HTTP_Connect ( lpUrl, port, secure );
 }
 
 DARKSDK DWORD HTTPRequestData ( DWORD pDestStr, DWORD dwVerb, DWORD dwObjectName, DWORD dwPostData, DWORD dwAccessFlag )
 {
+	char* lpVerb = (char*)dwVerb;
+	char* lpObjectName = (char*)dwObjectName;
+	char* lpPostData = (char*)dwPostData;
+
+	// 20120418 IanM - Ensure that the verb is set
+	if (!lpVerb || !*lpVerb)
+	{
+		if(pDestStr) g_pCreateDeleteStringFunction((DWORD*)&pDestStr, 0);
+		return NULL;
+	}
+
+	// 20120418 IanM - Don't care about these so much, just as long as they are non-NULL
+	if (!lpObjectName)
+		lpObjectName = "";
+	if (!lpPostData)
+		lpPostData = "";
+
 	// default HTTP comm strings
-	DWORD dwPostDataSize = strlen ( (LPSTR)dwPostData );
+	DWORD dwPostDataSize = strlen ( lpPostData );
 	LPSTR pHeader = new char[256];
 	wsprintf ( pHeader, "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: %d\r\n", dwPostDataSize );
 	DWORD dwHeaderSize = -1L;
 
 	// send data to get data
-	LPSTR pReturnData = HTTP_RequestData ( (LPSTR)dwVerb, (LPSTR)dwObjectName, pHeader, dwHeaderSize, (LPSTR)dwPostData, dwPostDataSize, dwAccessFlag );
+	LPSTR pReturnData = HTTP_RequestData ( lpVerb, lpObjectName, pHeader, dwHeaderSize, lpPostData, dwPostDataSize, dwAccessFlag );
 
 	// delete old string
 	if(pDestStr) g_pCreateDeleteStringFunction((DWORD*)&pDestStr, 0);
@@ -261,8 +285,8 @@ DARKSDK DWORD HTTPRequestData ( DWORD pDestStr, DWORD dwVerb, DWORD dwObjectName
 
 DARKSDK DWORD HTTPRequestData ( DWORD pDestStr, DWORD dwVerb, DWORD dwObjectName, DWORD dwPostData )
 {
-	// default is secure access
-	return HTTPRequestData ( pDestStr, dwVerb, dwObjectName, dwPostData, INTERNET_FLAG_SECURE );
+	// 20120416 IanM - Cleared default security type
+	return HTTPRequestData ( pDestStr, dwVerb, dwObjectName, dwPostData, 0 );
 }
 
 DARKSDK void HTTPDisconnect ( void )
