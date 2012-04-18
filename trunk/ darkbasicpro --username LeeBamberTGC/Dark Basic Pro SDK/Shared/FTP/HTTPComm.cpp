@@ -12,6 +12,7 @@
 
 // Internal Flags
 bool g_bExtraReporting = true;
+DWORD g_dwSecureFlag = 0;
 
 // Externals
 extern char g_pFeedbackAreaString [ 1024 ];
@@ -70,8 +71,14 @@ void ReportHTTPError( void )
 // Base Functions
 //
 
-bool HTTP_Connect ( char* url, WORD wHTTPType )
+// 20120418 IanM - Extended to include a 'secure' setting.
+bool HTTP_Connect ( char* url, DWORD dwPort, int secure )
 {
+	if (!secure)
+		g_dwSecureFlag = 0;
+	else
+		g_dwSecureFlag = INTERNET_FLAG_SECURE;
+
 	// Result var
 	bool bResult=false;
 	strcpy ( g_pFeedbackAreaString, "" );
@@ -112,9 +119,10 @@ bool HTTP_Connect ( char* url, WORD wHTTPType )
 			if(hInet)
 			{
 				// Internet Connect
+				// 20120418 IanM - Force the port number into the valid range.
 				hInetConnect = InternetConnect(	hInet,
 												url,
-												wHTTPType,
+												(WORD)(dwPort & 0xffff),
 												"",
 												NULL,
 												INTERNET_SERVICE_HTTP,
@@ -148,10 +156,25 @@ bool HTTP_Connect ( char* url, WORD wHTTPType )
 	return bResult;
 }
 
+bool HTTP_Connect ( char* url, DWORD dwPort )
+{
+	// 20120418 IanM - If the port has bit 16 set (making it an illegal port number),
+	//                 then use that to DISABLE the secure connection.
+	int secure = 1;
+	if (dwPort & 0x10000)
+	{
+		secure = 0;
+		dwPort = dwPort & 0xffff;
+	}
+
+	return HTTP_Connect ( url, dwPort, secure );
+}
+
 bool HTTP_Connect ( char* url )
 {
 	// default access type is SECURE (port 443)
-	return HTTP_Connect ( url, INTERNET_DEFAULT_HTTPS_PORT );
+	// 20120418 IanM - Pass extra new 'secure' flag
+	return HTTP_Connect ( url, INTERNET_DEFAULT_HTTPS_PORT, 1 );
 }
 
 LPSTR HTTP_RequestData ( LPSTR pVerb, LPSTR pObjectName, LPSTR pHeaderString, DWORD dwHeaderSize, LPSTR pPostData, DWORD dwPostDataSize, DWORD dwFlag )
@@ -162,7 +185,8 @@ LPSTR HTTP_RequestData ( LPSTR pVerb, LPSTR pObjectName, LPSTR pHeaderString, DW
 	strcpy ( g_pFeedbackAreaString, "" );
 
 	// prepare request
-	HINTERNET hHttpRequest = HttpOpenRequest ( hInetConnect, pVerb, pObjectName, "HTTP/1.1", "The Agent", NULL, dwFlag, 0 );
+	// 20120418 IanM - Take into account the secure setting when submitting the new request
+	HINTERNET hHttpRequest = HttpOpenRequest ( hInetConnect, pVerb, pObjectName, "HTTP/1.1", "The Agent", NULL, dwFlag | g_dwSecureFlag, 0 );
 
 	// send request with header
 	BOOL bSendResult = HttpSendRequest ( hHttpRequest, pHeaderString, dwHeaderSize, pPostData, dwPostDataSize );
@@ -261,8 +285,8 @@ LPSTR HTTP_RequestData ( LPSTR pVerb, LPSTR pObjectName, LPSTR pHeaderString, DW
 
 LPSTR HTTP_RequestData ( LPSTR pVerb, LPSTR pObjectName, LPSTR pHeaderString, DWORD dwHeaderSize, LPSTR pPostData, DWORD dwPostDataSize )
 {
-	// default access type SECURE
-	return HTTP_RequestData ( pVerb, pObjectName, pHeaderString, dwHeaderSize, pPostData, dwPostDataSize, INTERNET_FLAG_SECURE );
+	// 20120418 IanM - Remove secure access flag - that will be set if necessary later.
+	return HTTP_RequestData ( pVerb, pObjectName, pHeaderString, dwHeaderSize, pPostData, dwPostDataSize, 0 );
 }
 
 bool HTTP_Disconnect ( void )
