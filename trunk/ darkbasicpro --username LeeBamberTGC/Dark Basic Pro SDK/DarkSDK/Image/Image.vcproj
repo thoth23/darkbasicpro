@@ -261,7 +261,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\MyGames\simple\DBProImageDebug.dll"
+				OutputFile="C:\Users\Ian Mold\Desktop\DBP IANM TOP 20 BUGS\22 load image problem\DBProImageDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"

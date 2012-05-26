@@ -444,15 +444,18 @@ DARKSDK LPDIRECT3DTEXTURE9 GetTextureCore ( char* szFilename, int iOneToOnePixel
 	HRESULT hRes = 0;
 	D3DXIMAGE_INFO info;
 	if ( g_iImageBlockMode==1 && pFileInMemoryData )
+	{
 		hRes = D3DXGetImageInfoFromFileInMemory( pFileInMemoryData, dwFileInMemorySize, &info );
+		// 20120526 IanM - Failed to get file from memory, try a disk-file
+		if (FAILED(hRes))
+			hRes = D3DXGetImageInfoFromFile( szFilename, &info );
+	}
 	else
 		hRes = D3DXGetImageInfoFromFile( szFilename, &info );
 
-	// V109 BETA8 - 060508 - if cannot find file/get info, fail as this file is in error
-	// if( FAILED ( hRes )) return NULL;
-	// U74 BETA9 - 040709 - get info from physical file if not in image block (previous fix was flawed)
-	if ( hRes==0 || hRes!=D3D_OK )
-        hRes = D3DXGetImageInfoFromFile( szFilename, &info );
+	// 20120526 IanM - If failed to get image information, then assume can't be any image there either.
+	if (FAILED(hRes))
+		return NULL;
 
 	// if texture size needs diviing, do so now
 	if ( iDivideTextureSize>0 )
@@ -1261,14 +1264,14 @@ DARKSDK bool Load ( char* szFilename, int iID, int iTextureFlag, bool bIgnoreNeg
 
 	// create a new block of memory
 	test = new tagData;
-	memset(test, 0, sizeof(tagData));
 
+	// 20120526 IanM - Fixed error with clearing allocated memory
 	// check the memory was created
 	if ( test == NULL )
 		return false;
 
 	// clear out the memory
-	memset ( test, 0, sizeof ( test ) );
+	memset(test, 0, sizeof(tagData));
 
 	// clear out text buffers
 	memset ( test->szLongFilename,  0, sizeof ( char ) * 256 );		// clear out long filename
