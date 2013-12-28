@@ -13,6 +13,8 @@
 #include <D3D9.h>
 #include <D3DX9.h>
 
+#include ".\..\data\cdatac.h"
+
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -165,7 +167,6 @@ DARKSDK int 				GetImageFileExist			( LPSTR pFilename );
 DARKSDK void 				LoadEx						( LPSTR szFilename, int iID );							// load an image specifying the filename
 DARKSDK void 				LoadEx						( LPSTR szFilename, int iID, int TextureFlag );							// load an image specifying the filename
 DARKSDK void 				LoadEx						( LPSTR szFilename, int iID, int TextureFlag, int iDivideTextureSize );							// load an image specifying the filename
-DARKSDK void 				LoadEx						( LPSTR szFilename, int iID, int TextureFlag, int iDivideTextureSize, int iSilentError );
 DARKSDK void 				SaveEx						( LPSTR szFilename, int iID );							// saves the image to disk
 DARKSDK void 				SaveEx						( LPSTR szFilename, int iID, int iCompressionMode );
 DARKSDK void 				GrabImageEx					( int iID, int iX1, int iY1, int iX2, int iY2 );		// grab image

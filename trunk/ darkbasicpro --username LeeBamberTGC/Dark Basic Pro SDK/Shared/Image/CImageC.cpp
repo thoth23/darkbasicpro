@@ -4,111 +4,91 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 #define _CRT_SECURE_NO_WARNINGS
-#define _HAS_ITERATOR_DEBUGGING 0
 
 #include "cimagec.h"
 #include ".\..\error\cerror.h"
 #include ".\..\core\globstruct.h"
-#include <stdio.h>
-#include <direct.h>
+#include "stdio.h"
+#include "direct.h"
 #include <vector>
-#include <map>
+#include <list>
+using namespace std;
+
+// Image Block Globals
+
+bool				g_bImageBlockActive = false;
+LPSTR				g_iImageBlockFilename = NULL;
+LPSTR				g_iImageBlockRootPath = NULL;
+char				g_pImageBlockExcludePath[512];
+int					g_iImageBlockMode = -1;
+DWORD				g_dwImageBlockSize = 0;
+LPSTR				g_pImageBlockPtr = NULL;
+vector < LPSTR >	g_ImageBlockListFile;
+vector < DWORD >	g_ImageBlockListOffset;
+vector < DWORD >	g_ImageBlockListSize;
 
 #ifdef DARKSDK_COMPILE
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKDisplay.h"
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKSprites.h"
 #endif
 
-DBPRO_GLOBAL GlobStruct* g_pGlob = NULL;
-
-namespace
-{
-    typedef std::map<int, tagData*>		ImageList_t;
-    typedef ImageList_t::iterator		ImagePtr;
-
-    // Image Block Globals
-
-    bool								g_bImageBlockActive = false;
-    LPSTR								g_iImageBlockFilename = NULL;
-    LPSTR								g_iImageBlockRootPath = NULL;
-    char								g_pImageBlockExcludePath[512];
-    int									g_iImageBlockMode = -1;
-    DWORD								g_dwImageBlockSize = 0;
-    LPSTR								g_pImageBlockPtr = NULL;
-    std::vector<LPSTR>					g_ImageBlockListFile;
-    std::vector<DWORD>					g_ImageBlockListOffset;
-    std::vector<DWORD>					g_ImageBlockListSize;
-
-    typedef IDirect3DDevice9*			( *GFX_GetDirect3DDevicePFN ) ( void );
-    typedef void  						( *SPRITE_RetVoidParamInt3PFN ) ( int, int, int, float, float, int );
-    typedef void  						( *SPRITE_RetVoidParamVoid ) ( void );
-    typedef void  						( *BASIC3D_ClearObjectsOfTextureRef ) ( LPDIRECT3DTEXTURE9 );
-
-    ImageList_t							m_List;
-    LPDIRECT3D9							m_pDX			= NULL;				// pointer to D3D device
-    LPDIRECT3DDEVICE9					m_pD3D			= NULL;				// pointer to D3D device
-    int									m_iWidth		= 0;				// width of current texture
-    int									m_iHeight		= 0;				// height of current texture
-    int									m_iMipMapNum	= 9;				// default number of mipmaps
-    int									m_iMemory		= 0;				// default memory pool
-    bool								m_bSharing		= true;				// sharing flag
-    bool								m_bMipMap		= true;				// mipmap on / off
-    D3DCOLOR							m_Color         = D3DCOLOR_ARGB ( 255, 0, 0, 0 );							// default transparent color
-    tagData*							m_ptr = NULL;
-    int									m_CurrentId = 0;
-    D3DFORMAT							g_DefaultD3Dformat;
-    GFX_GetDirect3DDevicePFN			g_GFX_GetDirect3DDevice;	// get pointer to D3D device
-    SPRITE_RetVoidParamInt3PFN			g_Sprite_PasteImage;
-    SPRITE_RetVoidParamVoid				g_Update_All_Sprites;
-    BASIC3D_ClearObjectsOfTextureRef	g_Basic3D_ClearObjectsOfTextureRef;
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
 
-    bool RemoveImage( int iID )
-    {
-        // Clear the cached value if the image being deleted is the current cached image.
-        if (m_CurrentId == iID)
-        {
-            m_CurrentId = 0;
-            m_ptr = NULL;
-        }
 
-        // Locate the image, and if found, release all of it's resources.
-        ImagePtr pImage = m_List.find( iID );
-        if (pImage != m_List.end())
-        {
-            SAFE_RELEASE( pImage->second->lpTexture );
-            SAFE_DELETE( pImage->second->lpName );
-            delete pImage->second;
 
-            m_List.erase(pImage);
+//////////////////////////////////////////////////////////////////////////////////
+// GLOBALS ///////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
-            return true;
-        }
+typedef IDirect3DDevice9*		( *GFX_GetDirect3DDevicePFN ) ( void );
+typedef void  					( *SPRITE_RetVoidParamInt3PFN ) ( int, int, int, float, float, int );
+typedef void  					( *SPRITE_RetVoidParamVoid ) ( void );
+typedef void  					( *BASIC3D_ClearObjectsOfTextureRef ) ( LPDIRECT3DTEXTURE9 );
 
-        return false;
-    }
+DBPRO_GLOBAL GlobStruct*				g_pGlob							= NULL;
 
-    bool UpdatePtrImage ( int iID )
-    {
-        // If the image required is not already cached, refresh the cached value
-        if (!m_ptr || iID != m_CurrentId)
-        {
-            m_CurrentId = iID;
+#define MISSING_FILES	0
 
-            ImagePtr p = m_List.find( iID );
-            if (p == m_List.end())
-            {
-                m_ptr = NULL;
-            }
-            else
-            {
-                m_ptr = p->second;
-            }
-        }
+#if MISSING_FILES
+	void RunTimeError ( ... )
+	{
 
-        return m_ptr != NULL;
-    }
-}
+	}
+
+	class CRuntimeErrorHandler;
+	void* g_pErrorHandler;
+
+	#define MAXIMUMVALUE						100000
+	#define RUNTIMEERROR_IMAGEILLEGALNUMBER		100001
+	#define RUNTIMEERROR_IMAGENOTEXIST			100002
+	#define RUNTIMEERROR_IMAGEAREAILLEGAL		100003
+	#define RUNTIMEERROR_IMAGEERROR				100004
+#endif
+
+DBPRO_GLOBAL CData								m_List;								// linked list
+DBPRO_GLOBAL LPDIRECT3D9						m_pDX			= NULL;				// pointer to D3D device
+DBPRO_GLOBAL LPDIRECT3DDEVICE9					m_pD3D			= NULL;				// pointer to D3D device
+DBPRO_GLOBAL int								m_iWidth		= 0;				// width of current texture
+DBPRO_GLOBAL int								m_iHeight		= 0;				// height of current texture
+DBPRO_GLOBAL int								m_iMipMapNum	= 9;				// default number of mipmaps
+DBPRO_GLOBAL int								m_iMemory		= 0;				// default memory pool
+DBPRO_GLOBAL bool								m_bSharing		= true;				// sharing flag
+DBPRO_GLOBAL bool								m_bMipMap		= true;				// mipmap on / off
+DBPRO_GLOBAL D3DCOLOR							m_Color         = D3DCOLOR_ARGB ( 255, 0, 0, 0 );							// default transparent color
+DBPRO_GLOBAL tagData*							m_ptr = NULL;
+DBPRO_GLOBAL D3DFORMAT							g_DefaultD3Dformat;
+DBPRO_GLOBAL GFX_GetDirect3DDevicePFN			g_GFX_GetDirect3DDevice;	// get pointer to D3D device
+DBPRO_GLOBAL SPRITE_RetVoidParamInt3PFN			g_Sprite_PasteImage;
+DBPRO_GLOBAL SPRITE_RetVoidParamVoid			g_Update_All_Sprites;
+DBPRO_GLOBAL BASIC3D_ClearObjectsOfTextureRef	g_Basic3D_ClearObjectsOfTextureRef;
+
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////
 // INTERNAL FUNCTIONS ////////////////////////////////////////////////////////////
@@ -134,7 +114,7 @@ DARKSDK void ConstructorD3D ( HINSTANCE hSetup )
 
 	// setup function pointers
 	#ifndef DARKSDK_COMPILE
-		g_GFX_GetDirect3DDevice = ( GFX_GetDirect3DDevicePFN ) GetProcAddress ( hSetup, "?GetDirect3DDevice@@YAPAUIDirect3DDevice9@@XZ" );
+	g_GFX_GetDirect3DDevice = ( GFX_GetDirect3DDevicePFN ) GetProcAddress ( hSetup, "?GetDirect3DDevice@@YAPAUIDirect3DDevice9@@XZ" );
 	#else
 		g_GFX_GetDirect3DDevice = dbGetDirect3DDevice;
 	#endif
@@ -155,26 +135,36 @@ DARKSDK void Constructor ( HINSTANCE hSetup )
 
 DARKSDK void DestructorD3D ( void )
 {
-    m_CurrentId = 0;
-    m_ptr = NULL;
+	// clean up the image library
 
-    for (ImagePtr pCheck = m_List.begin(); pCheck != m_List.end(); ++pCheck)
-    {
-        // Release the texture and texture name
-        tagData* ptr = pCheck->second;
-        SAFE_RELEASE( ptr->lpTexture );
-        SAFE_DELETE( ptr->lpName );
+	// get a pointer to the start of the list
+	link* pCheck = m_List.m_start;
 
-        // Release the rest of the image storage
-        delete ptr;
+	// run through all elements
+	while( pCheck )
+	{
+		// get a pointer to the actual data
+		tagData* ptr = NULL;
+		ptr = ( tagData* ) m_List.Get ( pCheck->id );
+		link* pNext = pCheck->next;
 
-        // NOTE: Not removing from m_List at this point:
-        // 1 - it makes moving to the next item harder
-        // 2 - it's less efficient - we'll clear the entire list at the end
-    }
+		// if the data doesn't exist then skip it
+		if ( ptr == NULL )
+			continue;
 
-    // Now clear the list
-    m_List.clear();
+		// release the texture
+		SAFE_RELEASE ( ptr->lpTexture );
+		SAFE_DELETE( ptr->lpName );
+
+		// free up the allocated memory block
+		delete ptr;
+
+		// Delete list entry too
+		m_List.Delete( pCheck->id );
+
+		// now skip to the next item in the list
+		pCheck = pNext;
+	}
 
 	// Free reference to D3D we took
 	SAFE_RELEASE(m_pDX);
@@ -314,6 +304,22 @@ DARKSDK void RefreshD3D ( int iMode )
 	}
 }
 
+DARKSDK bool UpdatePtrImage ( int iID )
+{
+	// update the internal data pointer, this allows us to
+	// retrieve data from an element in the list
+
+	m_ptr = NULL;								// set the pointer to null
+	m_ptr = ( tagData* ) m_List.Get ( iID );	// now attempt to retrieve the data
+
+	// check the data was found
+	if ( m_ptr == NULL )
+		return false;
+
+	// return true if everything went ok
+	return true;
+}
+
 DARKSDK int GetPowerSquareOfSize( int Size )
 {
 	if ( Size <= 1 ) Size = 1;
@@ -444,18 +450,15 @@ DARKSDK LPDIRECT3DTEXTURE9 GetTextureCore ( char* szFilename, int iOneToOnePixel
 	HRESULT hRes = 0;
 	D3DXIMAGE_INFO info;
 	if ( g_iImageBlockMode==1 && pFileInMemoryData )
-	{
 		hRes = D3DXGetImageInfoFromFileInMemory( pFileInMemoryData, dwFileInMemorySize, &info );
-		// 20120526 IanM - Failed to get file from memory, try a disk-file
-		if (FAILED(hRes))
-			hRes = D3DXGetImageInfoFromFile( szFilename, &info );
-	}
 	else
 		hRes = D3DXGetImageInfoFromFile( szFilename, &info );
 
-	// 20120526 IanM - If failed to get image information, then assume can't be any image there either.
-	if (FAILED(hRes))
-		return NULL;
+	// V109 BETA8 - 060508 - if cannot find file/get info, fail as this file is in error
+	// if( FAILED ( hRes )) return NULL;
+	// U74 BETA9 - 040709 - get info from physical file if not in image block (previous fix was flawed)
+	if ( hRes==0 || hRes!=D3D_OK )
+        hRes = D3DXGetImageInfoFromFile( szFilename, &info );
 
 	// if texture size needs diviing, do so now
 	if ( iDivideTextureSize>0 )
@@ -749,43 +752,61 @@ DARKSDK bool Load ( char* szFilename, LPDIRECT3DTEXTURE9* pImage, D3DXIMAGE_INFO
 
 DARKSDK bool FindInternalImage ( char* szFilename, int* pImageID )
 {
-	if ( szFilename && szFilename[0] )
+	// V109 BETA3 - 210408 - faster file search loop
+	tagData* ptr = NULL;
+	link* pCheck = m_List.m_start;
+	int iFindFilenameLength = strlen(szFilename);
+	if ( iFindFilenameLength > 0 )
 	{
-    	int iFindFilenameLength = strlen(szFilename);
-
-		ImagePtr pCheck = m_List.begin();
-		while ( pCheck != m_List.end() && pCheck->first < 0)
+		while ( pCheck )
 		{
-            // get a pointer to the actual data
-		    tagData* ptr = pCheck->second;
-            if ( ptr && ptr->szShortFilename && ptr->lpTexture )
-		    {
-			    if ( _stricmp(ptr->szShortFilename, szFilename) == 0)
-			    {
-				    *pImageID = pCheck->first;
-				    return true;
-			    }
-            }
-            ++pCheck;
+			// get a pointer to the actual data
+			ptr = ( tagData* ) pCheck->data;
+			if ( ptr )
+			{
+				if ( ptr->szShortFilename )
+				{
+					if ( strlen(ptr->szShortFilename)==iFindFilenameLength )
+					{
+						if ( _stricmp(ptr->szShortFilename, szFilename)==NULL)
+						{
+							// Already been loaded, so use this instead
+							if ( ptr->lpTexture )
+							{
+								*pImageID = pCheck->id;
+								return true;
+							}
+						}
+					}
+				}
+			}
+			pCheck = pCheck->next;
 		}
 	}
 
-    // Static, so not reset between function calls - almost guaranteed to find the
-    // next free image that way.
-	static int iTry=-1;
+	// find a free negative image id
+	int iTry=-1;
+	while(1)
+	{
+		bool bFound=false;
+		link* pCheck = m_List.m_start;
+		while(pCheck)
+		{
+			// get a pointer to the actual data
+			tagData* ptr = NULL;
+			//ptr = ( tagData* ) m_List.Get ( pCheck->id );
+			ptr = ( tagData* ) pCheck->data;
+			if ( ptr == NULL ) continue;
 
-    // Check to see if the image id is in use
-    ImagePtr pCheck = m_List.find(iTry);
-    while (pCheck != m_List.end())
-    {
-        // Is in use, check for the next number, but make sure that underflow is dealt with correctly
-        // ie, iTry MUST stay negative. Note that this is not too likely to happen anyway.
-        --iTry;
-        if (iTry > 0)
-            iTry = -1;
+			// taken?
+			if(pCheck->id==iTry) bFound=true;
 
-        pCheck = m_List.find(iTry);
-    }
+			// now skip to the next item in the list
+			pCheck = pCheck->next;
+		}
+		if(bFound==false) break;
+		iTry--;
+	}
 
 	// this image can be used = new slot
 	*pImageID = iTry;
@@ -1062,7 +1083,7 @@ DARKSDK LPDIRECT3DTEXTURE9 MakeFormat ( int iID, int iWidth, int iHeight, D3DFOR
 	if(test->fTexVMax>1.0f) test->fTexVMax=1.0f;
 
 	// add to the list
-    m_List.insert( std::make_pair(iID, test) );
+	m_List.Add ( iID, ( VOID* ) test, 0, 1 );
 
 	// ensure sprites all updated
 	g_Update_All_Sprites();
@@ -1253,7 +1274,13 @@ DARKSDK bool Load ( char* szFilename, int iID, int iTextureFlag, bool bIgnoreNeg
 		}
 	}
 
-    RemoveImage( iID );
+	// delete any exting image
+	if ( UpdatePtrImage ( iID ) )
+	{
+		SAFE_RELEASE ( m_ptr->lpTexture );
+		m_List.Delete ( iID );
+		delete m_ptr;
+	}
 
 	// loads in image into the bank
 	tagData*	test = NULL;		// pointer to data structure
@@ -1264,14 +1291,14 @@ DARKSDK bool Load ( char* szFilename, int iID, int iTextureFlag, bool bIgnoreNeg
 
 	// create a new block of memory
 	test = new tagData;
+	memset(test, 0, sizeof(tagData));
 
-	// 20120526 IanM - Fixed error with clearing allocated memory
 	// check the memory was created
 	if ( test == NULL )
 		return false;
 
 	// clear out the memory
-	memset(test, 0, sizeof(tagData));
+	memset ( test, 0, sizeof ( test ) );
 
 	// clear out text buffers
 	memset ( test->szLongFilename,  0, sizeof ( char ) * 256 );		// clear out long filename
@@ -1376,7 +1403,7 @@ DARKSDK bool Load ( char* szFilename, int iID, int iTextureFlag, bool bIgnoreNeg
 	test->bLocked = false;
 
 	// add to the list
-    m_List.insert( std::make_pair(iID, test) );
+	m_List.Add ( iID, ( VOID* ) test, 0, 1 );
 
 	// ensure sprites all updated
 	// V109 BETA3 - only need to update image/textures, not internal textures (negatives)
@@ -1526,10 +1553,20 @@ DARKSDK bool GrabImage ( int iID, int iX1, int iY1, int iX2, int iY2, int iTextu
 		if ( UpdatePtrImage ( iID ) )
 		{
 			// check against existing
-			if(m_ptr->iWidth != iImageWidth || m_ptr->iHeight != iImageHeight)
+			if(m_ptr->iWidth==iImageWidth && m_ptr->iHeight==iImageHeight)
 			{
-				// existing image and new image are different sizes - so delete any existing image
-                RemoveImage( iID );
+				// m_ptr is a valid identical image
+			}
+			else
+			{
+				// not valid - so delete any exting image
+				if ( UpdatePtrImage ( iID ) )
+				{
+					SAFE_RELEASE ( m_ptr->lpTexture );
+					m_List.Delete ( iID );
+					delete m_ptr;
+				}
+				m_ptr=NULL;
 			}
 		}
 
@@ -1818,33 +1855,37 @@ DARKSDK void Delete ( int iID )
 		g_Basic3D_ClearObjectsOfTextureRef ( m_ptr->lpTexture );
 	}
 
+	// release the texture
+	SAFE_RELEASE ( m_ptr->lpTexture );
+	SAFE_DELETE (  m_ptr->lpName );
+
+	// clear strings
+	strcpy ( m_ptr->szLongFilename, "" );
+	strcpy ( m_ptr->szShortFilename, "" );
+
 	// clear cube details
 	m_ptr->pCubeMapRef = NULL;
 	m_ptr->iCubeMapFace = 0;
 
-    RemoveImage( iID );
+	// delete from the list
+	m_List.Delete ( iID );
+
+	// and delete the pointer
+	delete m_ptr;
 }
 
 //
 // Command Functions
 //
 
-DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iTextureFlag, int iDivideTextureSize, int iSilentError )
+DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iTextureFlag, int iDivideTextureSize )
 {
 	if(Load( szFilename, iID, iTextureFlag, false, iDivideTextureSize )==false)
 	{
-		if ( iSilentError==0 )
-		{
-			char pCWD[256]; _getcwd ( pCWD, 256 );
-			char pErr[256]; sprintf ( pErr, "CWD:%s\nLOAD IMAGE %s,%d,%d,%d", pCWD, szFilename, iID, iTextureFlag, iDivideTextureSize);
-			RunTimeError(RUNTIMEERROR_IMAGELOADFAILED,pErr);
-		}
+		char pCWD[256]; _getcwd ( pCWD, 256 );
+		char pErr[256]; sprintf ( pErr, "CWD:%s\nLOAD IMAGE %s,%d,%d,%d", pCWD, szFilename, iID, iTextureFlag, iDivideTextureSize);
+		RunTimeError(RUNTIMEERROR_IMAGELOADFAILED,pErr);
 	}
-}
-
-DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iKindOfTexture, int iDivideTextureSize )
-{
-	return LoadEx ( szFilename, iID, iKindOfTexture, 0, 0 );
 }
 
 DARKSDK void LoadEx	( LPSTR szFilename, int iID, int iKindOfTexture )
@@ -2140,17 +2181,8 @@ void OpenImageBlock	( char* szFilename, int iMode )
 	g_bImageBlockActive = true;
 	g_iImageBlockMode = iMode;
 
-	// U77 - 060211 - does previously written image block exist, if so, we append to it
-	bool bPreviousImageBlockExists = false;
-	HANDLE hFile = CreateFile ( g_iImageBlockFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
-	if ( hFile!=INVALID_HANDLE_VALUE )
-	{
-		bPreviousImageBlockExists = true;
-		CloseHandle ( hFile );
-	}
-
-	// Load imageblock (for reading or to load last imageblock from previous write)
-	if ( g_iImageBlockMode==1 || bPreviousImageBlockExists==true )
+	// Load imageblock
+	if ( g_iImageBlockMode==1 )
 	{
 		// open to read
 		HANDLE hFile = CreateFile ( g_iImageBlockFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
