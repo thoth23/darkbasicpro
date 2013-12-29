@@ -23,26 +23,19 @@
 #include <windowsx.h>
 
 #include "CLightDataC.h"
-#include <map>
+#include ".\..\data\cdatac.h"
 
-class CLightManager
+class CLightManager : private CData
 {
-    public:
-        typedef std::map<int, tagLightData*>    LightList_t;
-        typedef LightList_t::iterator           LightPtr;
-
-	private:
-        LightList_t     m_List;
-        tagLightData*   CurrentPtr;
-        int             CurrentID;
-
-    public:
-        CLightManager	( ) : CurrentPtr(NULL), CurrentID(-1) { }
+	public:
+		CData	m_List;
+		
+	public:
+		CLightManager	( void );
+		~CLightManager	( void );
 
 		bool Add	( tagLightData* pData, int iID );
-		bool Delete ( int iID, LPDIRECT3DDEVICE9 pD3D = NULL );
-
-        void DeleteAll ( LPDIRECT3DDEVICE9 pD3D = NULL );
+		bool Delete ( int iID );
 
 		tagLightData* GetData ( int iID );
 };

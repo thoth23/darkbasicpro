@@ -47,12 +47,8 @@ struct CSpriteManager::PrioritiseSprite
     int m_id;
     tagSpriteData* m_ptr;
 
-    PrioritiseSprite ( SpritePtr pItem ) 
-        : m_id( pItem->first), m_ptr( pItem->second )
-    {}
-
-    PrioritiseSprite ( SpritePtrConst pItem ) 
-        : m_id( pItem->first), m_ptr( pItem->second )
+    PrioritiseSprite ( link* pItem ) 
+        : m_id( pItem->id), m_ptr( (tagSpriteData*) pItem->data )
     {}
 
     bool operator < (const PrioritiseSprite& Other) const
@@ -87,9 +83,6 @@ struct CSpriteManager::PrioritiseSprite
 
 CSpriteManager::CSpriteManager ( void )
 {
-    m_CurrentId = 0;
-    m_CurrentPtr = 0;
-    m_FilterMode = 0;
 }
 
 
@@ -100,25 +93,18 @@ CSpriteManager::~CSpriteManager ( void )
 
 bool CSpriteManager::Add ( tagSpriteData* pData, int iID )
 {
-    tagSpriteData* ptr = 0;
+    // Attempt to get the sprite
+    tagSpriteData* ptr = (tagSpriteData* ) m_List.Get ( iID );
 
-    SpritePtr p = m_List.find( iID );
-    if (p == m_List.end())
+    if ( ptr == NULL )
     {
         // If doesn't exist, then create one and add to the list
 	    ptr = new tagSpriteData;
-        m_List.insert( std::make_pair(iID, ptr) );
-    }
-    else
-    {
-        ptr = p->second;
+	    m_List.Add ( iID, ( VOID* ) ptr, 0, 1 );
     }
 
     // Update the sprite data
     *ptr = *pData;
-
-    m_CurrentId = iID;
-    m_CurrentPtr = ptr;
 
 	return false;
 }
@@ -126,18 +112,18 @@ bool CSpriteManager::Add ( tagSpriteData* pData, int iID )
 
 bool CSpriteManager::Delete ( int iID )
 {
-    SpritePtr p = m_List.find( iID );
-    if (p == m_List.end())
+	// get a pointer to the actual data
+	tagSpriteData* ptr = ( tagSpriteData* ) m_List.Get ( iID);
+
+	// if the data doesn't exist then skip it
+	if ( ptr == NULL )
 		return false;
 
-    DeleteJustOne( p->second );
-    m_List.erase( p );
+	// release the sprite
+	DeleteJustOne(ptr);
 	
-    if (m_CurrentId == iID)
-    {
-        m_CurrentId = 0;
-        m_CurrentPtr = 0;
-    }
+	// remove from list
+	m_List.Delete ( iID);
 
 	return true;
 }
@@ -151,39 +137,25 @@ void CSpriteManager::DrawImmediate ( tagSpriteData* pData )
     tagSpriteData* pSpriteList[1] = { pData };
 
     // Render it
-    RenderDrawList ( pSpriteList, 1, m_FilterMode );
+    RenderDrawList ( pSpriteList, 1 );
 }
 
 
-tagSpriteData* CSpriteManager::GetData ( int iID ) const
-{
-    if (iID != m_CurrentId)
-    {
-        SpritePtrConst p = m_List.find( iID );
-        if (p == m_List.end())
-            return 0;
-
-        m_CurrentId = iID;
-        m_CurrentPtr = p->second;
-    }
-    return m_CurrentPtr;
-}
-
-
-int CSpriteManager::Update ( void ) const
+int CSpriteManager::Update ( void )
 {
     // Clear the old list and resize to hold up to the actual number of sprites.
     m_SortedSpriteList.clear();
-    m_SortedSpriteList.reserve(m_List.size());
+    m_SortedSpriteList.reserve(m_List.Count());
 
     // Update our copy of the display size, for culling purposes
     GetDisplaySize ();
 
     // Build the sorted list of sprites
     // Dump all visible sprites into a vector
-    for (SpritePtrConst pCheck = m_List.begin(); pCheck != m_List.end(); ++pCheck)
+    link* pCheck = m_List.m_start;
+    while (pCheck)
     {
-        if (pCheck->second)
+        if (pCheck->data)
         {
             PrioritiseSprite s(pCheck);
             if (s.m_ptr->iImage > 0 && s.m_ptr->bVisible && IsSpriteInDisplay ( s.m_ptr ))
@@ -191,6 +163,7 @@ int CSpriteManager::Update ( void ) const
                 m_SortedSpriteList.push_back( s );
             }
         }
+        pCheck = pCheck->next;
     }
 
     if ( ! m_SortedSpriteList.empty() )
@@ -210,7 +183,7 @@ int CSpriteManager::Update ( void ) const
         }
 
         // Render the draw list
-        RenderDrawList ( &m_SpriteDrawList[0], m_SpriteDrawList.size(), m_FilterMode );
+        RenderDrawList ( &m_SpriteDrawList[0], m_SpriteDrawList.size() );
     }
 
     return m_SortedSpriteList.size();
@@ -219,27 +192,33 @@ int CSpriteManager::Update ( void ) const
 
 void CSpriteManager::DeleteAll ( void )
 {
-    for (SpritePtr pCheck = m_List.begin(); pCheck != m_List.end(); ++pCheck)
+    // Loop through all nodes in the sprite list
+	link* pCheck = m_List.m_start;
+	while ( pCheck )
 	{
-		tagSpriteData* ptr = pCheck->second;
+		// get sprite info
+		tagSpriteData* ptr = ( tagSpriteData* )( pCheck->data );
 
 	    // release the sprite
 		if ( ptr )
 		    DeleteJustOne(ptr);
+
+		// now move to the next item in the list
+		pCheck = pCheck->next;
     }
 
-    m_List.clear();
-
-    m_CurrentId = 0;
-    m_CurrentPtr = 0;
+    // Delete all nodes in the sprite list
+    m_List.DeleteAll();
 }
 
 
 void CSpriteManager::HideAll ( void )
 {
-    for (SpritePtr pCheck = m_List.begin(); pCheck != m_List.end(); ++pCheck)
+	link* pCheck = m_List.m_start;
+	while ( pCheck )
 	{
-		tagSpriteData* ptr = pCheck->second;
+		// get sprite info
+		tagSpriteData* ptr = ( tagSpriteData* )( pCheck->data );
 
 		// if the data doesn't exist then skip it
 		if ( ptr )
@@ -247,15 +226,20 @@ void CSpriteManager::HideAll ( void )
 		    // run through all sprites and set their visible property
 		    ptr->bVisible = false;
         }
+
+		// now skip to the next item in the list
+		pCheck = pCheck->next;
     }
 }
 
 
 void CSpriteManager::ShowAll ( void )
 {
-    for (SpritePtr pCheck = m_List.begin(); pCheck != m_List.end(); ++pCheck)
+	link* pCheck = m_List.m_start;
+	while ( pCheck )
 	{
-		tagSpriteData* ptr = pCheck->second;
+		// get sprite info
+		tagSpriteData* ptr = ( tagSpriteData* )( pCheck->data );
 
 		// if the data doesn't exist then skip it
 		if ( ptr )
@@ -263,6 +247,9 @@ void CSpriteManager::ShowAll ( void )
 		    // run through all sprites and set their visible property
 		    ptr->bVisible = true;
         }
+
+		// now skip to the next item in the list
+		pCheck = pCheck->next;
     }
 }
 
@@ -284,7 +271,7 @@ void CSpriteManager::DeleteJustOne(tagSpriteData* ptr)
 }
 
 
-void CSpriteManager::RenderDrawList ( tagSpriteData** pList, int iListSize, int iFilterMode )
+void CSpriteManager::RenderDrawList ( tagSpriteData** pList, int iListSize )
 {
     // Set up the rendering pipeline for all sprites
 
@@ -322,7 +309,7 @@ void CSpriteManager::RenderDrawList ( tagSpriteData** pList, int iListSize, int 
 	m_pD3D->SetRenderState ( D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA );
 	m_pD3D->SetRenderState ( D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA );
 
-	if ( iFilterMode == 0 )
+	if ( g_iFilterMode == 0 )
 	{
 		m_pD3D->SetSamplerState ( 0, D3DSAMP_MAGFILTER,       D3DTEXF_POINT  );
 		m_pD3D->SetSamplerState ( 0, D3DSAMP_MINFILTER,       D3DTEXF_POINT  );

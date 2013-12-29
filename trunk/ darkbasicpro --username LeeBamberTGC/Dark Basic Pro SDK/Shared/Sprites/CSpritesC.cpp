@@ -26,41 +26,41 @@
 // GLOBALS ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
+
+
 // Global Shared Data Pointer (passed in from core)
-DBPRO_GLOBAL GlobStruct*	g_pGlob = NULL;
-DBPRO_GLOBAL LPDIRECT3DDEVICE9			m_pD3D = NULL;						// pointer to D3D device
+DBPRO_GLOBAL GlobStruct*				g_pGlob							= NULL;
 
-namespace
-{
-    // DirectX Support Data
-    typedef IDirect3DDevice9* ( *GFX_GetDirect3DDevicePFN ) ( void );
-    HINSTANCE					g_GFX;						// for dll loading
-    GFX_GetDirect3DDevicePFN	g_GFX_GetDirect3DDevice;	// get pointer to D3D device
+// DirectX Support Data
+typedef IDirect3DDevice9* ( *GFX_GetDirect3DDevicePFN ) ( void );
+DBPRO_GLOBAL HINSTANCE					g_GFX;						// for dll loading
+DBPRO_GLOBAL GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;	// get pointer to D3D device
 
-    // Global Sprite Data
-    CSpriteManager				m_SpriteManager;				// sprite manager
-    tagSpriteData*				m_ptr;							// sprites internal data
-    float						m_preCos [ 360 ];				// used for lookup table for rotation
-    float						m_preSin [ 360 ];				// used for lookup table for rotation
+DBPRO_GLOBAL LPDIRECT3DDEVICE9			m_pD3D=NULL;						// pointer to D3D device
 
-    // Global Backsave Feature
-    bool						g_bFirstTimeSprite = true;
-    int							g_iBackSaveState = 0;			// 2-new mode-autoclear!
-    LPDIRECT3DSURFACE9			g_pBackSaveBackBuffer = NULL;	// used to store backsave
-    LPDIRECT3DSURFACE9			g_pBackSaveSurface = NULL;		// used to store backsave
+// Global Sprite Data
+DBPRO_GLOBAL CSpriteManager			m_SpriteManager;				// sprite manager
+DBPRO_GLOBAL tagSpriteData*			m_ptr;							// sprites internal data
+DBPRO_GLOBAL float					m_preCos [ 360 ];				// used for lookup table for rotation
+DBPRO_GLOBAL float					m_preSin [ 360 ];				// used for lookup table for rotation
 
-    // Global TempSpriteForImage Pasting
-     tagSpriteData				m_ImagePtr;						// temp image internal data
+// Global Backsave Feature
+DBPRO_GLOBAL bool						g_bFirstTimeSprite = true;
+DBPRO_GLOBAL int						g_iBackSaveState = 0;			// 2-new mode-autoclear!
+DBPRO_GLOBAL LPDIRECT3DSURFACE9		g_pBackSaveBackBuffer = NULL;	// used to store backsave
+DBPRO_GLOBAL LPDIRECT3DSURFACE9		g_pBackSaveSurface = NULL;		// used to store backsave
 
-    bool						g_bCallFromAnim = false;
+// Global TempSpriteForImage Pasting
+DBPRO_GLOBAL tagSpriteData			m_ImagePtr;						// temp image internal data
 
-    // mike - 041005 - special option to resize sprites automatically
-    int g_iSpriteResizeMode = 0;
+DBPRO_GLOBAL bool						g_bCallFromAnim = false;
 
-	// Can globally squash the X of all sprites (for side by side steroscopics)
-	float g_fGlobalSpriteOffsetX = 0;
-	float g_fGlobalSpriteStretchX = 1.0f;
-}
+
+// mike - 041005 - special option to resize sprites automatically
+int g_iSpriteResizeMode = 0;
+
+// mike - 071005 - filter mode in case you want to use linear
+int g_iFilterMode = 0;
 
 // Forward declarations
 DARKSDK void SetVertexTextureDataForSprite( void );
@@ -319,12 +319,10 @@ DARKSDK bool UpdatePtr ( int iID )
 
 DARKSDK void UpdateAllSprites(void)
 {
-    for (CSpriteManager::SpritePtrConst pCheck = m_SpriteManager.begin();
-         pCheck != m_SpriteManager.end();
-         ++pCheck)
-    {
-        int id = pCheck->first;
-		tagSpriteData* ptr = pCheck->second;
+    link* pCheck = m_SpriteManager.GetList()->m_start;
+	while ( pCheck )
+	{
+		tagSpriteData* ptr = ( tagSpriteData* )( pCheck->data );
 
 		int iImage = ptr->iImage;
         if (iImage > 0)
@@ -341,12 +339,15 @@ DARKSDK void UpdateAllSprites(void)
                 ptr->iFrameHeight = ptr->iHeight / ptr->iFrameDown;
                 ptr->iWidth = ptr->iFrameWidth;
                 ptr->iHeight = ptr->iFrameHeight;
-                SetFrameEx ( id, ptr->iFrame + 1 );
+                SetFrameEx ( pCheck->id, ptr->iFrame + 1 );
                 // BUG: Apparent bug here on uv's for non-power-of-2 image sizes on animated single-image sprites
             }
             m_ptr = ptr;
             SetVertexTextureDataForSprite ( );
         }
+
+        // check next one
+		pCheck = pCheck->next;
 	}
 }
 
@@ -456,11 +457,9 @@ DARKSDK void CreateSprite( int iID, int iX, int iY, int iImage )
 DARKSDK void SetVertexPosDataForSprite ( int iX, int iY )
 {
 	// get sprite information
-	float fX = (float)iX * g_fGlobalSpriteStretchX;
-	fX+= g_fGlobalSpriteOffsetX;
-	int iWidth  = (int)(m_ptr->iWidth * m_ptr->fXScale * g_fGlobalSpriteStretchX);
+	int iWidth  = (int)(m_ptr->iWidth * m_ptr->fXScale);
 	int iHeight = (int)(m_ptr->iHeight * m_ptr->fYScale);
-	int iXOffset  = (int)(m_ptr->iXOffset * m_ptr->fXScale * g_fGlobalSpriteStretchX);
+	int iXOffset  = (int)(m_ptr->iXOffset * m_ptr->fXScale);
 	int iYOffset = (int)(m_ptr->iYOffset * m_ptr->fYScale);
 
 	// Apply a per-pixel bias to screen coordinates (dx8 recommends 0.5)
@@ -470,10 +469,19 @@ DARKSDK void SetVertexPosDataForSprite ( int iX, int iY )
 	// assign vertex data
 	if(m_ptr->iXSize==0)
 	{
-		m_ptr->lpVertices [ 0 ].x = (float)(fX - iXOffset)-0.5f;
-		m_ptr->lpVertices [ 1 ].x = (float)(fX - iXOffset)+iWidth-0.5f;
-		m_ptr->lpVertices [ 2 ].x = (float)(fX - iXOffset)-0.5f;
-		m_ptr->lpVertices [ 3 ].x = (float)(fX - iXOffset)+iWidth-0.5f;
+// leefix - 250303 - additional bias to improve sprite accuracy during rotation!
+//		m_ptr->lpVertices [ 0 ].x = (float)(iX - iXOffset);
+//		m_ptr->lpVertices [ 1 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
+//		m_ptr->lpVertices [ 2 ].x = (float)(iX - iXOffset);
+//		m_ptr->lpVertices [ 3 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
+//		m_ptr->lpVertices [ 0 ].y = (float)(iY - iYOffset);
+//		m_ptr->lpVertices [ 1 ].y = (float)(iY - iYOffset);
+//		m_ptr->lpVertices [ 2 ].y = (float)(iY - iYOffset)+iHeight-0.5f;
+//		m_ptr->lpVertices [ 3 ].y = (float)(iY - iYOffset)+iHeight-0.5f;
+		m_ptr->lpVertices [ 0 ].x = (float)(iX - iXOffset)-0.5f;
+		m_ptr->lpVertices [ 1 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
+		m_ptr->lpVertices [ 2 ].x = (float)(iX - iXOffset)-0.5f;
+		m_ptr->lpVertices [ 3 ].x = (float)(iX - iXOffset)+iWidth-0.5f;
 		m_ptr->lpVertices [ 0 ].y = (float)(iY - iYOffset)-0.5f;
 		m_ptr->lpVertices [ 1 ].y = (float)(iY - iYOffset)-0.5f;
 		m_ptr->lpVertices [ 2 ].y = (float)(iY - iYOffset)+iHeight-0.5f;
@@ -481,12 +489,19 @@ DARKSDK void SetVertexPosDataForSprite ( int iX, int iY )
 	}
 	else
 	{
-		float fXSize = m_ptr->iXSize * g_fGlobalSpriteStretchX;
-		float fXOffset = m_ptr->iXOffset * g_fGlobalSpriteStretchX;
-		m_ptr->lpVertices [ 0 ].x = (float)(fX - fXOffset)-0.5f;
-		m_ptr->lpVertices [ 1 ].x = (float)(fX + fXSize - m_ptr->iXOffset)-0.5f;
-		m_ptr->lpVertices [ 2 ].x = (float)(fX - fXOffset)-0.5f;
-		m_ptr->lpVertices [ 3 ].x = (float)(fX + fXSize - m_ptr->iXOffset)-0.5f;
+// leefix - 250303 - remove bias to improve sprite accuracy during rotation!
+//		m_ptr->lpVertices [ 0 ].x = (float)(iX - m_ptr->iXOffset);
+//		m_ptr->lpVertices [ 1 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
+//		m_ptr->lpVertices [ 2 ].x = (float)(iX - m_ptr->iXOffset);
+//		m_ptr->lpVertices [ 3 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
+//		m_ptr->lpVertices [ 0 ].y = (float)(iY - m_ptr->iYOffset);
+//		m_ptr->lpVertices [ 1 ].y = (float)(iY - m_ptr->iYOffset);
+//		m_ptr->lpVertices [ 2 ].y = (float)(iY + m_ptr->iYSize - m_ptr->iYOffset)-0.5f;
+//		m_ptr->lpVertices [ 3 ].y = (float)(iY + m_ptr->iYSize - m_ptr->iYOffset)-0.5f;
+		m_ptr->lpVertices [ 0 ].x = (float)(iX - m_ptr->iXOffset)-0.5f;
+		m_ptr->lpVertices [ 1 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
+		m_ptr->lpVertices [ 2 ].x = (float)(iX - m_ptr->iXOffset)-0.5f;
+		m_ptr->lpVertices [ 3 ].x = (float)(iX + m_ptr->iXSize - m_ptr->iXOffset)-0.5f;
 		m_ptr->lpVertices [ 0 ].y = (float)(iY - m_ptr->iYOffset)-0.5f;
 		m_ptr->lpVertices [ 1 ].y = (float)(iY - m_ptr->iYOffset)-0.5f;
 		m_ptr->lpVertices [ 2 ].y = (float)(iY + m_ptr->iYSize - m_ptr->iYOffset)-0.5f;
@@ -546,7 +561,7 @@ DARKSDK void RotateSpriteAtPtr( void )
 	}
 }
 
-DARKSDK void SetVertexDataForSprite( int iX, int iY )
+DARKSDK void SetVertexDataForSprite ( int iX, int iY )
 {
 	// if angled, must transform vertex data
 	if( m_ptr->fAngle!=0.0 )
@@ -714,12 +729,11 @@ DARKSDK int CheckSpriteCollision( int iID, int iTarget )
 		int collisionwith=0;
 
 		// For when images are changed, sprites may have old textures
-		for (CSpriteManager::SpritePtrConst pCheck = m_SpriteManager.begin();
-             pCheck != m_SpriteManager.end();
-             ++pCheck)
+		link* pCheck = m_SpriteManager.GetList()->m_start;
+		while ( pCheck )
 		{
 			// get sprite info
-			iTarget = pCheck->first;
+			iTarget = pCheck->id;
 			if(iTarget!=iID)
 			{
 				if(ReturnOverlapResult(iID, iTarget)==1)
@@ -728,6 +742,9 @@ DARKSDK int CheckSpriteCollision( int iID, int iTarget )
 					break;
 				}
 			}
+
+			// check next one
+			pCheck = pCheck->next;
 		}
 		overlap = collisionwith;
 	}
@@ -1062,17 +1079,6 @@ DARKSDK void Paste ( int iID, int iX, int iY )
 		return;
 	}
 
-	// U77 - 130411 - support for stereo side by side
-	D3DVIEWPORT9 SaveViewport;
-	if ( g_fGlobalSpriteStretchX != 1.0f )
-	{
-		m_pD3D->GetViewport(&SaveViewport);
-		D3DVIEWPORT9 StretchedViewport = SaveViewport;
-		StretchedViewport.X = (int)g_fGlobalSpriteOffsetX;
-		StretchedViewport.Width = (int)(SaveViewport.Width * g_fGlobalSpriteStretchX);
-		m_pD3D->SetViewport(&StretchedViewport);
-	}
-
 	// now update the vertices based on this info
 	SetVertexDataForSprite( iX, iY );
 
@@ -1088,10 +1094,6 @@ DARKSDK void Paste ( int iID, int iX, int iY )
 
 	// mike - 220406 - must update original sprite again
 	Rotate ( iID, m_ptr->fAngle );
-
-	// U77 - 130411 - support for stereo side by side
-	if ( g_fGlobalSpriteStretchX != 1.0f )
-		m_pD3D->SetViewport(&SaveViewport);
 }
 
 DARKSDK void Paste ( int iID, int iX, int iY, int iDrawImmediately )
@@ -1510,17 +1512,10 @@ DARKSDK void SetDiffuse ( int iID, int iR, int iG, int iB )
 	m_ptr->lpVertices [ 3 ].color = D3DCOLOR_ARGB ( m_ptr->iAlpha, m_ptr->iRed, m_ptr->iGreen, m_ptr->iBlue );
 }
 
-DARKSDK void SetSpriteResize ( int iMode, float fOffsetX, float fScaleX )
-{
-	g_iSpriteResizeMode = iMode;
-	g_fGlobalSpriteOffsetX = fOffsetX;
-	g_fGlobalSpriteStretchX = fScaleX;
-}
-
 DARKSDK void SetSpriteResize ( int iMode )
 {
 	// mike - 041005 - special option to resize sprites automatically
-	SetSpriteResize ( iMode, 0.0f, 1.0f );
+	g_iSpriteResizeMode = iMode;
 }
 
 DARKSDK void SetImage ( int iID, int iImage )
@@ -2433,7 +2428,7 @@ DARKSDK void SetSpriteFilterMode ( int iMode )
 {
 	// mike - 071005 - filter mode in case you want to use linear
 	// lee - 090910 - also controls whether WRAP(0-default) or 1(CLAMP)
-    m_SpriteManager.SetFilterMode( iMode );
+	g_iFilterMode = iMode;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
