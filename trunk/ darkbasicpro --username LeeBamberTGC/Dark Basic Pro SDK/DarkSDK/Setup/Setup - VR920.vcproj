@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Basic2D"
-	ProjectGUID="{6F7FC773-D0E4-4FC4-BB3F-2FF5DC3EA495}"
-	RootNamespace="Basic2D"
+	Name="Setup - VR920"
+	ProjectGUID="{EE54E35B-C0A4-4A24-92DD-BAAB05B4F7BE}"
+	RootNamespace="Setup"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -15,99 +15,6 @@
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
-		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/Basic2D.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/Basic2D.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="2057"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/DBProBasic2DDebug.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary=".\Debug/DBProBasic2DDebug.lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
@@ -136,19 +43,19 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/Basic2D.tlb"
+				TypeLibraryName=".\Release/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="1"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="C:\IWEARSDK\inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/Basic2D.pch"
+				PrecompiledHeaderFile=".\Release/Setup.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -169,13 +76,205 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/DBProBasic2DDebug.pdb"
+				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
+				ProgramDatabaseFile=".\Release/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Release/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Release/DBProSetupDebug.lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			EnableManagedIncrementalBuild="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/Setup.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="C:\IWEARSDK\inc"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS;VR920SUPPORT"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				PrecompiledHeaderFile=".\Debug/Setup.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProSetupDebug.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\Debug/DBProSetupDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary=".\Debug/DBProSetupDebug.lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="ReleaseDEMO|Win32"
+			OutputDirectory=".\Setup___Win32_ReleaseDEMO"
+			IntermediateDirectory=".\Setup___Win32_ReleaseDEMO"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Setup___Win32_ReleaseDEMO/Setup.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="1"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS;DEMO"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				PrecompiledHeaderFile=".\Setup___Win32_ReleaseDEMO/Setup.pch"
+				AssemblerListingLocation=".\Setup___Win32_ReleaseDEMO/"
+				ObjectFile=".\Setup___Win32_ReleaseDEMO/"
+				ProgramDataBaseFileName=".\Setup___Win32_ReleaseDEMO/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSetupDebug.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
+				ProgramDatabaseFile=".\Setup___Win32_ReleaseDEMO/DBProSetupDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary=".\Setup___Win32_ReleaseDEMO/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -228,17 +327,17 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/Basic2D.tlb"
+				TypeLibraryName=".\Debug/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/Basic2D.pch"
+				PrecompiledHeaderFile=".\Debug/Setup.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -261,14 +360,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="C:\Users\Lee\Documents\First Person Game Creator (FPGC)\BUILD\First Person Game Creator\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/DBProBasic2DDebug.pdb"
+				ProgramDatabaseFile=".\Debug/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Debug/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Debug/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -295,6 +396,7 @@
 		</Configuration>
 		<Configuration
 			Name="DebugREMOTE|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			>
@@ -315,6 +417,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				BrowseInformation="1"
+				WarningLevel="3"
+				DebugInformationFormat="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -327,8 +437,17 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="\\vistapc\remote\s3d\DBProSetupDebug.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary=".\Debug/DBProSetupDebug.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -380,17 +499,17 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/Basic2D.tlb"
+				TypeLibraryName=".\Debug/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/Basic2D.pch"
+				PrecompiledHeaderFile=".\Debug/Setup.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -413,14 +532,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="\\vistapc\remote\s3d\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/DBProBasic2DDebug.pdb"
+				ProgramDatabaseFile=".\Debug/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Debug/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Debug/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -473,22 +594,22 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/Basic2D.tlb"
+				TypeLibraryName=".\Setup___Win32_ReleaseDEMO/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="1"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/Basic2D.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				PrecompiledHeaderFile=".\Setup___Win32_ReleaseDEMO/Setup.pch"
+				AssemblerListingLocation=".\Setup___Win32_ReleaseDEMO/"
+				ObjectFile=".\Setup___Win32_ReleaseDEMO/"
+				ProgramDataBaseFileName=".\Setup___Win32_ReleaseDEMO/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -506,13 +627,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="..\..\..\Dark Basic Pro\Projects\StereoscopicCameras\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/DBProBasic2DDebug.pdb"
+				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
+				ProgramDatabaseFile=".\Setup___Win32_ReleaseDEMO/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Release/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Setup___Win32_ReleaseDEMO/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -565,19 +688,19 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/Basic2D.tlb"
+				TypeLibraryName=".\Release/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="1"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\inc&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/Basic2D.pch"
+				PrecompiledHeaderFile=".\Release/Setup.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -598,13 +721,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/DBProBasic2DDebug.pdb"
+				AdditionalLibraryDirectories="&quot;C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro SDK\Shared\Setup\VR920\lib&quot;"
+				ProgramDatabaseFile=".\Release/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Release/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Release/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -657,19 +782,19 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/Basic2D.tlb"
+				TypeLibraryName=".\Release/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="1"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="C:\IWEARSDK\inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/Basic2D.pch"
+				PrecompiledHeaderFile=".\Release/Setup.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -690,13 +815,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/DBProBasic2DDebug.pdb"
+				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
+				ProgramDatabaseFile=".\Release/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Release/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Release/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -749,17 +876,17 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/Basic2D.tlb"
+				TypeLibraryName=".\Debug/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="C:\IWEARSDK\inc"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/Basic2D.pch"
+				PrecompiledHeaderFile=".\Debug/Setup.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -782,14 +909,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="C:\TGC\BUILD2010-FPGC\Wise Installer\The Game Creators\First Person Game Creator\MyGames\simple\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/DBProBasic2DDebug.pdb"
+				ProgramDatabaseFile=".\Debug/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Debug/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Debug/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -842,17 +971,17 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/Basic2D.tlb"
+				TypeLibraryName=".\Debug/Setup.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BASIC2D_EXPORTS"
+				AdditionalIncludeDirectories="C:\IWEARSDK\inc"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SETUP_EXPORTS;VR920SUPPORT"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/Basic2D.pch"
+				PrecompiledHeaderFile=".\Debug/Setup.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -875,14 +1004,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProBasic2DDebug.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib D3dx9.lib"
+				OutputFile="C:\TGC\CODING\Dark Basic Pro Shared\Dark Basic Pro\Projects\BIGROCKS\DBProSetupDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="C:\IWEARSDK\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/DBProBasic2DDebug.pdb"
+				ProgramDatabaseFile=".\Debug/DBProSetupDebug.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\Debug/DBProBasic2DDebug.lib"
+				ImportLibrary=".\Debug/DBProSetupDebug.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -912,132 +1043,38 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Basic2D"
-			>
-			<File
-				RelativePath="..\..\Shared\Basic2D\CBasic2DC.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugFPSC|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugSTEREO|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseX9(WOW)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseWITHINFOFORDEBUG|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseVR920|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugUSERAPP|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugVR920|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Basic2D\CBasic2DC.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Error"
 			>
 			<File
 				RelativePath="..\..\Shared\Error\CError.cpp"
 				>
 				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="ReleaseDEMO|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1046,7 +1083,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
@@ -1057,7 +1094,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
@@ -1067,8 +1104,8 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1076,8 +1113,8 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1085,8 +1122,8 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1095,7 +1132,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
@@ -1106,38 +1143,183 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\..\Shared\Error\CError.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Shared\Error\CRuntimeErrors.h"
+				>
+			</File>
 		</Filter>
-		<File
-			RelativePath="Basic2D.rc"
+		<Filter
+			Name="Setup"
 			>
-		</File>
+			<File
+				RelativePath="..\..\Shared\Setup\CGfxC.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseDEMO|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugFPSC|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugSTEREO|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseX9(WOW)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseWITHINFOFORDEBUG|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="1"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\Shared\Setup\CGfxC.h"
+				>
+			</File>
+			<Filter
+				Name="Wrap920"
+				>
+				<File
+					RelativePath="..\..\Shared\Setup\Wrap920\IWRFilterTracking.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Shared\Setup\Wrap920\IWRsdk.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Shared\Setup\Wrap920\IWRsdk.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Hardware"
+			>
+		</Filter>
 		<File
 			RelativePath="DLLMain.cpp"
 			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+				/>
+			</FileConfiguration>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
-					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					BrowseInformation="1"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="ReleaseDEMO|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -1146,7 +1328,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
-					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					BrowseInformation="1"
 				/>
@@ -1157,7 +1339,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
-					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					BrowseInformation="1"
 				/>
@@ -1167,8 +1349,8 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -1176,8 +1358,8 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -1185,8 +1367,8 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -1195,7 +1377,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
-					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					BrowseInformation="1"
 				/>
@@ -1206,7 +1388,111 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
-					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;BASIC2D_EXPORTS;$(NoInherit)"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\..\Shared\Core\globstruct.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="ReleaseDEMO|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="DebugFPSC|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="DebugSTEREO|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="ReleaseX9(WOW)|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;DEMO;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="ReleaseWITHINFOFORDEBUG|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="ReleaseVR920|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="1"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="DebugUSERAPP|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="DebugVR920|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;SETUP_EXPORTS;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					BrowseInformation="1"
 				/>
@@ -1215,6 +1501,38 @@
 		<File
 			RelativePath="..\..\Shared\Core\globstruct.h"
 			>
+		</File>
+		<File
+			RelativePath="icon.bmp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\Shared\Hardware\icon1.ico"
+			>
+		</File>
+		<File
+			RelativePath=".\resource.h"
+			>
+		</File>
+		<File
+			RelativePath="Setup.rc"
+			>
+			<FileConfiguration
+				Name="ReleaseDEMO|Win32"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="ReleaseX9(WOW)|Win32"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

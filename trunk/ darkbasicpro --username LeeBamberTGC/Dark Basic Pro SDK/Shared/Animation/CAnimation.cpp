@@ -17,11 +17,7 @@
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKDisplay.h"
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKImage.h"
 	#include ".\..\..\..\DarkGDK\Code\Include\DarkSDKSprites.h"
-    #ifdef _DEBUG
-	 #pragma comment ( lib, "strmbasd.lib" )
-	#else
-	 #pragma comment ( lib, "strmbase.lib" )
-	#endif
+	// patrick - 291213 r106 - moved strmbase.lib and strmbasd.lib #pragmas to project settings
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////
