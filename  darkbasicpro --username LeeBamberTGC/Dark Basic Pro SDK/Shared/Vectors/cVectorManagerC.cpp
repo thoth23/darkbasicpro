@@ -3,47 +3,86 @@
 
 cDataManager::cDataManager ( )
 {
+	
 }
 
 cDataManager::~cDataManager ( )
 {
-    ClearAll();
+	int iTemp;
+
+	link* pCheck = m_List.m_start;
+
+	for ( iTemp = 0; iTemp < m_List.m_count; iTemp++ )
+	{
+		void* ptr = NULL;
+		ptr = this->GetData ( pCheck->id );
+
+		if ( ptr == NULL )
+			continue;
+
+		delete ptr;
+
+		pCheck = pCheck->next;
+	}
 }
 
-void cDataManager::ClearAll ( )
+bool cDataManager::Add ( void* pData, int iID )
 {
-    for (ListPtr pCheck = m_List.begin(); pCheck != m_List.end(); ++pCheck)
-    {
-        // Release the texture and texture name
-        delete pCheck->second;
-    }
+	///////////////////////////////////////
+	// check if an object already exists //
+	// with the same id, if it does then //
+	// delete it                         //
+	///////////////////////////////////////
+	void* ptr = NULL;
+	ptr = ( void* ) m_List.Get ( iID );
+			
+	if ( ptr != NULL )
+		m_List.Delete ( iID );
+	///////////////////////////////////////
 
-    // Now clear the list
-    m_List.clear();
-}
+	///////////////////////////////////////
+	// create a new object and insert in //
+	// the list                          //
+	///////////////////////////////////////
+	//void* test;
+	//test = new void*;
 
-bool cDataManager::Add ( BaseVector* pData, int iID )
-{
-    // Attempt to insert
-    ListInsertStatus s = m_List.insert( std::make_pair( iID, pData ) );
+	//memset ( test,     0, sizeof ( test  ) );
+	//memcpy ( test, pData, sizeof ( sData ) );
 
-    // If insert fails due to already existing, replace instead
-    if (!s.second)
-    {
-        delete s.first->second;
-        s.first->second = pData;
-    }
+	//m_List.Add ( iID, ( VOID* ) test, 0, 1 );
+	m_List.Add ( iID, ( VOID* ) pData, 0, 1 );
+	///////////////////////////////////////
 
 	return true;
 }
 
 bool cDataManager::Delete ( int iID )
 {
-    ListPtr p = m_List.find( iID );
-    if (p != m_List.end())
-    {
-        delete p->second;
-        m_List.erase( p );
-    }
+	void* ptr = NULL;
+	ptr = ( void* ) m_List.Get ( iID );
+	if(ptr) delete ptr;
+	m_List.Delete ( iID );
 	return true;
+}
+
+void* cDataManager::GetData ( int iID )
+{		
+	return ( void* ) m_List.Get ( iID );
+}
+
+void cDataManager::Update ( void )
+{
+	link* check = m_List.m_start;
+
+	for ( int temp = 0; temp < m_List.m_count; temp++ )
+	{
+		void* ptr = NULL;
+		ptr = this->GetData ( check->id );
+
+		if ( ptr == NULL )
+			return;
+
+		check = check->next;
+	}
 }

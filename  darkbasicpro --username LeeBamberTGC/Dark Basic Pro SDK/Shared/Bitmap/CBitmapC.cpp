@@ -15,93 +15,35 @@
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
+
+
+
 //////////////////////////////////////////////////////////////////////////////////
 // GLOBALS ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
-#include <map>
+typedef IDirect3DDevice9*			( *GFX_GetDirect3DDevicePFN ) ( void );
+typedef void*						( *CAMERA3D_GetInternalDataPFN ) ( int );
 
-DBPRO_GLOBAL GlobStruct*			g_pGlob						= NULL;
+DBPRO_GLOBAL CData							m_List;
+DBPRO_GLOBAL LPDIRECT3DDEVICE9				m_pD3D						= NULL;
+DBPRO_GLOBAL LPDIRECT3D9					m_pDX						= NULL;
+DBPRO_GLOBAL int							m_iWidth					= 0;
+DBPRO_GLOBAL int							m_iHeight					= 0;
+DBPRO_GLOBAL int							m_iMipMapNum				= 1;
+DBPRO_GLOBAL int							m_iMemory					= D3DPOOL_MANAGED;
+DBPRO_GLOBAL bool							m_bSharing					= true;
+DBPRO_GLOBAL bool							m_bMipMap					= true;
+DBPRO_GLOBAL D3DCOLOR						m_Color						= D3DCOLOR_ARGB ( 255, 0, 0, 0 );
+DBPRO_GLOBAL tagData*						m_ptr						= NULL;
+DBPRO_GLOBAL D3DFORMAT						g_CommonSurfaceFormat;
+DBPRO_GLOBAL DWORD							g_CommonSurfaceDepth;
+DBPRO_GLOBAL DWORD							g_CSBPP;
+DBPRO_GLOBAL bool							g_bOffscreenBitmap			= false;
+DBPRO_GLOBAL GlobStruct*					g_pGlob						= NULL;
 
-namespace
-{
-    typedef std::map<int, tagData*>	BitmapList_t;
-    typedef BitmapList_t::iterator	BitmapPtr;
-
-
-    typedef IDirect3DDevice9*		( *GFX_GetDirect3DDevicePFN ) ( void );
-    typedef void*					( *CAMERA3D_GetInternalDataPFN ) ( int );
-
-    BitmapList_t					m_List;
-    LPDIRECT3DDEVICE9				m_pD3D						= NULL;
-    LPDIRECT3D9						m_pDX						= NULL;
-    int								m_iWidth					= 0;
-    int								m_iHeight					= 0;
-    int								m_iMipMapNum				= 1;
-    int								m_iMemory					= D3DPOOL_MANAGED;
-    bool							m_bSharing					= true;
-    bool							m_bMipMap					= true;
-    D3DCOLOR						m_Color						= D3DCOLOR_ARGB ( 255, 0, 0, 0 );
-    int                             m_CurrentId                 = -1;
-    tagData*						m_ptr						= NULL;
-    D3DFORMAT						g_CommonSurfaceFormat;
-    DWORD							g_CommonSurfaceDepth;
-    DWORD							g_CSBPP;
-    bool							g_bOffscreenBitmap			= false;
-    bool							g_bSupressErrorMessage		= false;
-
-    GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;
-    CAMERA3D_GetInternalDataPFN		g_Camera3D_GetInternalData;
-
-
-
-    bool RemoveBitmap( int iID )
-    {
-        // Clear the cached value if the bitmap being deleted is the current cached bitmap.
-        if (m_CurrentId == iID)
-        {
-            m_CurrentId = -1;
-            m_ptr = NULL;
-        }
-
-        // Locate the bitmap, and if found, release all of it's resources.
-        BitmapPtr pBitmap = m_List.find( iID );
-        if (pBitmap != m_List.end())
-        {
-            SAFE_RELEASE( pBitmap->second->lpSurface );
-            // SAFE_DELETE( pBitmap->second->lpDepth ); 240111 - crashes XP infrequently
-            SAFE_RELEASE( pBitmap->second->lpDepth );
-            delete pBitmap->second;
-
-            m_List.erase(pBitmap);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    bool UpdatePtr ( int iID )
-    {
-        // If the bitmap required is not already cached, refresh the cached value
-        if (!m_ptr || iID != m_CurrentId)
-        {
-            m_CurrentId = iID;
-
-            BitmapPtr p = m_List.find( iID );
-            if (p == m_List.end())
-            {
-                m_ptr = NULL;
-            }
-            else
-            {
-                m_ptr = p->second;
-            }
-        }
-
-        return m_ptr != NULL;
-    }
-}
+DBPRO_GLOBAL GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;
+DBPRO_GLOBAL CAMERA3D_GetInternalDataPFN	g_Camera3D_GetInternalData;
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -120,28 +62,30 @@ DARKSDK void Constructor ( HINSTANCE hSetup )
 
 DARKSDK void Destructor ( void )
 {
-    m_CurrentId = -1;
-    m_ptr = NULL;
+	// clean up the image library
 
-    for (BitmapPtr pCheck = m_List.begin(); pCheck != m_List.end(); ++pCheck)
-    {
-        // Release the texture and texture name
-        tagData* ptr = pCheck->second;
+	// get a pointer to the start of the list
+	link* pCheck = m_List.m_start;
+	for ( int iTemp = 0; iTemp < m_List.m_count; iTemp++ )
+	{
+		// get a pointer to the actual data
+		tagData* ptr = NULL;
+		ptr = ( tagData* ) m_List.Get ( pCheck->id );
+		if ( ptr == NULL ) continue;
+
+		// release the surface
 		SAFE_RELEASE ( ptr->lpSurface );
 		SAFE_RELEASE ( ptr->lpDepth );
+		
+		// free up the allocated memory block
+		delete ptr;
 
-        // Release the rest of the image storage
-        delete ptr;
+		// now skip to the next item in the list
+		pCheck = pCheck->next;
+	}
+	m_List.DeleteAll();
 
-        // NOTE: Not removing from m_List at this point:
-        // 1 - it makes moving to the next item harder
-        // 2 - it's less efficient - we'll clear the entire list at the end
-    }
-
-    // Now clear the list
-    m_List.clear();
-
-	// Free reference to D3D we took
+	// Release
 	SAFE_RELEASE(m_pDX);
 }
 
@@ -195,6 +139,22 @@ DARKSDK void RefreshD3D ( int iMode )
 		// Get new D3D and recreate everything D3D related
 		PassCoreData ( g_pGlob );
 	}
+}
+
+DARKSDK bool UpdatePtr ( int iID )
+{
+	// update the internal data pointer, this allows us to
+	// retrieve data from an element in the list
+
+	m_ptr = NULL;								// set the pointer to null
+	m_ptr = ( tagData* ) m_List.Get ( iID );	// now attempt to retrieve the data
+
+	// check the data was found
+	if ( m_ptr == NULL )
+		return false;
+
+	// return true if everything went ok
+	return true;
 }
 
 DARKSDK int GetHeight ( int iID )
@@ -376,8 +336,7 @@ DARKSDK LPDIRECT3DSURFACE9 MakeFormat ( int iID, int iWidth, int iHeight, D3DFOR
 		hr = m_pD3D->CreateOffscreenPlainSurface( iWidth, iHeight, g_CommonSurfaceFormat, D3DPOOL_SYSTEMMEM, &test->lpSurface, NULL);
 		if ( FAILED ( hr ) )
 		{
-			if ( g_bSupressErrorMessage==false )
-				Error ( "Failed to create new bitmap" );
+			Error ( "Failed to create new bitmap" );
 			SAFE_DELETE(test);
 			return NULL;
 		}
@@ -391,8 +350,7 @@ DARKSDK LPDIRECT3DSURFACE9 MakeFormat ( int iID, int iWidth, int iHeight, D3DFOR
 		hr = m_pD3D->CreateRenderTarget( iWidth, iHeight, g_CommonSurfaceFormat, D3DMULTISAMPLE_NONE, 0, TRUE, &test->lpSurface, NULL);
 		if ( FAILED ( hr ) )
 		{
-			if ( g_bSupressErrorMessage==false )
-				Error ( "Failed to create new bitmap" );
+			Error ( "Failed to create new bitmap" );
 			SAFE_DELETE(test);
 			return NULL;
 		}
@@ -418,7 +376,8 @@ DARKSDK LPDIRECT3DSURFACE9 MakeFormat ( int iID, int iWidth, int iHeight, D3DFOR
 	test->iMirrored  = 0;		
 	test->iFlipped  = 0;	
 
-    m_List.insert( std::make_pair(iID, test) );
+	// add to the list
+	m_List.Add ( iID, ( VOID* ) test, 0, 1 );
 
 	return test->lpSurface;
 }
@@ -447,7 +406,11 @@ DARKSDK LPDIRECT3DSURFACE9 Make ( int iID, int iWidth, int iHeight )
 {
 	if(UpdatePtr ( iID ))
 	{
-        RemoveBitmap( iID );
+		SAFE_RELEASE ( m_ptr->lpSurface );
+		SAFE_RELEASE ( m_ptr->lpDepth );
+		tagData* pData = (tagData*)m_List.Get( iID );
+		if(pData) delete pData;
+		m_List.Delete ( iID );
 	}
 
 	return MakeFormat ( iID, iWidth, iHeight, g_CommonSurfaceFormat );
@@ -487,7 +450,18 @@ DARKSDK void UpdateBitmapZeroOfNewBackbuffer( void )
 	// remove old bitmap zero object
 	if ( UpdatePtr ( 0 ) )
 	{
-        RemoveBitmap(0);
+		// release the texture
+		SAFE_RELEASE ( m_ptr->lpSurface );
+		SAFE_RELEASE ( m_ptr->lpDepth );
+
+		tagData* pData = (tagData*)m_List.Get( 0 );
+		if(pData) delete pData;
+
+		// delete from the list
+		m_List.Delete ( 0 );
+
+		// and delete the pointer
+		delete m_ptr;
 	}
 
 	// use backbuffer to determine common D3DFORMAT
@@ -854,14 +828,11 @@ DARKSDK bool DirectFade(LPDIRECT3DSURFACE9 pFromSurface, int percentage, DWORD w
 // Command Functions
 //
 
-DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemoryMode, int iSilentError )
+DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemoryMode )
 {
-	// 200112 - silent error mode
-	if ( iSilentError==1 ) g_bSupressErrorMessage = true;
-
 	if(iID<1 || iID>MAXIMUMVALUE)
 	{
-		if ( g_bSupressErrorMessage==false ) RunTimeError(RUNTIMEERROR_BITMAPILLEGALNUMBER);
+		RunTimeError(RUNTIMEERROR_BITMAPILLEGALNUMBER);
 		return;
 	}
 
@@ -879,14 +850,6 @@ DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemor
 
 	// now clear the bitmap
 	m_pD3D->Clear(0,NULL,D3DCLEAR_TARGET,0,1,0);
-
-	// 200112 - silent error mode
-	g_bSupressErrorMessage = false;
-}
-
-DARKSDK void CreateBitmapEx ( int iID, int iWidth, int iHeight, int iSystemMemoryMode )
-{
-	CreateBitmapEx ( iID, iWidth, iHeight, iSystemMemoryMode, 0 );
 }
 
 DARKSDK void CreateBitmap ( int iID, int iWidth, int iHeight )
@@ -1200,7 +1163,15 @@ DARKSDK void DeleteBitmapEx ( int iID )
 		return;
 	}
 
-    RemoveBitmap( iID );
+	// release the texture
+	SAFE_RELEASE ( m_ptr->lpSurface );
+	SAFE_RELEASE ( m_ptr->lpDepth );
+
+	// delete from the list
+	m_List.Delete ( iID );
+
+	// and delete the pointer
+	delete m_ptr;
 
 	// restore current bitmap
 	SetCurrentBitmap ( 0 );

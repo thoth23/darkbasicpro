@@ -23,8 +23,10 @@
 // DEFINES ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
-
-
+#define TYPE_VECTOR2	1
+#define TYPE_VECTOR3	2
+#define TYPE_VECTOR4	3
+#define TYPE_MATRIX		4
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -40,59 +42,18 @@ typedef tagCameraData*		( *CAMERA3D_GetInternalDataPFN )	( int );
 typedef IDirect3DDevice9*	( *GFX_GetDirect3DDevicePFN )		( void );
 
 DBPRO_GLOBAL GlobStruct*					g_pGlob						= NULL;
-
-namespace
-{
-    bool							g_bRTE					= false;
-    CAMERA3D_GetInternalDataPFN	g_Camera3D_GetInternalData	= NULL;
-    cDataManager					m_DataManager;
-    LPDIRECT3DDEVICE9				m_pD3D					= NULL;
-    HINSTANCE						g_GFX;
-    GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;
-}
+DBPRO_GLOBAL bool							g_bRTE						= false;
+DBPRO_GLOBAL CAMERA3D_GetInternalDataPFN	g_Camera3D_GetInternalData	= NULL;
+DBPRO_GLOBAL cDataManager					m_DataManager;
+DBPRO_GLOBAL cDataManager					m_DataTypeManager;
+DBPRO_GLOBAL LPDIRECT3DDEVICE9				m_pD3D						= NULL;
+DBPRO_GLOBAL HINSTANCE						g_GFX;
+DBPRO_GLOBAL GFX_GetDirect3DDevicePFN		g_GFX_GetDirect3DDevice;
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace
-{
-    template <typename T>
-    inline T* GetCorrectedPtr( int iID )
-    {
-        T* pVector = m_DataManager.GetData<T>( iID );
 
-		// Confirm it exists and is of the correct type
-		//if (!pVector)
-		//{
-			//silent error as 3DMATH has no way to determine if vector exists in code
-			//RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-			//return 0;
-		//}
-
-        // Cast to the proper type and return the pointer
-        return pVector;
-    }
-
-    inline Vector2* GetVector2Ptr( int iID )
-    {
-        return GetCorrectedPtr<Vector2>( iID );
-    }
-
-    inline Vector3* GetVector3Ptr( int iID )
-    {
-        return GetCorrectedPtr<Vector3>( iID );
-    }
-
-    inline Vector4* GetVector4Ptr( int iID )
-    {
-        return GetCorrectedPtr<Vector4>( iID );
-    }
-
-    inline Matrix* GetMatrixPtr( int iID )
-    {
-        return GetCorrectedPtr<Matrix>( iID );
-    }
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -117,9 +78,9 @@ DARKSDK void Constructor ( HINSTANCE hSetup )
 	m_pD3D = g_GFX_GetDirect3DDevice ( );
 }
 
-DARKSDK void Destructor ( void ) 
+DARKSDK void Destructor ( void )
 {
-    m_DataManager.ClearAll();
+	
 }
 
 DARKSDK void SetErrorHandler ( LPVOID pErrorHandlerPtr )
@@ -157,1802 +118,2648 @@ DARKSDK void RefreshD3D ( int iMode )
 	}
 }
 
-
 DARKSDK D3DXVECTOR2 GetVector2 ( int iID )
 {
-    Vector2* pVector = GetVector2Ptr( iID );
+	// returns a vector
 
-    if (!pVector)
-        return D3DXVECTOR2( 0.0f, 0.0f );
+	// setup a vector pointer
+	D3DXVECTOR2* pVector = NULL;
 
-    return pVector->Get();
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return D3DXVECTOR2 ( 0.0f, 0.0f );
+	}
+
+	// see if the vector exists, if it doesn't return a null vector
+	if ( ! ( pVector = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetVector2 - vector does not exist" );
+		return D3DXVECTOR2 ( 0.0f, 0.0f );
+	}
+
+	// return the value of the vector
+	return *pVector;
 }
 
 DARKSDK D3DXVECTOR3 GetVector3 ( int iID )
 {
-    Vector3* pVector = GetVector3Ptr( iID );
+	// returns a vector
 
-    if (!pVector)
-        return D3DXVECTOR3( 0.0f, 0.0f, 0.0f );
+	// setup a vector pointer
+	D3DXVECTOR3* pVector = NULL;
 
-    return pVector->Get();
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return D3DXVECTOR3 ( 0.0f, 0.0f, 0.0f );
+	}
+
+	// see if the vector exists, if it doesn't return a null vector
+	if ( ! ( pVector = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetVector3 - vector does not exist" );
+		return D3DXVECTOR3 ( 0.0f, 0.0f, 0.0f );
+	}
+
+	// return the value of the vector
+	return *pVector;
 }
 
 DARKSDK D3DXVECTOR4 GetVector4 ( int iID )
 {
-    Vector4* pVector = GetVector4Ptr( iID );
+	// returns a vector
 
-    if (!pVector)
-        return D3DXVECTOR4( 0.0f, 0.0f, 0.0f, 0.0f );
+	// setup a vector pointer
+	D3DXVECTOR4* pVector = NULL;
 
-    return pVector->Get();
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return D3DXVECTOR4 ( 0.0f, 0.0f, 0.0f, 0.0f );
+	}
+
+	// see if the vector exists, if it doesn't return a null vector
+	if ( ! ( pVector = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetVector4 - vector does not exist" );
+		return D3DXVECTOR4 ( 0.0f, 0.0f, 0.0f, 0.0f );
+	}
+
+	// return the value of the vector
+	return *pVector;
 }
 
 DARKSDK D3DXMATRIX GetMatrix ( int iID )
 {
-    Matrix* pVector = GetMatrixPtr( iID );
+	// returns a matrix
 
-    if (!pVector)
-        return D3DXMATRIX();
+	D3DXMATRIX	matNull;			// null matrix ( as in contains nothing )
+	D3DXMATRIX* pMatrix = NULL;		// pointer to matrix data
 
-    return pVector->Get();
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return matNull;
+	}
+
+	// clear out the null matrix
+	memset ( &matNull, 0, sizeof ( matNull ) );
+
+	// check if the matrix exists, if it doesn't return the null matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetMatrix - vector does not exist" );
+		return matNull;
+	}
+
+	// return the data for the matrix
+	return *pMatrix;
 }
 
 DARKSDK int GetExist ( int iID )
 {
-    return m_DataManager.Exist( iID ) ? 1 : 0;
+	if ( m_DataManager.GetData ( iID )==NULL )
+		return 0;
+	else
+		return 1;
 }
 
 DARKSDK bool CheckTypeIsValid ( int iID, int iType )
 {
-    BaseVector* pVectorBase = m_DataManager.GetData<BaseVector>( iID );
+	// mike - 220406 - new function to determine if the type
+	//				 - matches the operation e.g. you cannot
+	//				 - do a vector3 operation on a vector2 type
 
-    // Confirm it exists and is of the correct type
-    if (!pVectorBase || pVectorBase->GetType() != iType)
-        return false;
+	int* piType = NULL;
+	piType = ( int* ) m_DataTypeManager.GetData ( iID );
 
-    return true;
+	if ( piType )
+	{
+		if ( *piType != iType )
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// VECTOR2 HANDLING ////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+DARKSDK void CheckType ( int iID )
+{
+	// mike - 220406 - checks the vector and removes it
+	//				 - if it exists
+
+	void* pVoid = m_DataManager.GetData ( iID );
+
+	if ( pVoid )
+	{
+		m_DataTypeManager.Delete ( iID );
+		m_DataManager.Delete ( iID );
+	}
+}
+
+DARKSDK void AddVector ( int iID, int iType )
+{
+	int* piType = new int;
+	*piType = iType;	
+	m_DataTypeManager.Add ( piType, iID );
+}
 
 DARKSDK SDK_BOOL MakeVector2 ( int iID )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return false;
-    }
+	// create a vector
 
-    m_DataManager.Add( new Vector2, iID );
-    return true;
+	// pointer to vector data
+	D3DXVECTOR2* pVector = NULL;
+	
+	// mike - 220406 - remove vector if needed
+	CheckType ( iID );
+
+	// create a vector and set all components to 0
+	if ( ! ( pVector = new D3DXVECTOR2 ( 0.0f, 0.0f ) ) )
+	{
+		// return an error if it fails
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "Failed to create vector" );
+		return false;
+	}
+	
+	// mike - 220406 - add vector2 type into list
+	AddVector ( iID, TYPE_VECTOR2 );
+
+	// add the vector to the linked list
+	m_DataManager.Add ( pVector, iID );
+
+	// return ok
+	return true;
 }
 
 DARKSDK SDK_BOOL DeleteVector2 ( int iID )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return false;
-    }
+	// deletes a given vector
 
-    Vector2* pVector = GetVector2Ptr( iID );
+	// mike - 190107 - must also delete from data type manager list
+	m_DataTypeManager.Delete ( iID );
 
-    if (!pVector)
-    {
-		//silent fail - no way to detect if vector exists in DBP code!
-        //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return false;
-	}
+	m_DataManager.Delete ( iID );
 
-    m_DataManager.Delete ( iID );
+	// return ok
 	return true;
 }
 
 DARKSDK void SetVector2 ( int iID, float fX, float fY )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// sets the values of a vector
 
-    Vector2* pVector = GetVector2Ptr( iID );
+	// pointer to vector data
+	D3DXVECTOR2* pVector = NULL;
 
-    if (!pVector)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pVector->Get() = D3DXVECTOR2( fX, fY );
+	// get the vector data
+	if ( ! ( pVector = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SetVector2 - matrix does not exist" );
+		return;
+	}
+
+	// now set the values
+	*pVector = D3DXVECTOR2 ( fX, fY );
 }
 
 DARKSDK void CopyVector2 ( int iDestination, int iSource  )
 {
-    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// copy the source vector to the destination vector
 
-    Vector2* pSource = GetVector2Ptr( iSource );
-    Vector2* pDest   = GetVector2Ptr( iDestination );
-
-    if (!pSource || !pDest)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iDestination, TYPE_VECTOR2 ) || !CheckTypeIsValid ( iSource, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pDest->Get() = pSource->Get();
+	// pointers to vector data
+	D3DXVECTOR2* pVecSource      = NULL;
+	D3DXVECTOR2* pVecDestination = NULL;
+
+	// get the source vector
+	if ( ! ( pVecSource = ( D3DXVECTOR2* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CopyVector2 - source vector does not exist" );
+		return;
+	}
+
+	// get the destination vector
+	if ( ! ( pVecDestination = ( D3DXVECTOR2* ) m_DataManager.GetData ( iDestination ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CopyVector2 - destination vector does not exist" );
+		return;
+	}
+
+	// mike - 220406
+	pVecDestination->x = pVecSource->x;
+	pVecDestination->y = pVecSource->y;
 }
 
 DARKSDK void AddVector2 ( int iResult, int iA, int iB )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// adds 2 vectors and stores the result in the first vector
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
-
-    if (!pA || !pB || !pResult)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 )
+		)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pResult->Get() = pA->Get() + pB->Get();
+	// pointers to vector data
+	D3DXVECTOR2* pVecResult = NULL;
+	D3DXVECTOR2* pVecA      = NULL;
+	D3DXVECTOR2* pVecB      = NULL;
+
+	// get the resulting vector
+	if ( ! ( pVecResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector2 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pVecA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pVecB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector2 - vector b does not exist" );
+		return;
+	}
+
+	// finally add vectors together
+	*pVecResult = *pVecA + *pVecB;
 }
 
 DARKSDK void SubtractVector2 ( int iResult, int iA, int iB )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// adds 2 vectors and stores the result in the first vector
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
-
-    if (!pA || !pB || !pResult)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 )
+		)
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pResult->Get() = pA->Get() - pB->Get();
+	// pointers to vector data
+	D3DXVECTOR2* pVecResult = NULL;
+	D3DXVECTOR2* pVecA      = NULL;
+	D3DXVECTOR2* pVecB      = NULL;
+
+	// get the resulting vector
+	if ( ! ( pVecResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector2 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pVecA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pVecB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector2 - vector b does not exist" );
+		return;
+	}
+
+	// subtract the vectors
+	*pVecResult = *pVecA - *pVecB;
 }
 
 DARKSDK void MultiplyVector2 ( int iID, float fValue )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// multiples a vector by a float
 
-    Vector2* pDest = GetVector2Ptr( iID );
-
-    if (!pDest)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pDest->Get() *= fValue;
+	// pointer to vector data
+	D3DXVECTOR2* pID = NULL;
+	
+	// get the vector
+	if ( ! ( pID = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MultiplyVector2 - vector does not exist" );
+		return;
+	}
+
+	// multiply the vector
+	*pID *= fValue;
 }
 
 DARKSDK void DivideVector2 ( int iID, float fValue )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// divides a vector by a float
 
-    Vector2* pDest = GetVector2Ptr( iID );
-
-    if (!pDest)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pDest->Get() /= fValue;
+	// pointer to vector data
+	D3DXVECTOR2* pID = NULL;
+	
+	// get the vector
+	if ( ! ( pID = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "DivideVector2 - vector does not exist" );
+		return;
+	}
+
+	// divide the vector
+	*pID /= fValue;
 }
 
 DARKSDK SDK_BOOL IsEqualVector2 ( int iA, int iB )
 {
-    Vector2* pA = GetVector2Ptr( iA );
-    Vector2* pB = GetVector2Ptr( iB );
+	// returns true if the vectors are the same
+	
+	// pointers to vector data
+	D3DXVECTOR2* pA = NULL;
+	D3DXVECTOR2* pB = NULL;
 
-    if (!pA || !pB)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR2 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return false;
 	}
 
-    if (pA->Get() == pB->Get())
-        return true;
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsEqualVector2 - vector a does not exist" );
+		return false;
+	}
 
-    return false;
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsEqualVector2 - vector b does not exist" );
+		return false;
+	}
+
+	// if both vectors are the same then return true
+	if ( *pA == *pB )
+		return true;
+
+	// otherwise return false
+	return false;
 }
 
 DARKSDK SDK_BOOL IsNotEqualVector2 ( int iA, int iB )
 {
-    return !IsEqualVector2(iA, iB);
+	// returns true if the vectors are different
+
+	// pointers to vector data
+	D3DXVECTOR2* pA = NULL;
+	D3DXVECTOR2* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR2 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR2 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsNotEqualVector2 - vector a does not exist" );
+		return false;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsNotEqualVector2 - vector b does not exist" );
+		return false;
+	}
+
+	// if both vectors are different then return true
+	if ( *pA != *pB )
+		return true;
+
+	// otherwise return false
+	return false;
 }
 
 DARKSDK SDK_FLOAT GetXVector2 ( int iID )
 {
-    Vector2* pID = GetVector2Ptr( iID );
+	// returns the x component of a vector
 
-    if (!pID)
+	// mike - 220406 - check operation is valid on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-        float f = 0.0f;
-		return SDK_RETFLOAT( f );
+		RunTimeError(RUNTIMEERROR_VECTORNOTEXIST);
+		return (DWORD)0.0f;
 	}
 
-    return SDK_RETFLOAT( pID->Get().x );
+	// pointer to vector data
+	D3DXVECTOR2* pVector = NULL;
+
+	// get the data, if it doesn't exist return 0
+	if ( ! ( pVector = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetXVector2 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// now return the x value
+	return SDK_RETFLOAT(pVector->x);
 }
 
 DARKSDK SDK_FLOAT GetYVector2 ( int iID )
 {
-    Vector2* pID = GetVector2Ptr( iID );
+	// returns the x component of a vector
 
-    if (!pID)
+	// mike - 220406 - check operation is valid on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-        float f = 0.0f;
-		return SDK_RETFLOAT( f );
+		RunTimeError(RUNTIMEERROR_VECTORNOTEXIST);
+		return (DWORD)0.0f;
 	}
 
-    return SDK_RETFLOAT( pID->Get().y );
+	// pointer to vector data
+	D3DXVECTOR2* pVector = NULL;
+
+	// get the data, if it doesn't exist return 0
+	if ( ! ( pVector = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetYVector2 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// now return the y value
+	return SDK_RETFLOAT(pVector->y);
 }
 
 DARKSDK void GetBaryCentricCoordinatesVector2 ( int iResult, int iA, int iB, int iC, float f, float g )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// returns a point in barycentric coordinates
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
-    Vector2* pC      = GetVector2Ptr( iC );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pA      = NULL;
+	D3DXVECTOR2* pB      = NULL;
+	D3DXVECTOR2* pC      = NULL;
 
-    if (!pResult || !pA || !pB || !pC)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iC,      TYPE_VECTOR2 )
+	   )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector2 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector2 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR2* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector2 - vector c does not exist" );
 		return;
 	}
 
 	// now perform the operation
-	D3DXVec2BaryCentric ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), f, g ); 
+	D3DXVec2BaryCentric ( pResult, pA, pB, pC, f, g ); 
 }
 
 DARKSDK void CatmullRomVector2 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// performs a catmull rom interpolation on a vector
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
-    Vector2* pC      = GetVector2Ptr( iC );
-    Vector2* pD      = GetVector2Ptr( iD );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pA      = NULL;
+	D3DXVECTOR2* pB      = NULL;
+	D3DXVECTOR2* pC      = NULL;
+	D3DXVECTOR2* pD      = NULL;
 
-    if (!pResult || !pA || !pB || !pC || !pD)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iC,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iD,      TYPE_VECTOR2 )
+	   )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    D3DXVec2CatmullRom ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), &pD->Get(), s ); 
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector2 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector2 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR2* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector2 - vector c does not exist" );
+		return;
+	}
+
+	// get vector d
+	if ( ! ( pD = ( D3DXVECTOR2* ) m_DataManager.GetData ( iD ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector2 - vector d does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec2CatmullRom ( pResult, pA, pB, pC, pD, s ); 
 }
 
 DARKSDK SDK_FLOAT GetCCWVector2 ( int iA, int iB )
 {
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
+	// returns the z component by taking the cross product of both vectors
 
-    if (!pA || !pB)
+	// pointers to vector data
+	D3DXVECTOR2* pA = NULL;
+	D3DXVECTOR2* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR2 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return (DWORD)(0.0f);
 	}
 
-	float result = D3DXVec2CCW ( &pA->Get(), &pB->Get() );
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetCCWVector2 - vector a does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetCCWVector2 - vector b does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	float result = D3DXVec2CCW ( pA, pB );
 	return SDK_RETFLOAT(result);
 }
 
 DARKSDK SDK_FLOAT DotProductVector2 ( int iA, int iB )
 {
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
+	// returns the dot product of 2 vectors
 
-    if (!pA || !pB)
+	// pointers to vector data
+	D3DXVECTOR2* pA = NULL;
+	D3DXVECTOR2* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR2 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return (DWORD)(0.0f);
 	}
 
-	float result = D3DXVec2Dot ( &pA->Get(), &pB->Get() );
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "DotProductVector2 - vector a does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "DotProductVector2 - vector b does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// get the dot product
+	float result = D3DXVec2Dot ( pA, pB );
 	return SDK_RETFLOAT(result);
 }
 
 DARKSDK void HermiteVector2 ( int iResult, int iA, int iB, int iC, int iD, float s )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// performs a hermite spline interpolation
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
-    Vector2* pC      = GetVector2Ptr( iC );
-    Vector2* pD      = GetVector2Ptr( iD );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pA      = NULL;
+	D3DXVECTOR2* pB      = NULL;
+	D3DXVECTOR2* pC      = NULL;
+	D3DXVECTOR2* pD      = NULL;
 
-    if (!pResult || !pA || !pB || !pC || !pD)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iC,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iD,      TYPE_VECTOR2 )
+	   )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    D3DXVec2Hermite ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), &pD->Get(), s ); 
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector2 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector2 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR2* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector2 - vector c does not exist" );
+		return;
+	}
+
+	// get vector d
+	if ( ! ( pD = ( D3DXVECTOR2* ) m_DataManager.GetData ( iD ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector2 - vector d does not exist" );
+		return;
+	}
+
+	// get the hermite vector
+	D3DXVec2Hermite ( pResult, pA, pB, pC, pD, s ); 
 }
 
 DARKSDK SDK_FLOAT GetLengthVector2 ( int iID )
 {
-    Vector2* pID = GetVector2Ptr( iID );
+	// get the length of a vector
 
-    if (!pID)
+	// pointer to vector data
+	D3DXVECTOR2* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return (DWORD)0.0f;
 	}
-
-    float result = D3DXVec2Length ( &pID->Get() );
+	
+	// get the vector data
+	if ( ! ( pID = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetLengthVector2 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+	
+	// return the length
+	float result = D3DXVec2Length ( pID );
 	return SDK_RETFLOAT(result);
 }
 
 DARKSDK SDK_FLOAT GetLengthSquaredVector2 ( int iID )
 {
-    Vector2* pID = GetVector2Ptr( iID );
+	// get the squared length of a vector
 
-    if (!pID)
+	// pointer to the vector data
+	D3DXVECTOR2* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR2 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)0.0f;
+		return (DWORD)(0.0f);
 	}
-
-    float result = D3DXVec2LengthSq ( &pID->Get() );
+	
+	// get the vector data
+	if ( ! ( pID = ( D3DXVECTOR2* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetLengthSquaredVector2 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+	
+	// return the squared length
+	float result = D3DXVec2LengthSq ( pID );
 	return SDK_RETFLOAT(result);
 }
 
 DARKSDK void LinearInterpolationVector2 ( int iResult, int iA, int iB, float s )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// perform a linear interpolation between 2 vectors
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pA      = NULL;
+	D3DXVECTOR2* pB      = NULL;
 
-    if (!pResult || !pA || !pB)
-    {
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 )
+	   )
+	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector2 - result vector does not exist" );
+		return;
+	}
 
-    D3DXVec2Lerp ( &pResult->Get(), &pA->Get(), &pB->Get(), s ); 
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector2 - vector b does not exist" );
+		return;
+	}
+
+	// get the linear interpolation
+	D3DXVec2Lerp ( pResult, pA, pB, s ); 
 }
 
 DARKSDK void MaximizeVector2 ( int iResult, int iA, int iB )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// create a vector that is made up of the largest components of 2 other vectors
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pA      = NULL;
+	D3DXVECTOR2* pB      = NULL;
 
-    if (!pResult || !pA || !pB)
-    {
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 )
+	   )
+	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector2 - result vector does not exist" );
+		return;
+	}
 
-    D3DXVec2Maximize ( &pResult->Get(), &pA->Get(), &pB->Get() ); 
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector2 - vector b does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec2Maximize ( pResult, pA, pB ); 
 }
 
 DARKSDK void MinimizeVector2 ( int iResult, int iA, int iB )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// create a vector that is made up of the smallest components of 2 other vectors
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pA      = GetVector2Ptr( iA );
-    Vector2* pB      = GetVector2Ptr( iB );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pA      = NULL;
+	D3DXVECTOR2* pB      = NULL;
 
-    if (!pResult || !pA || !pB)
-    {
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iA,      TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iB,      TYPE_VECTOR2 )
+	   )
+	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector2 - result vector does not exist" );
+		return;
+	}
 
-    D3DXVec2Minimize ( &pResult->Get(), &pA->Get(), &pB->Get() ); 
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR2* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector2 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR2* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector2 - vector b does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec2Minimize ( pResult, pA, pB ); 
 }
 
 DARKSDK void NormalizeVector2 ( int iResult, int iSource )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// get the normalized vector
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pSource = GetVector2Ptr( iSource );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pSource = NULL;
 
-    if (!pResult || !pSource)
-    {
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) || !CheckTypeIsValid ( iSource, TYPE_VECTOR2 ) )
+	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 	
-	D3DXVec2Normalize ( &pResult->Get(), &pSource->Get() ); 
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "NormalizeVector2 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR2* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "NormalizeVector2 - source vector does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec2Normalize ( pResult, pSource ); 
 }
 
 DARKSDK void ScaleVector2 ( int iResult, int iSource, float s )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// scales a vector
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pSource = GetVector2Ptr( iSource );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pSource = NULL;
 
-    if (!pResult || !pSource)
-    {
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) || !CheckTypeIsValid ( iSource, TYPE_VECTOR2 ) )
+	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ScaleVector2 - result vector does not exist" );
+		return;
+	}
 
-    D3DXVec2Scale ( &pResult->Get(), &pSource->Get(), s ); 
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR2* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ScaleVector2 - source vector does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec2Scale ( pResult, pSource, s ); 
 }
 
 DARKSDK void TransformVectorCoordinates2 ( int iResult, int iSource, int iMatrix )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
+	// transforms a vector
 
-    Vector2* pResult = GetVector2Ptr( iResult );
-    Vector2* pSource = GetVector2Ptr( iSource );
-    Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
+	// pointers to vector data
+	D3DXVECTOR2* pResult = NULL;
+	D3DXVECTOR2* pSource = NULL;
+	D3DXMATRIX*  pMatrix = NULL;
 
-    if (!pResult || !pSource)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-    if (!pMatrix)
-    {
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-    D3DXVec2TransformCoord ( &pResult->Get(), &pSource->Get(), &pMatrix->Get() );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// VECTOR3 HANDLING ////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-DARKSDK SDK_BOOL MakeVector3 ( int iID )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return false;
-    }
-
-    m_DataManager.Add( new Vector3, iID );
-    return true;
-}
-
-DARKSDK SDK_BOOL DeleteVector3 ( int iID )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return false;
-    }
-
-    Vector3* pVector = GetVector3Ptr( iID );
-
-    if (!pVector)
-    {
-		//silent fail - no way to detect if vector exists in DBP code!
-        //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return false;
-	}
-
-	m_DataManager.Delete ( iID );
-	return true;
-}
-
-DARKSDK void SetVector3 ( int iID, float fX, float fY, float fZ )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pID = GetVector3Ptr( iID );
-
-	if (!pID)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR2 ) ||
+			!CheckTypeIsValid ( iMatrix, TYPE_MATRIX )
+	   )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR2* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates2 - result vector does not exist" );
+		return;
+	}
 
-	pID->Get() = D3DXVECTOR3 ( fX, fY, fZ );
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR2* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates2 - source vector does not exist" );
+		return;
+	}
+
+	// get the matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iMatrix ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates2 - matrix does not exist" );
+		return;
+	}
+
+	// transform the vector by the matrix
+	D3DXVec2TransformCoord ( pResult, pSource, pMatrix );
 }
 
 DARKSDK SDK_FLOAT GetXVector3 ( int iID )
 {
-    Vector3* pID = GetVector3Ptr( iID );
+	// returns the x component of a vector
 
-    if (!pID)
+	// pointer to vector data
+	D3DXVECTOR3* pVector = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return (DWORD)(0.0f);
 	}
 
-    return SDK_RETFLOAT( pID->Get().x );
+	// get the data, if it doesn't exist return 0
+	if ( ! ( pVector = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetXVector3 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// now return the x value
+	return SDK_RETFLOAT(pVector->x);
 }
 
 DARKSDK SDK_FLOAT GetYVector3 ( int iID )
 {
-    Vector3* pID = GetVector3Ptr( iID );
+	// returns the y component of a vector
 
-    if (!pID)
+	// pointer to vector data
+	D3DXVECTOR3* pVector = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return (DWORD)(0.0f);
 	}
 
-    return SDK_RETFLOAT( pID->Get().y );
+	// get the data, if it doesn't exist then return 0
+	if ( ! ( pVector = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetYVector3 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// return the y value
+	return SDK_RETFLOAT(pVector->y);
 }
 
 DARKSDK SDK_FLOAT GetZVector3 ( int iID )
 {
-    Vector3* pID = GetVector3Ptr( iID );
+	// returns the z component of a vector
 
-    if (!pID)
+	// pointer to vector data
+	D3DXVECTOR3* pVector = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return (DWORD)(0.0f);
 	}
 
-    return SDK_RETFLOAT( pID->Get().z );
-}
-
-DARKSDK void CopyVector3 ( int iDestination, int iSource )
-{
-    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pSource = GetVector3Ptr( iSource );
-    Vector3* pDest   = GetVector3Ptr( iDestination );
-
-    if (!pSource || !pDest)
+	// get the data, if it doesn't exist then return 0
+	if ( ! ( pVector = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
 	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetZVector3 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
 	}
 
-    pDest->Get() = pSource->Get();
+	// now return the z value
+	return SDK_RETFLOAT(pVector->z);
 }
-
-DARKSDK void AddVector3 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-
-    if (!pA || !pB || !pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pResult->Get() = pA->Get() + pB->Get();
-}
-
-DARKSDK void SubtractVector3 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-
-    if (!pA || !pB || !pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pResult->Get() = pA->Get() - pB->Get();
-}
-
-DARKSDK void MultiplyVector3 ( int iID, float fValue )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pDest = GetVector3Ptr( iID );
-
-    if (!pDest)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pDest->Get() *= fValue;
-}
-
-DARKSDK void DivideVector3 ( int iID, float fValue )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pDest = GetVector3Ptr( iID );
-
-    if (!pDest)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pDest->Get() /= fValue;
-}
-
-DARKSDK SDK_BOOL IsEqualVector3 ( int iA, int iB )
-{
-    Vector3* pA = GetVector3Ptr( iA );
-    Vector3* pB = GetVector3Ptr( iB );
-
-    if (!pA || !pB)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return false;
-	}
-
-    if (pA->Get() == pB->Get())
-        return true;
-
-    return false;
-}
-
-DARKSDK SDK_BOOL IsNotEqualVector3 ( int iA, int iB )
-{
-    return !IsEqualVector3( iA, iB );
-}
-
-DARKSDK void GetBaryCentricCoordinatesVector3 ( int iResult, int iA, int iB, int iC, float f, float g )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-    Vector3* pC      = GetVector3Ptr( iC );
-
-    if (!pResult || !pA || !pB || !pC)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	// now perform the operation
-	D3DXVec3BaryCentric ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), f, g ); 
-}
-
-DARKSDK void ProjectVector3 ( int iResult, int iSource, int iProjectionMatrix, int iViewMatrix, int iWorldMatrix )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pSource = GetVector3Ptr( iSource );
-    Matrix*  pProjM  = GetMatrixPtr ( iProjectionMatrix );
-    Matrix*  pViewM  = GetMatrixPtr ( iViewMatrix );
-    Matrix*  pWorldM = GetMatrixPtr ( iWorldMatrix );
-
-    if (!pResult || !pSource)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-    if (!pProjM || !pViewM || !pWorldM)
-    {
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DVIEWPORT9	viewport;
-	m_pD3D->GetViewport ( &viewport );
-
-    D3DXVec3Project ( &pResult->Get(), &pSource->Get(), &viewport,
-                      &pProjM->Get(), &pViewM->Get(), &pWorldM->Get() ); 
-}
-
-DARKSDK void TransformVectorCoordinates3 ( int iResult, int iSource, int iMatrix )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pSource = GetVector3Ptr( iSource );
-    Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
-
-    if (!pResult || !pSource)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-    if (!pMatrix)
-    {
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-	
-	D3DXVec3TransformCoord ( &pResult->Get(), &pSource->Get(), &pMatrix->Get() );
-}
-
-DARKSDK void TransformVectorNormalCoordinates3 ( int iResult, int iSource, int iMatrix )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pSource = GetVector3Ptr( iSource );
-    Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
-
-    if (!pResult || !pSource)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-    if (!pMatrix)
-    {
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-	
-	D3DXVec3TransformNormal ( &pResult->Get(), &pSource->Get(), &pMatrix->Get() );
-}
-
-DARKSDK void CatmullRomVector3 ( int iResult, int iA, int iB, int iC, int iD, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-    Vector3* pC      = GetVector3Ptr( iC );
-    Vector3* pD      = GetVector3Ptr( iD );
-
-    if (!pResult || !pA || !pB || !pC || !pD)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec3CatmullRom ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), &pD->Get(), s ); 
-}
-
-DARKSDK void CrossProductVector3 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-
-    if (!pResult || !pA || !pB)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec3Cross ( &pResult->Get(), &pA->Get(), &pB->Get() );
-}
-
-DARKSDK SDK_FLOAT DotProductVector3 ( int iA, int iB )
-{
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-
-    if (!pA || !pB)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)0.0f;
-	}
-
-    float result = D3DXVec3Dot ( &pA->Get(), &pB->Get() );
-	return SDK_RETFLOAT(result);
-}
-
-DARKSDK void HermiteVector3 ( int iResult, int iA, int iB, int iC, int iD, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-    Vector3* pC      = GetVector3Ptr( iC );
-    Vector3* pD      = GetVector3Ptr( iD );
-
-    if (!pResult || !pA || !pB || !pC || !pD)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec3Hermite ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), &pD->Get(), s ); 
-}
-
-DARKSDK SDK_FLOAT GetLengthVector3 ( int iID )
-{
-    Vector3* pID = GetVector3Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)0.0f;
-	}
-
-    float result = D3DXVec3Length ( &pID->Get() );
-	return SDK_RETFLOAT(result);
-}
-
-DARKSDK SDK_FLOAT GetLengthSquaredVector3 ( int iID )
-{
-    Vector3* pID = GetVector3Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)0.0f;
-	}
-
-    float result = D3DXVec3LengthSq ( &pID->Get() );
-	return SDK_RETFLOAT(result);
-}
-
-DARKSDK void LinearInterpolationVector3 ( int iResult, int iA, int iB, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-
-    if (!pResult || !pA || !pB)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec3Lerp ( &pResult->Get(), &pA->Get(), &pB->Get(), s ); 
-}
-
-DARKSDK void MaximizeVector3 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-
-    if (!pResult || !pA || !pB)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    D3DXVec3Maximize ( &pResult->Get(), &pA->Get(), &pB->Get() ); 
-}
-
-DARKSDK void MinimizeVector3 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pA      = GetVector3Ptr( iA );
-    Vector3* pB      = GetVector3Ptr( iB );
-
-    if (!pResult || !pA || !pB)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    D3DXVec3Minimize ( &pResult->Get(), &pA->Get(), &pB->Get() ); 
-}
-
-DARKSDK void NormalizeVector3 ( int iResult, int iSource )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pSource = GetVector3Ptr( iSource );
-
-    if (!pResult || !pSource)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-	
-	D3DXVec3Normalize ( &pResult->Get(), &pSource->Get() ); 
-}
-
-DARKSDK void ScaleVector3 ( int iResult, int iSource, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector3* pResult = GetVector3Ptr( iResult );
-    Vector3* pSource = GetVector3Ptr( iSource );
-
-    if (!pResult || !pSource)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    D3DXVec3Scale ( &pResult->Get(), &pSource->Get(), s ); 
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// VECTOR4 HANDLING ////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-DARKSDK SDK_BOOL MakeVector4 ( int iID )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return false;
-    }
-
-    m_DataManager.Add( new Vector4, iID );
-    return true;
-}
-
-DARKSDK SDK_BOOL DeleteVector4 ( int iID )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return false;
-    }
-
-    Vector4* pVector = GetVector4Ptr( iID );
-
-    if (!pVector)
-    {
-		//silent fail - no way to detect if vector exists in DBP code!
-        //RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return false;
-	}
-
-	m_DataManager.Delete ( iID );
-	return true;
-}
-
-DARKSDK void SetVector4 ( int iID, float fX, float fY, float fZ, float fW )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pID = GetVector4Ptr( iID );
-
-	if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	pID->Get() = D3DXVECTOR4 ( fX, fY, fZ, fW );
-}
-
-DARKSDK void CopyVector4 ( int iDestination, int iSource )
-{
-    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pSource = GetVector4Ptr( iSource );
-    Vector4* pDest   = GetVector4Ptr( iDestination );
-
-    if (!pSource || !pDest)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pDest->Get() = pSource->Get();
-}
-
-DARKSDK void AddVector4 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-
-    if (!pA || !pB || !pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pResult->Get() = pA->Get() + pB->Get();
-}
-
-DARKSDK void SubtractVector4 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-
-    if (!pA || !pB || !pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pResult->Get() = pA->Get() - pB->Get();
-}
-
-DARKSDK void MultiplyVector4 ( int iID, float fValue )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pDest = GetVector4Ptr( iID );
-
-    if (!pDest)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pDest->Get() *= fValue;
-}
-
-DARKSDK void DivideVector4 ( int iID, float fValue )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pDest = GetVector4Ptr( iID );
-
-    if (!pDest)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    pDest->Get() /= fValue;
-}
-
-DARKSDK SDK_BOOL IsEqualVector4 ( int iA, int iB )
-{
-    Vector4* pA = GetVector4Ptr( iA );
-    Vector4* pB = GetVector4Ptr( iB );
-
-    if (!pA || !pB)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return false;
-	}
-
-    if (pA->Get() == pB->Get())
-        return true;
-
-    return false;
-}
-
-DARKSDK SDK_BOOL IsNotEqualVector4 ( int iA, int iB )
-{
-    return !IsEqualVector4( iA, iB );
-}
-
-DARKSDK SDK_FLOAT GetXVector4 ( int iID )
-{
-    Vector4* pID = GetVector4Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)(0.0f);
-	}
-
-    return SDK_RETFLOAT( pID->Get().x );
-}
-
-DARKSDK SDK_FLOAT GetYVector4 ( int iID )
-{
-    Vector4* pID = GetVector4Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)(0.0f);
-	}
-
-    return SDK_RETFLOAT( pID->Get().y );
-}
-
-DARKSDK SDK_FLOAT GetZVector4 ( int iID )
-{
-    Vector4* pID = GetVector4Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)(0.0f);
-	}
-
-    return SDK_RETFLOAT( pID->Get().z );
-}
-
-DARKSDK SDK_FLOAT GetWVector4 ( int iID )
-{
-    Vector4* pID = GetVector4Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)(0.0f);
-	}
-
-    return SDK_RETFLOAT( pID->Get().w );
-}
-
-DARKSDK void GetBaryCentricCoordinatesVector4 ( int iResult, int iA, int iB, int iC, float f, float g )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-    Vector4* pC      = GetVector4Ptr( iC );
-
-    if (!pResult || !pA || !pB || !pC)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec4BaryCentric ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), f, g ); 
-}
-
-DARKSDK void CatmullRomVector4 ( int iResult, int iA, int iB, int iC, int iD, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-    Vector4* pC      = GetVector4Ptr( iC );
-    Vector4* pD      = GetVector4Ptr( iD );
-
-    if (!pResult || !pA || !pB || !pC || !pD)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec4CatmullRom ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), &pD->Get(), s ); 
-}
-
-DARKSDK void HermiteVector4 ( int iResult, int iA, int iB, int iC, int iD, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-    Vector4* pC      = GetVector4Ptr( iC );
-    Vector4* pD      = GetVector4Ptr( iD );
-
-    if (!pResult || !pA || !pB || !pC || !pD)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec4Hermite ( &pResult->Get(), &pA->Get(), &pB->Get(), &pC->Get(), &pD->Get(), s ); 
-}
-
-DARKSDK SDK_FLOAT GetLengthVector4 ( int iID )
-{
-    Vector4* pID = GetVector4Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)0.0f;
-	}
-
-    float result = D3DXVec4Length ( &pID->Get() );
-	return SDK_RETFLOAT(result);
-}
-
-DARKSDK SDK_FLOAT GetLengthSquaredVector4 ( int iID )
-{
-    Vector4* pID = GetVector4Ptr( iID );
-
-    if (!pID)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return (DWORD)0.0f;
-	}
-
-    float result = D3DXVec4LengthSq ( &pID->Get() );
-	return SDK_RETFLOAT(result);
-}
-
-DARKSDK void LinearInterpolationVector4 ( int iResult, int iA, int iB, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-
-    if (!pResult || !pA || !pB)
-	{
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-	D3DXVec4Lerp ( &pResult->Get(), &pA->Get(), &pB->Get(), s ); 
-}
-
-DARKSDK void MaximizeVector4 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-
-    if (!pResult || !pA || !pB)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    D3DXVec4Maximize ( &pResult->Get(), &pA->Get(), &pB->Get() ); 
-}
-
-DARKSDK void MinimizeVector4 ( int iResult, int iA, int iB )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pA      = GetVector4Ptr( iA );
-    Vector4* pB      = GetVector4Ptr( iB );
-
-    if (!pResult || !pA || !pB)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    D3DXVec4Minimize ( &pResult->Get(), &pA->Get(), &pB->Get() ); 
-}
-
-DARKSDK void NormalizeVector4 ( int iResult, int iSource )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pSource = GetVector4Ptr( iSource );
-
-    if (!pResult || !pSource)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-	
-	D3DXVec4Normalize ( &pResult->Get(), &pSource->Get() ); 
-}
-
-DARKSDK void ScaleVector4 ( int iResult, int iSource, float s )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pSource = GetVector4Ptr( iSource );
-
-    if (!pResult || !pSource)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-
-    D3DXVec4Scale ( &pResult->Get(), &pSource->Get(), s ); 
-}
-
-DARKSDK void TransformVector4 ( int iResult, int iSource, int iMatrix )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_VECTORNUMBERILLEGAL );
-        return;
-    }
-
-    Vector4* pResult = GetVector4Ptr( iResult );
-    Vector4* pSource = GetVector4Ptr( iSource );
-    Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
-
-    if (!pResult || !pSource)
-    {
-		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
-		return;
-	}
-    if (!pMatrix)
-    {
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-    }
-
-    D3DXVec4Transform ( &pResult->Get(), &pSource->Get(), &pMatrix->Get() );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Matrix Handling /////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-DARKSDK SDK_BOOL MakeMatrix ( int iID )
-{
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return false;
-    }
-
-    Matrix* pMatrix = new Matrix;
-    m_DataManager.Add( pMatrix, iID );
-	return true;
-}
-
 
 DARKSDK void GetWorldMatrix ( int iID )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// copy the world matrix into the specified matrix
 
-    Matrix* pMatrix = GetMatrixPtr( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pMatrix = NULL;
 
-    if (!pMatrix)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-	D3DXMatrixIdentity ( &pMatrix->Get() );
+	// get the matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetWorldMatrix - matrix does not exist" );
+		return;
+	}
+
+	// world starts with identity
+	D3DXMatrixIdentity ( pMatrix );
 }
 
 DARKSDK void GetViewMatrix ( int iID )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// copy the view matrix into the specified matrix
 
-    Matrix* pMatrix = GetMatrixPtr( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pMatrix = NULL;
 
-    if (!pMatrix)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
+	// get the matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetViewMatrix - matrix does not exist" );
+		return;
+	}
+
+	// get the view transformation matrix from current camera
 	if ( g_Camera3D_GetInternalData )
 	{
+		// get camera pointer
+		// leefix - 020308 - use current camera not just camera zero
+		// tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( 0 );
 		tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( g_pGlob->dwCurrentSetCameraID );
-		pMatrix->Get() = m_Camera_Ptr->matView;
+		*pMatrix = m_Camera_Ptr->matView;
 	}
 }
 
 DARKSDK void GetProjectionMatrix ( int iID )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// copy the projection matrix into the specified matrix
 
-    Matrix* pMatrix = GetMatrixPtr( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pMatrix = NULL;
 
-    if (!pMatrix)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    if ( g_Camera3D_GetInternalData )
+	// get the matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
 	{
-		tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( g_pGlob->dwCurrentSetCameraID );
-		pMatrix->Get() = m_Camera_Ptr->matProjection;
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetProjectionMatrix - matrix does not exist" );
+		return;
 	}
+
+	// get the projection matrix from current camera
+	if ( g_Camera3D_GetInternalData )
+	{
+		// get camera pointer
+		// leefix - 020308 - use current camera not just camera zero
+		// tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( 0 );
+		tagCameraData* m_Camera_Ptr = (tagCameraData*)g_Camera3D_GetInternalData ( g_pGlob->dwCurrentSetCameraID );
+		*pMatrix = m_Camera_Ptr->matProjection;
+	}
+}
+
+DARKSDK SDK_BOOL MakeVector3 ( int iID )
+{
+	// create a vector
+
+	// pointer to vector data
+	D3DXVECTOR3* pVector = NULL;
+
+	// mike - 220406 - remove vector if needed
+	CheckType ( iID );
+
+	// create a vector and set all components to 0
+	if ( ! ( pVector = new D3DXVECTOR3 ( 0.0f, 0.0f, 0.0f ) ) )
+	{
+		// return an error if it fails
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "Failed to create vector" );
+		return false;
+	}
+
+	// mike - 220406 - add vector3 type into list
+	AddVector ( iID, TYPE_VECTOR3 );
+
+	// add the vector to the linked list
+	m_DataManager.Add ( pVector, iID );
+
+	// return ok
+	return true;
+}
+
+DARKSDK SDK_BOOL DeleteVector3 ( int iID )
+{
+	// deletes a given vector
+
+	// mike - 190107 - must also delete from data type manager list
+	m_DataTypeManager.Delete ( iID );
+
+	m_DataManager.Delete ( iID );
+
+	// return ok
+	return true;
+}
+
+DARKSDK void SetVector3 ( int iID, float fX, float fY, float fZ )
+{
+	// sets the values of a vector
+
+	// pointer to vector data
+	D3DXVECTOR3* pVector = NULL;
+	
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the vector data
+	if ( ! ( pVector = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SetVector3 - matrix does not exist" );
+		return;
+	}
+
+	// now set the values
+	*pVector = D3DXVECTOR3 ( fX, fY, fZ );
+}
+
+DARKSDK void CopyVector3 ( int iDestination, int iSource )
+{
+	// mike - 220406 - parameters need to be swapped around
+
+	// copy the source vector to the destination vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pVecSource      = NULL;
+	D3DXVECTOR3* pVecDestination = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iDestination, TYPE_VECTOR3 ) || !CheckTypeIsValid ( iSource, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pVecSource = ( D3DXVECTOR3* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CopyVector3 - source vector does not exist" );
+		return;
+	}
+
+	// get the destination vector
+	// mike - 220406 - changed to destination ID
+	if ( ! ( pVecDestination = ( D3DXVECTOR3* ) m_DataManager.GetData ( iDestination ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CopyVector3 - destination vector does not exist" );
+		return;
+	}
+
+	// final assignment
+	//*pVecDestination = *pVecSource;
+
+	// mike - 220406
+	pVecDestination->x = pVecSource->x;
+	pVecDestination->y = pVecSource->y;
+	pVecDestination->z = pVecSource->z;
+}
+
+DARKSDK void AddVector3 ( int iResult, int iA, int iB )
+{
+	// adds 2 vectors and stores the result in the first vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pVecResult = NULL;
+	D3DXVECTOR3* pVecA      = NULL;
+	D3DXVECTOR3* pVecB      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the resulting vector
+	if ( ! ( pVecResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pVecA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pVecB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector3 - vector b does not exist" );
+		return;
+	}
+
+	// finally add vectors together
+	*pVecResult = *pVecA + *pVecB;
+}
+
+DARKSDK void SubtractVector3 ( int iResult, int iA, int iB )
+{
+	// adds 2 vectors and stores the result in the first vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pVecResult = NULL;
+	D3DXVECTOR3* pVecA      = NULL;
+	D3DXVECTOR3* pVecB      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the resulting vector
+	if ( ! ( pVecResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pVecA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pVecB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector3 - vector b does not exist" );
+		return;
+	}
+
+	// subtract the vectors
+	*pVecResult = *pVecA - *pVecB;
+}
+
+DARKSDK void MultiplyVector3 ( int iID, float fValue )
+{
+	// multiples a vector by a float
+
+	// pointer to vector data
+	D3DXVECTOR3* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the vector
+	if ( ! ( pID = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MultiplyVector3 - vector does not exist" );
+		return;
+	}
+
+	// multiply the vector
+	*pID *= fValue;
+}
+
+DARKSDK void DivideVector3 ( int iID, float fValue )
+{
+	// divides a vector by a float
+
+	// pointer to vector data
+	D3DXVECTOR3* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the vector
+	if ( ! ( pID = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "DivideVector3 - vector does not exist" );
+		return;
+	}
+
+	// divide the vector
+	*pID /= fValue;
+}
+
+DARKSDK SDK_BOOL IsEqualVector3 ( int iA, int iB )
+{
+	// returns true if the vectors are the same
+	
+	// pointers to vector data
+	D3DXVECTOR3* pA = NULL;
+	D3DXVECTOR3* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR3 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsEqualVector3 - vector a does not exist" );
+		return false;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsEqualVector3 - vector b does not exist" );
+		return false;
+	}
+
+	// if both vectors are the same then return true
+	if ( *pA == *pB )
+		return true;
+
+	// otherwise return false
+	return false;
+}
+
+DARKSDK SDK_BOOL IsNotEqualVector3 ( int iA, int iB )
+{
+	// returns true if the vectors are different
+
+	// pointers to vector data
+	D3DXVECTOR3* pA = NULL;
+	D3DXVECTOR3* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR3 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsNotEqualVector3 - vector a does not exist" );
+		return false;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsNotEqualVector3 - vector b does not exist" );
+		return false;
+	}
+
+	// if both vectors are different then return true
+	if ( *pA != *pB )
+		return true;
+
+	// otherwise return false
+	return false;
+}
+
+DARKSDK void GetBaryCentricCoordinatesVector3 ( int iResult, int iA, int iB, int iC, float f, float g )
+{
+	// returns a point in barycentric coordinates
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pA      = NULL;
+	D3DXVECTOR3* pB      = NULL;
+	D3DXVECTOR3* pC      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iC, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector3 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR3* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector3 - vector c does not exist" );
+		return;
+	}
+
+	// now perform the operation
+	D3DXVec3BaryCentric ( pResult, pA, pB, pC, f, g ); 
+}
+
+DARKSDK void ProjectVector3 ( int iResult, int iSource, int iProjectionMatrix, int iViewMatrix, int iWorldMatrix )
+{
+	// projects a given vector from object space into screen space
+
+	// pointers to vector data
+	D3DXVECTOR3*	pResult		 = NULL;
+	D3DXVECTOR3*	pSource      = NULL;
+	D3DXMATRIX*		pProjection  = NULL;
+	D3DXMATRIX*		pView        = NULL;
+	D3DXMATRIX*		pWorld       = NULL;
+	D3DVIEWPORT9	viewport;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iProjectionMatrix, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iViewMatrix, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iWorldMatrix, TYPE_MATRIX )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ProjectVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR3* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ProjectVector3 - source vector does not exist" );
+		return;
+	}
+
+	// get the projection matrix
+	if ( ! ( pProjection = ( D3DXMATRIX* ) m_DataManager.GetData ( iProjectionMatrix ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ProjectVector3 - projection matrix does not exist" );
+		return;
+	}
+
+	// get the view matrix
+	if ( ! ( pView = ( D3DXMATRIX* ) m_DataManager.GetData ( iViewMatrix ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ProjectVector3 - view matrix does not exist" );
+		return;
+	}
+
+	// get the world matrix
+	if ( ! ( pWorld = ( D3DXMATRIX* ) m_DataManager.GetData ( iWorldMatrix ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ProjectVector3 - world matrix does not exist" );
+		return;
+	}
+
+	// now we can get the viewport
+	m_pD3D->GetViewport ( &viewport );
+
+	// and finally perform the operation
+	D3DXVec3Project ( pResult, pSource, &viewport, pProjection, pView, pWorld ); 
+}
+
+DARKSDK void TransformVectorCoordinates3 ( int iResult, int iSource, int iMatrix )
+{
+	/*
+	{
+		D3DXMATRIX matA;
+		D3DXMATRIX matB;
+		D3DXMATRIX matC;
+
+		D3DXMatrixRotationYawPitchRoll ( &matA, 180.0f, 180.0f, 180.0f );
+		D3DXMatrixRotationYawPitchRoll ( &matB, 90.0f, 90.0f, 90.0f );
+
+		matC = matA + matB;
+
+		D3DXVECTOR3 vecA = D3DXVECTOR3 ( 1.0f, 0.0f, 0.0f );
+		D3DXVECTOR3 vecB = D3DXVECTOR3 ( 1.0f, 0.0f, 0.0f );
+
+		D3DXVec3TransformCoord ( &vecA, &vecB, &matC );
+
+		int c = 0;
+	}
+	*/
+
+	// transforms a vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pSource = NULL;
+	D3DXMATRIX*  pMatrix = NULL;
+
+	// mike - 220405 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iMatrix, TYPE_MATRIX )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates3 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR3* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates3 - source vector does not exist" );
+		return;
+	}
+
+	// get the matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iMatrix ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates3 - matrix does not exist" );
+		return;
+	}
+
+	// transform the vector by the matrix
+	D3DXVec3TransformCoord ( pResult, pSource, pMatrix );
+}
+
+DARKSDK void TransformVectorNormalCoordinates3 ( int iResult, int iSource, int iMatrix )
+{
+	// transforms a normal vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pSource = NULL;
+	D3DXMATRIX*  pMatrix = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iMatrix, TYPE_MATRIX )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorNormalCoordinates3 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR3* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorNormalCoordinates3 - source vector does not exist" );
+		return;
+	}
+
+	// get the matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iMatrix ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorNormalCoordinates3 - matrix does not exist" );
+		return;
+	}
+
+	// transform the normal
+	D3DXVec3TransformNormal ( pResult, pSource, pMatrix );
+}
+
+DARKSDK void CatmullRomVector3 ( int iResult, int iA, int iB, int iC, int iD, float s )
+{
+	// performs a catmull rom interpolation on a vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pA      = NULL;
+	D3DXVECTOR3* pB      = NULL;
+	D3DXVECTOR3* pC      = NULL;
+	D3DXVECTOR3* pD      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iC, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iD, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector3 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR3* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector3 - vector c does not exist" );
+		return;
+	}
+
+	// get vector d
+	if ( ! ( pD = ( D3DXVECTOR3* ) m_DataManager.GetData ( iD ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector3 - vector d does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec3CatmullRom ( pResult, pA, pB, pC, pD, s ); 
+}
+
+DARKSDK void CrossProductVector3 ( int iResult, int iA, int iB )
+{
+	// gets the cross product of 2 vectors
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pA      = NULL;
+	D3DXVECTOR3* pB      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 )
+	)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CrossProductVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CrossProductVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CrossProductVector3 - vector b does not exist" );
+		return;
+	}
+
+	// cross product on 2 vectors
+	D3DXVec3Cross ( pResult, pA, pB );
+}
+
+DARKSDK SDK_FLOAT DotProductVector3 ( int iA, int iB )
+{
+	// returns the dot product of 2 vectors
+
+	// pointers to vector data
+	D3DXVECTOR3* pA = NULL;
+	D3DXVECTOR3* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 )
+	)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "DotProductVector3 - vector a does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "DotProductVector3 - vector b does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// get the dot product
+	float result = D3DXVec3Dot ( pA, pB );
+	return SDK_RETFLOAT(result);
+}
+
+DARKSDK void HermiteVector3 ( int iResult, int iA, int iB, int iC, int iD, float s )
+{
+	// performs a hermite spline interpolation
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pA      = NULL;
+	D3DXVECTOR3* pB      = NULL;
+	D3DXVECTOR3* pC      = NULL;
+	D3DXVECTOR3* pD      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iC, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iD, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector3 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR3* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector3 - vector c does not exist" );
+		return;
+	}
+
+	// get vector d
+	if ( ! ( pD = ( D3DXVECTOR3* ) m_DataManager.GetData ( iD ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector3 - vector d does not exist" );
+		return;
+	}
+
+	// get the hermite vector
+	D3DXVec3Hermite ( pResult, pA, pB, pC, pD, s ); 
+}
+
+DARKSDK SDK_FLOAT GetLengthVector3 ( int iID )
+{
+	// get the length of a vector
+
+	// pointer to vector data
+	D3DXVECTOR3* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+	
+	// get the vector data
+	if ( ! ( pID = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetLengthVector3 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+	
+	// return the length
+	float result = D3DXVec3Length ( pID );
+	return SDK_RETFLOAT(result);
+}
+
+DARKSDK SDK_FLOAT GetLengthSquaredVector3 ( int iID )
+{
+	// get the squared length of a vector
+
+	// pointer to the vector data
+	D3DXVECTOR3* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR3 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+	
+	// get the vector data
+	if ( ! ( pID = ( D3DXVECTOR3* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetLengthSquaredVector3 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+	
+	// return the squared length
+	float result = D3DXVec3LengthSq ( pID );
+	return SDK_RETFLOAT(result);
+}
+
+DARKSDK void LinearInterpolationVector3 ( int iResult, int iA, int iB, float s )
+{
+	// perform a linear interpolation between 2 vectors
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pA      = NULL;
+	D3DXVECTOR3* pB      = NULL;
+	
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector3 - vector b does not exist" );
+		return;
+	}
+
+	// get the linear interpolation
+	D3DXVec3Lerp ( pResult, pA, pB, s ); 
+}
+
+DARKSDK void MaximizeVector3 ( int iResult, int iA, int iB )
+{
+	// create a vector that is made up of the largest components of 2 other vectors
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pA      = NULL;
+	D3DXVECTOR3* pB      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector3 - vector b does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec3Maximize ( pResult, pA, pB ); 
+}
+
+DARKSDK void MinimizeVector3 ( int iResult, int iA, int iB )
+{
+	// create a vector that is made up of the smallest components of 2 other vectors
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pA      = NULL;
+	D3DXVECTOR3* pB      = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR3* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector3 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR3* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector3 - vector b does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec3Minimize ( pResult, pA, pB ); 
+}
+
+DARKSDK void NormalizeVector3 ( int iResult, int iSource )
+{
+	// get the normalized vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pSource = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "NormalizeVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR3* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "NormalizeVector3 - source vector does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec3Normalize ( pResult, pSource ); 
+}
+
+DARKSDK void ScaleVector3 ( int iResult, int iSource, float s )
+{
+	// scales a vector
+
+	// pointers to vector data
+	D3DXVECTOR3* pResult = NULL;
+	D3DXVECTOR3* pSource = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR3 )
+	   )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR3* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ScaleVector3 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR3* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ScaleVector3 - source vector does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec3Scale ( pResult, pSource, s ); 
+}
+
+DARKSDK SDK_BOOL MakeMatrix ( int iID )
+{
+	// creates a matrix
+
+	// pointer to matrix data
+	D3DXMATRIX* pMatrix = NULL;
+	
+	//// delete any existing item
+	//pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iID );
+	//if(pMatrix) DeleteMatrix ( iID );
+
+	// mike - 220406 - remove vector if needed
+	CheckType ( iID );
+
+	// create a matrix
+	if ( ! ( pMatrix = new D3DXMATRIX ) )
+	{
+		// return an error if it fails
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "Failed to create matrix" );
+		return false;
+	}
+
+	// clear the memory out
+	memset ( pMatrix, 0, sizeof ( D3DXMATRIX ) );
+
+	// mike - 220406 - add vector2 type into list
+	AddVector ( iID, TYPE_MATRIX );
+
+	// add the matrix to the linked list
+	m_DataManager.Add ( pMatrix, iID );
+
+	return true;
 }
 
 DARKSDK SDK_BOOL DeleteMatrix ( int iID )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return false;
-    }
+	// mike - 190107 - must also delete from data type manager list
+	m_DataTypeManager.Delete ( iID );
 
-    Matrix* pMatrix = GetMatrixPtr( iID );
-
-    if (!pMatrix)
-    {
-		//silent fail - no way to detect if matrix exists in DBP code!
-		//RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return false;
-	}
-
+	// deletes a matrix
 	m_DataManager.Delete ( iID );
+
 	return SDK_TRUE;
 }
 
-DARKSDK void CopyMatrix ( int iDestination, int iSource )
+DARKSDK void CopyMatrix ( int iSource, int iDestination )
 {
-    if (iDestination < 1 || iDestination > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// copies 1 matrix to another
 
-    Matrix* pSource = GetMatrixPtr( iSource );
-    Matrix* pDest   = GetMatrixPtr( iDestination );
+	// pointers to matrix data
+	D3DXMATRIX* pSource      = NULL;
+	D3DXMATRIX* pDestination = NULL;
 
-    if (!pSource || !pDest)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iSource, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iDestination, TYPE_MATRIX )
+	   )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pSource = ( D3DXMATRIX* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "CopyMatrix - source matrix does not exist" );
 		return;
 	}
 
-    pDest->Get() = pSource->Get();
+	// get the source vector
+	if ( ! ( pDestination = ( D3DXMATRIX* ) m_DataManager.GetData ( iDestination ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "CopyMatrix - destination matrix does not exist" );
+		return;
+	}
+
+	// assign matrices
+	*pDestination = *pSource;
 }
 
 DARKSDK void AddMatrix ( int iResult, int iA, int iB )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// add 2 matrices to another
 
-    Matrix* pResult = GetMatrixPtr( iResult );
-    Matrix* pA      = GetMatrixPtr( iA );
-    Matrix* pB      = GetMatrixPtr( iB );
+	// pointers to matrix data
+	D3DXMATRIX* pResult = NULL;
+	D3DXMATRIX* pA      = NULL;
+	D3DXMATRIX* pB      = NULL;
 
-    if (!pA || !pB || !pResult)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iA, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iB, TYPE_MATRIX )
+	   )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pResult->Get() = pA->Get() + pB->Get();
+	// get the result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "AddMatrix - result matrix does not exist" );
+		return;
+	}
+
+	// get matrix a
+	if ( ! ( pA = ( D3DXMATRIX* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "AddMatrix - matrix a does not exist" );
+		return;
+	}
+
+	// get matrix b
+	if ( ! ( pB = ( D3DXMATRIX* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "AddMatrix - matrix b does not exist" );
+		return;
+	}
+
+	// add them together
+	*pResult = *pA + *pB;
 }
 
 DARKSDK void SubtractMatrix ( int iResult, int iA, int iB )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// subtract 2 matrices
 
-    Matrix* pResult = GetMatrixPtr( iResult );
-    Matrix* pA      = GetMatrixPtr( iA );
-    Matrix* pB      = GetMatrixPtr( iB );
+	// pointers to matrix data
+	D3DXMATRIX* pResult = NULL;
+	D3DXMATRIX* pA      = NULL;
+	D3DXMATRIX* pB      = NULL;
 
-    if (!pA || !pB || !pResult)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iA, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iB, TYPE_MATRIX )
+	   )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pResult->Get() = pA->Get() - pB->Get();
+	// get the result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "SubtractMatrix - result matrix does not exist" );
+		return;
+	}
+
+	// get matrix a
+	if ( ! ( pA = ( D3DXMATRIX* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "SubtractMatrix - matrix a does not exist" );
+		return;
+	}
+
+	// get matrix b
+	if ( ! ( pB = ( D3DXMATRIX* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "SubtractMatrix - matrix b does not exist" );
+		return;
+	}
+
+	// subtract matrices
+	*pResult = *pA - *pB;
 }
 
 DARKSDK void MultiplyMatrix ( int iResult, int iA, int iB )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// multiply 2 matrices
 
-    Matrix* pResult = GetMatrixPtr( iResult );
-    Matrix* pA      = GetMatrixPtr( iA );
-    Matrix* pB      = GetMatrixPtr( iB );
+	// pointers to matrix data
+	D3DXMATRIX* pResult = NULL;
+	D3DXMATRIX* pA      = NULL;
+	D3DXMATRIX* pB      = NULL;
 
-    if (!pA || !pB || !pResult)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iA, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iB, TYPE_MATRIX )
+	   )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pResult->Get() = pA->Get() * pB->Get();
+	// get the result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "MultiplyMatrix - result matrix does not exist" );
+		return;
+	}
+
+	// get matrix a
+	if ( ! ( pA = ( D3DXMATRIX* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "MultiplyMatrix - matrix a does not exist" );
+		return;
+	}
+
+	// get matrix b
+	if ( ! ( pB = ( D3DXMATRIX* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "MultiplyMatrix - matrix b does not exist" );
+		return;
+	}
+
+	// multiply matrices
+	*pResult = *pA * *pB;
 }
 
 DARKSDK void MultiplyMatrix ( int iID, float fValue )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// multiply a matrix by a float
 
-    Matrix* pDest = GetMatrixPtr( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pDest)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "MultiplyMatrix - matrix does not exist" );
 		return;
 	}
 
-    pDest->Get() *= fValue;
+	// multiply the matrix
+	*pID *= fValue;
 }
 
 DARKSDK void DivideMatrix ( int iID, float fValue )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// divide a matrix by a float
 
-    Matrix* pDest = GetMatrixPtr( iID );
-
-    if (!pDest)
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
+	
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    pDest->Get() /= fValue;
+	// get the matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "DivideMatrix - matrix does not exist" );
+		return;
+	}
+
+	// divide the matrix
+	*pID /= fValue;
 }
 
 DARKSDK SDK_BOOL IsEqualMatrix ( int iA, int iB )
 {
-    Matrix* pA = GetMatrixPtr( iA );
-    Matrix* pB = GetMatrixPtr( iB );
+	// returns true if both matrices are the same
 
-    if (!pA || !pB)
+	// pointers to matrix data
+	D3DXMATRIX* pA = NULL;
+	D3DXMATRIX* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_MATRIX ) || !CheckTypeIsValid ( iB, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+	
+
+	// get matrix a
+	if ( ! ( pA = ( D3DXMATRIX* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "IsEqualMatrix - matrix a does not exist" );
 		return false;
 	}
 
-    if (pA->Get() == pB->Get())
-        return true;
+	// get matrix b
+	if ( ! ( pB = ( D3DXMATRIX* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "IsEqualMatrix - matrix b does not exist" );
+		return false;
+	}
 
-    return false;
+	// compare them and return true if they are equal
+	if ( *pA == *pB )
+		return true;
+
+	// otherwise return false;
+	return false;
 }
 
 DARKSDK SDK_BOOL IsNotEqualMatrix ( int iA, int iB )
 {
-    return !IsEqualMatrix( iA, iB );
+	// returns true if both matrices are different
+
+	// pointers to matrix data
+	D3DXMATRIX* pA = NULL;
+	D3DXMATRIX* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_MATRIX ) || !CheckTypeIsValid ( iB, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
+	// get matrix a
+	if ( ! ( pA = ( D3DXMATRIX* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "IsNotEqualMatrix - matrix a does not exist" );
+		return false;
+	}
+
+	// get matrix b
+	if ( ! ( pB = ( D3DXMATRIX* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "IsNotEqualMatrix - matrix b does not exist" );
+		return false;
+	}
+
+	// compare them and return true if they are different
+	if ( *pA != *pB )
+		return true;
+
+	// otherwise return false;
+	return false;
 }
 
 DARKSDK void SetIdentityMatrix ( int iID )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// sets an identity matrix
 
-    Matrix* pID = GetMatrixPtr( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pID)
-    {
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX )  )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 	
-	D3DXMatrixIdentity ( &pID->Get() );
+	// get matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "SetIdentityMatrix - matrix does not exist" );
+		return;
+	}
+
+	// setup the matrix
+	D3DXMatrixIdentity ( pID );
 }
 
 DARKSDK SDK_FLOAT InverseMatrix ( int iResult, int iSource )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return 0;
-    }
+	// get the inverse of a matrix
 
-    Matrix* pResult = GetMatrixPtr( iResult );
-    Matrix* pSource = GetMatrixPtr( iSource );
+	// pointers to matrix data and determinant info
+	D3DXMATRIX* pResult = NULL;
+	D3DXMATRIX* pSource = NULL;
+	float		fDeterminant;
 
-    if (!pResult || !pSource)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iResult, TYPE_MATRIX ) || !CheckTypeIsValid ( iSource, TYPE_MATRIX ))
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return false;
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+	
+	// get result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "InverseMatrix - result matrix does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
 	}
 
-    float fDeterminant = 0.0f;
-	D3DXMatrixInverse ( &pResult->Get(), &fDeterminant, &pSource->Get() ); 
+	// get source matrix
+	if ( ! ( pSource = ( D3DXMATRIX* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "InverseMatrix - source matrix does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// get the inverse
+	D3DXMatrixInverse ( pResult, &fDeterminant, pSource ); 
 
 	// return the determinant
 	return SDK_RETFLOAT(fDeterminant);
@@ -1960,384 +2767,1448 @@ DARKSDK SDK_FLOAT InverseMatrix ( int iResult, int iSource )
 
 DARKSDK SDK_BOOL IsIdentityMatrix ( int iID )
 {
-    Matrix* pID = GetMatrixPtr( iID );
+	// returns true if the matrix is an identity matrix
 
-    if (!pID)
-    {
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_MATRIX )  )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+	
+	// get matrix data
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "IsIdentityMatrix - matrix does not exist" );
 		return false;
 	}
 
-	if ( D3DXMatrixIsIdentity ( &pID->Get() ) )
+	// check the matrix
+	if ( D3DXMatrixIsIdentity ( pID ) )
 		return true;
 
+	// otherwise return false
 	return false;
 }
 
 DARKSDK void BuildLookAtRHMatrix ( int iResult, int iVectorEye, int iVectorAt, int iVectorUp )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// builds a look at matrix using right handed rule
 
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-    Vector3* pVectorEye = GetVector3Ptr( iVectorEye );
-    Vector3* pVectorAt  = GetVector3Ptr( iVectorAt );
-    Vector3* pVectorUp  = GetVector3Ptr( iVectorUp );
+	// pointers to matrix and vector data
+	D3DXMATRIX*	 pResult = NULL;
+	D3DXVECTOR3* pEye    = NULL;
+	D3DXVECTOR3* pAt     = NULL;
+	D3DXVECTOR3* pUp     = NULL;
 
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-    if (!pVectorEye || !pVectorAt || !pVectorUp)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iVectorEye, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iVectorAt, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iVectorUp, TYPE_VECTOR3 )
+	   )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+	
+	// get the result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildLookAtRHMatrix - result matrix does not exist" );
+		return;
+	}
 
-	D3DXMatrixLookAtRH ( &pResult->Get(), &pVectorEye->Get(), &pVectorAt->Get(), &pVectorUp->Get() ); 
+	// get eye vector
+	if ( ! ( pEye = ( D3DXVECTOR3* ) m_DataManager.GetData ( iVectorEye ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "BuildLookAtRHMatrix - eye vector does not exist" );
+		return;
+	}
+
+	// get at vector
+	if ( ! ( pAt = ( D3DXVECTOR3* ) m_DataManager.GetData ( iVectorAt ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "BuildLookAtRHMatrix - at vector does not exist" );
+		return;
+	}
+
+	// get up vector
+	if ( ! ( pUp = ( D3DXVECTOR3* ) m_DataManager.GetData ( iVectorUp ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "BuildLookAtRHMatrix - up vector does not exist" );
+		return;
+	}
+
+	// finally build matrix
+	D3DXMatrixLookAtRH ( pResult, pEye, pAt, pUp ); 
 }
 
 DARKSDK void BuildLookAtLHMatrix ( int iResult, int iVectorEye, int iVectorAt, int iVectorUp )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// builds a look at matrix using left handed rule
 
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-    Vector3* pVectorEye = GetVector3Ptr( iVectorEye );
-    Vector3* pVectorAt  = GetVector3Ptr( iVectorAt );
-    Vector3* pVectorUp  = GetVector3Ptr( iVectorUp );
+	// pointers to matrix and vector data
+	D3DXMATRIX*	 pResult = NULL;
+	D3DXVECTOR3* pEye    = NULL;
+	D3DXVECTOR3* pAt     = NULL;
+	D3DXVECTOR3* pUp     = NULL;
 
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-    if (!pVectorEye || !pVectorAt || !pVectorUp)
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( 
+			!CheckTypeIsValid ( iResult, TYPE_MATRIX ) ||
+			!CheckTypeIsValid ( iVectorEye, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iVectorAt, TYPE_VECTOR3 ) ||
+			!CheckTypeIsValid ( iVectorUp, TYPE_VECTOR3 )
+	   )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
+	
+	// get the result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildLookAtLHMatrix - result matrix does not exist" );
+		return;
+	}
 
-	D3DXMatrixLookAtLH ( &pResult->Get(), &pVectorEye->Get(), &pVectorAt->Get(), &pVectorUp->Get() ); 
+	// get eye vector
+	if ( ! ( pEye = ( D3DXVECTOR3* ) m_DataManager.GetData ( iVectorEye ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "BuildLookAtLHMatrix - eye vector does not exist" );
+		return;
+	}
+
+	// get at vector
+	if ( ! ( pAt = ( D3DXVECTOR3* ) m_DataManager.GetData ( iVectorAt ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "BuildLookAtLHMatrix - at vector does not exist" );
+		return;
+	}
+
+	// get up vector
+	if ( ! ( pUp = ( D3DXVECTOR3* ) m_DataManager.GetData ( iVectorUp ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "BuildLookAtLHMatrix - up vector does not exist" );
+		return;
+	}
+
+	// finally build matrix
+	D3DXMatrixLookAtLH ( pResult, pEye, pAt, pUp ); 
 }
 
 DARKSDK void BuildOrthoRHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// build an orthoganal matrix using right handed rule
 
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
+	// pointer to matrix data
+	D3DXMATRIX* pResult = NULL;
 
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DXMatrixOrthoRH ( &pResult->Get(), fWidth, fHeight, fZNear, fZFar ); 
-}
-
-DARKSDK void BuildOrthoLHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
-
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DXMatrixOrthoLH ( &pResult->Get(), fWidth, fHeight, fZNear, fZFar ); 
-}
-
-DARKSDK void BuildPerspectiveRHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
-
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DXMatrixPerspectiveRH ( &pResult->Get(), fWidth, fHeight, fZNear, fZFar ); 
-}
-
-DARKSDK void BuildPerspectiveLHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
-
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DXMatrixPerspectiveLH ( &pResult->Get(), fWidth, fHeight, fZNear, fZFar ); 
-}
-
-DARKSDK void BuildPerspectiveFovRHMatrix ( int iResult, float fFOV, float fAspect, float fZNear, float fZFar )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
-
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DXMatrixPerspectiveFovRH ( &pResult->Get(), fFOV, fAspect, fZNear, fZFar ); 
-}
-
-DARKSDK void BuildPerspectiveFovLHMatrix ( int iResult, float fFOV, float fAspect, float fZNear, float fZFar )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
-
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DXMatrixPerspectiveFovLH ( &pResult->Get(), fFOV, fAspect, fZNear, fZFar ); 
-}
-
-DARKSDK void BuildReflectionMatrix ( int iResult, float a, float b, float c, float d )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
-
-    Matrix*  pResult    = GetMatrixPtr ( iResult );
-
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-
-	D3DXMatrixReflect ( &pResult->Get(), &D3DXPLANE ( a, b, c, d ) ); 
-}
-
-DARKSDK void BuildRotationAxisMatrix ( int iResult, int iVectorAxis, float fAngle )
-{
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
-
-    Matrix*  pResult     = GetMatrixPtr ( iResult );
-    Vector3* pVectorAxis = GetVector3Ptr( iVectorAxis );
-
-    if (!pResult)
-	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
-		return;
-	}
-    if (!pVectorAxis)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) )
 	{
 		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-	D3DXMatrixRotationAxis ( &pResult->Get(), &pVectorAxis->Get(), fAngle );
+	// get matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildOrthoRHMatrix - matrix does not exist" );
+		return;
+	}
+
+	// build matrix
+	D3DXMatrixOrthoRH ( pResult, fWidth, fHeight, fZNear, fZFar ); 
+}
+
+DARKSDK void BuildOrthoLHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
+{
+	// build an orthogonal matrix using left handed rule
+
+	// pointer to matrix data
+	D3DXMATRIX* pResult = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildOrthoLHMatrix - matrix does not exist" );
+		return;
+	}
+
+	// build matrix
+	D3DXMatrixOrthoLH ( pResult, fWidth, fHeight, fZNear, fZFar ); 
+}
+
+DARKSDK void BuildPerspectiveRHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
+{
+	// build a perspective matrix using right handed rule
+
+	// pointer to matrix data
+	D3DXMATRIX* pResult = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildPerspectiveRHMatrix - matrix does not exist" );
+		return;
+	}
+
+	// build the matrix
+	D3DXMatrixPerspectiveRH ( pResult, fWidth, fHeight, fZNear, fZFar ); 
+}
+
+DARKSDK void BuildPerspectiveLHMatrix ( int iResult, float fWidth, float fHeight, float fZNear, float fZFar )
+{
+	// build a perspective matrix using left handed rule
+
+	// pointer to matrix data
+	D3DXMATRIX* pResult = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildPerspectiveLHMatrix - matrix does not exist" );
+		return;
+	}
+
+	// build the matrix
+	D3DXMatrixPerspectiveLH ( pResult, fWidth, fHeight, fZNear, fZFar ); 
+}
+
+DARKSDK void BuildPerspectiveFovRHMatrix ( int iResult, float fFOV, float fAspect, float fZNear, float fZFar )
+{
+	// builds a perspective field of view right hand matrix
+
+	// pointer to matrix data
+	D3DXMATRIX* pResult = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildPerspectiveFovRHMatrix - matrix does not exist" );
+		return;
+	}
+
+	// build the matrix
+	D3DXMatrixPerspectiveFovRH ( pResult, fFOV, fAspect, fZNear, fZFar ); 
+}
+
+DARKSDK void BuildPerspectiveFovLHMatrix ( int iResult, float fFOV, float fAspect, float fZNear, float fZFar )
+{
+	// builds a perspective field of view left hand matrix
+
+	// pointer to matrix data
+	D3DXMATRIX* pResult = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildPerspectiveFovLHMatrix - matrix does not exist" );
+		return;
+	}
+
+	// build the matrix
+	D3DXMatrixPerspectiveFovLH ( pResult, fFOV, fAspect, fZNear, fZFar ); 
+}
+
+DARKSDK void BuildReflectionMatrix ( int iResult, float a, float b, float c, float d )
+{
+	// builds a reflection matrix
+
+	// pointer to matrix data
+	D3DXMATRIX* pResult = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildReflectionMatrix - matrix does not exist" );
+		return;
+	}
+
+	D3DXMatrixReflect ( pResult, &D3DXPLANE ( a, b, c, d ) ); 
+}
+
+DARKSDK void BuildRotationAxisMatrix ( int iResult, int iVectorAxis, float fAngle )
+{
+	// build a matrix that rotates around an axis
+
+	// pointer to matrix data
+	D3DXMATRIX*  pResult = NULL;
+	D3DXVECTOR3* pVector = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) || !CheckTypeIsValid ( iVectorAxis, TYPE_VECTOR3 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "BuildRotationAxisMatrix - result matrix does not exist" );
+		return;
+	}
+
+	// get the rotation axis vector
+	if ( ! ( pVector = ( D3DXVECTOR3* ) m_DataManager.GetData ( iVectorAxis ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "BuildRotationAxisMatrix - rotation axis vector does not exist" );
+		return;
+	}
+
+	// finally create the matrix
+	D3DXMatrixRotationAxis ( pResult, pVector, fAngle );
 }
 
 DARKSDK void RotateXMatrix ( int iID, float fAngle )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// rotate the matrix on it's x axis (WRONG)
+	// Builds a matrix that rotates around the x-axis.
 
-    Matrix* pID = GetMatrixPtr ( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pID)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    D3DXMatrixRotationX ( &pID->Get(), fAngle );
+	// get matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "RotateXMatrix - matrix does not exist" );
+		return;
+	}
+	
+	// now rotate the matrix
+	D3DXMatrixRotationX ( pID, fAngle );
 }
 
 DARKSDK void RotateYMatrix ( int iID, float fAngle )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// rotate the matrix on it's y axis (WRONG)
+	// Builds a matrix that rotates around the y-axis.
 
-    Matrix* pID = GetMatrixPtr ( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pID)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    D3DXMatrixRotationY ( &pID->Get(), fAngle );
+	// get matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "RotateYMatrix - matrix does not exist" );
+		return;
+	}
+	
+	// now rotate the matrix
+	D3DXMatrixRotationY ( pID, fAngle );
 }
 
 DARKSDK void RotateZMatrix ( int iID, float fAngle )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// rotate the matrix on it's z axis (WRONG)
+	// Builds a matrix that rotates around the z-axis.
 
-    Matrix* pID = GetMatrixPtr ( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pID)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-    D3DXMatrixRotationZ ( &pID->Get(), fAngle );
+	// get matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "RotateZMatrix - matrix does not exist" );
+		return;
+	}
+	
+	// now rotate the matrix
+	D3DXMatrixRotationZ ( pID, fAngle );
 }
 
 DARKSDK void RotateYawPitchRollMatrix ( int iID, float fYaw, float fPitch, float fRoll )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// rotate a matrix using yaw, pitch and roll
 
-    Matrix* pID = GetMatrixPtr ( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pID)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-	D3DXMatrixRotationYawPitchRoll ( &pID->Get(), fYaw, fPitch, fRoll );
+	// get matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "RotateYawPitchRollMatrix - matrix does not exist" );
+		return;
+	}
+	
+	// rotate the matrix
+	D3DXMatrixRotationYawPitchRoll ( pID, fYaw, fPitch, fRoll );
 }
 
 DARKSDK void ScaleMatrix ( int iID, float fX, float fY, float fZ )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// scale a matrix
 
-    Matrix* pID = GetMatrixPtr ( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pID)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-	D3DXMatrixScaling ( &pID->Get(), fX, fY, fZ );
+	// get matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "ScaleMatrix - matrix does not exist" );
+		return;
+	}
+
+	// now perform the scaling
+	D3DXMatrixScaling ( pID, fX, fY, fZ );
 }
 
 DARKSDK void TranslateMatrix ( int iID, float fX, float fY, float fZ )
 {
-    if (iID < 1 || iID > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// translate a matrix ( set it's position )
 
-    Matrix* pID = GetMatrixPtr ( iID );
+	// pointer to matrix data
+	D3DXMATRIX* pID = NULL;
 
-    if (!pID)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iID, TYPE_MATRIX ) )
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-	D3DXMatrixTranslation ( &pID->Get(), fX, fY, fZ );
+	// get matrix
+	if ( ! ( pID = ( D3DXMATRIX* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "TranslateMatrix - matrix does not exist" );
+		return;
+	}
+
+	// perform the translation
+	D3DXMatrixTranslation ( pID, fX, fY, fZ );
 }
 
 DARKSDK void TransposeMatrix ( int iResult, int iSource )
 {
-    if (iResult < 1 || iResult > MAXIMUMVALUE)
-    {
-        RunTimeError ( RUNTIMEERROR_MATRIX4NUMBERILLEGAL );
-        return;
-    }
+	// get the transpose of a matrix
 
-    Matrix* pResult = GetMatrixPtr( iResult );
-    Matrix* pSource = GetMatrixPtr( iSource );
+	// pointers to matrix data
+	D3DXMATRIX* pResult = NULL;
+	D3DXMATRIX* pSource = NULL;
 
-	if (!pResult || !pSource)
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iResult, TYPE_MATRIX ) ||!CheckTypeIsValid ( iSource, TYPE_MATRIX ))
 	{
-		RunTimeError ( RUNTIMEERROR_MATRIX4NOTEXIST );
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
 		return;
 	}
 
-	D3DXMatrixTranspose ( &pResult->Get(), &pSource->Get() );
+	// get result matrix
+	if ( ! ( pResult = ( D3DXMATRIX* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "TransposeMatrix - result matrix does not exist" );
+		return;
+	}
+
+	// get source matrix
+	if ( ! ( pSource = ( D3DXMATRIX* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST); }  Error ( "TransposeMatrix - source matrix does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXMatrixTranspose ( pResult, pSource );
 }
+
+DARKSDK SDK_BOOL MakeVector4 ( int iID )
+{
+	// create a vector
+
+	// pointer to vector data
+	D3DXVECTOR4* pVector = NULL;
+
+	// mike - 220406 - remove vector if needed
+	CheckType ( iID );
+	
+	// delete any existing item
+	//pVector = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID );
+	//if(pVector) DeleteVector4 ( iID );
+
+	// create a vector and set all components to 0
+	if ( ! ( pVector = new D3DXVECTOR4 ( 0.0f, 0.0f, 0.0f, 0.0f ) ) )
+	{
+		// return an error if it fails
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "Failed to create vector" );
+		return false;
+	}
+
+	// mike - 220406 - add vector4 type into list
+	AddVector ( iID, TYPE_VECTOR4 );
+
+	// add the vector to the linked list
+	m_DataManager.Add ( pVector, iID );
+
+	// return ok
+	return true;
+}
+
+DARKSDK SDK_BOOL DeleteVector4 ( int iID )
+{
+	// deletes a given vector
+
+	// mike - 190107 - must also delete from data type manager list
+	m_DataTypeManager.Delete ( iID );
+
+	m_DataManager.Delete ( iID );
+
+	// return ok
+	return true;
+}
+
+DARKSDK void SetVector4 ( int iID, float fX, float fY, float fZ, float fW )
+{
+	// sets the values of a vector
+
+	// pointer to vector data
+	D3DXVECTOR4* pVector = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iID, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the vector data
+	if ( ! ( pVector = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SetVector4 - matrix does not exist" );
+		return;
+	}
+
+	// now set the values
+	*pVector = D3DXVECTOR4 ( fX, fY, fZ, fW );
+}
+
+DARKSDK void CopyVector4 ( int iSource, int iDestination )
+{
+	// copy the source vector to the destination vector
+
+	// pointers to vector data
+	D3DXVECTOR4* pVecSource      = NULL;
+	D3DXVECTOR4* pVecDestination = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (!CheckTypeIsValid ( iSource, TYPE_VECTOR4 ) || !CheckTypeIsValid ( iDestination, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pVecSource = ( D3DXVECTOR4* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CopyVector4 - source vector does not exist" );
+		return;
+	}
+
+	// get the destination vector
+	if ( ! ( pVecDestination = ( D3DXVECTOR4* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CopyVector4 - destination vector does not exist" );
+		return;
+	}
+
+	// final assignment
+	*pVecDestination = *pVecSource;
+}
+
+DARKSDK void AddVector4 ( int iResult, int iA, int iB )
+{
+	// adds 2 vectors and stores the result in the first vector
+
+	// pointers to vector data
+	D3DXVECTOR4* pVecResult = NULL;
+	D3DXVECTOR4* pVecA      = NULL;
+	D3DXVECTOR4* pVecB      = NULL;
+
+		// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the resulting vector
+	if ( ! ( pVecResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pVecA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pVecB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "AddVector4 - vector b does not exist" );
+		return;
+	}
+
+	// finally add vectors together
+	*pVecResult = *pVecA + *pVecB;
+}
+
+DARKSDK void SubtractVector4 ( int iResult, int iA, int iB )
+{
+	// adds 2 vectors and stores the result in the first vector
+
+	// pointers to vector data
+	D3DXVECTOR4* pVecResult = NULL;
+	D3DXVECTOR4* pVecA      = NULL;
+	D3DXVECTOR4* pVecB      = NULL;
+
+		// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the resulting vector
+	if ( ! ( pVecResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pVecA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pVecB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "SubtractVector4 - vector b does not exist" );
+		return;
+	}
+
+	// subtract the vectors
+	*pVecResult = *pVecA - *pVecB;
+}
+
+DARKSDK void MultiplyVector4 ( int iID, float fValue )
+{
+	// multiples a vector by a float
+
+	// pointer to vector data
+	D3DXVECTOR4* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the vector
+	if ( ! ( pID = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MultiplyVector4 - vector does not exist" );
+		return;
+	}
+
+	// multiply the vector
+	*pID *= fValue;
+}
+
+DARKSDK void DivideVector4 ( int iID, float fValue )
+{
+	// divides a vector by a float
+
+	// pointer to vector data
+	D3DXVECTOR4* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the vector
+	if ( ! ( pID = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "DivideVector4 - vector does not exist" );
+		return;
+	}
+
+	// divide the vector
+	*pID /= fValue;
+}
+
+DARKSDK SDK_BOOL IsEqualVector4 ( int iA, int iB )
+{
+	// returns true if the vectors are the same
+	
+	// pointers to vector data
+	D3DXVECTOR4* pA = NULL;
+	D3DXVECTOR4* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR4 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsEqualVector4 - vector a does not exist" );
+		return false;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsEqualVector4 - vector b does not exist" );
+		return false;
+	}
+
+	// if both vectors are the same then return true
+	if ( *pA == *pB )
+		return true;
+
+	// otherwise return false
+	return false;
+}
+
+DARKSDK SDK_BOOL IsNotEqualVector4 ( int iA, int iB )
+{
+	// returns true if the vectors are different
+
+	// pointers to vector data
+	D3DXVECTOR4* pA = NULL;
+	D3DXVECTOR4* pB = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iA, TYPE_VECTOR4 ) || !CheckTypeIsValid ( iB, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return false;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsNotEqualVector4 - vector a does not exist" );
+		return false;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "IsNotEqualVector4 - vector b does not exist" );
+		return false;
+	}
+
+	// if both vectors are different then return true
+	if ( *pA != *pB )
+		return true;
+
+	// otherwise return false
+	return false;
+}
+
+DARKSDK SDK_FLOAT GetXVector4 ( int iID )
+{
+	// returns the x component of a vector
+
+	// pointer to vector data
+	D3DXVECTOR4* pVector = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+
+	// get the data, if it doesn't exist return 0
+	if ( ! ( pVector = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetXVector4 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// now return the x value
+	return SDK_RETFLOAT(pVector->x);
+}
+
+DARKSDK SDK_FLOAT GetYVector4 ( int iID )
+{
+	// returns the y component of a vector
+
+	// pointer to vector data
+	D3DXVECTOR4* pVector = NULL;
+
+		// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+
+	// get the data, if it doesn't exist return 0
+	if ( ! ( pVector = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetYVector4 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// now return the y value
+	return SDK_RETFLOAT(pVector->y);
+}
+
+DARKSDK SDK_FLOAT GetZVector4 ( int iID )
+{
+	// returns the z component of a vector
+
+	// pointer to vector data
+	D3DXVECTOR4* pVector = NULL;
+
+		// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+
+	// get the data, if it doesn't exist return 0
+	if ( ! ( pVector = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetYVector4 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// now return the z value
+	return SDK_RETFLOAT(pVector->z);
+}
+
+DARKSDK SDK_FLOAT GetWVector4 ( int iID )
+{
+	// returns the w component of a vector
+
+	// pointer to vector data
+	D3DXVECTOR4* pVector = NULL;
+
+		// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ))
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+
+	// get the data, if it doesn't exist return 0
+	if ( ! ( pVector = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetYVector4 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+
+	// now return the w value
+	return SDK_RETFLOAT(pVector->w);
+}
+
+DARKSDK void GetBaryCentricCoordinatesVector4 ( int iResult, int iA, int iB, int iC, float f, float g )
+{
+	// returns a point in barycentric coordinates
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pA      = NULL;
+	D3DXVECTOR4* pB      = NULL;
+	D3DXVECTOR4* pC      = NULL;
+
+		// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iC, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector4 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR4* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetBaryCentricCoordinatesVector4 - vector c does not exist" );
+		return;
+	}
+
+	// now perform the operation
+	D3DXVec4BaryCentric ( pResult, pA, pB, pC, f, g ); 
+}
+
+DARKSDK void CatmullRomVector4 ( int iResult, int iA, int iB, int iC, int iD, float s )
+{
+	// performs a catmull rom interpolation on a vector
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pA      = NULL;
+	D3DXVECTOR4* pB      = NULL;
+	D3DXVECTOR4* pC      = NULL;
+	D3DXVECTOR4* pD      = NULL;
+
+		// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iC, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iD, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector4 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR4* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector4 - vector c does not exist" );
+		return;
+	}
+
+	// get vector d
+	if ( ! ( pD = ( D3DXVECTOR4* ) m_DataManager.GetData ( iD ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "CatmullRomVector4 - vector d does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec4CatmullRom ( pResult, pA, pB, pC, pD, s ); 
+}
+
+DARKSDK void HermiteVector4 ( int iResult, int iA, int iB, int iC, int iD, float s )
+{
+	// performs a hermite spline interpolation
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pA      = NULL;
+	D3DXVECTOR4* pB      = NULL;
+	D3DXVECTOR4* pC      = NULL;
+	D3DXVECTOR4* pD      = NULL;
+
+			// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iC, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iD, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector4 - vector b does not exist" );
+		return;
+	}
+
+	// get vector c
+	if ( ! ( pC = ( D3DXVECTOR4* ) m_DataManager.GetData ( iC ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector4 - vector c does not exist" );
+		return;
+	}
+
+	// get vector d
+	if ( ! ( pD = ( D3DXVECTOR4* ) m_DataManager.GetData ( iD ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "HermiteVector4 - vector d does not exist" );
+		return;
+	}
+
+	// get the hermite vector
+	D3DXVec4Hermite ( pResult, pA, pB, pC, pD, s ); 
+}
+
+DARKSDK SDK_FLOAT GetLengthVector4 ( int iID )
+{
+	// get the length of a vector
+
+	// pointer to vector data
+	D3DXVECTOR4* pID = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+	
+	// get the vector data
+	if ( ! ( pID = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetLengthVector4 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+	
+	// return the length
+	float result = D3DXVec4Length ( pID );
+	return SDK_RETFLOAT(result);
+}
+
+DARKSDK SDK_FLOAT GetLengthSquaredVector4 ( int iID )
+{
+	// get the squared length of a vector
+
+	// pointer to the vector data
+	D3DXVECTOR4* pID = NULL;
+
+			// mike - 220406 - check the operation can be carried out on this type
+	if ( !CheckTypeIsValid ( iID, TYPE_VECTOR4 ) )
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return (DWORD)(0.0f);
+	}
+	
+	// get the vector data
+	if ( ! ( pID = ( D3DXVECTOR4* ) m_DataManager.GetData ( iID ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "GetLengthSquaredVector4 - vector does not exist" );
+		float result=0.0f; return SDK_RETFLOAT(result);
+	}
+	
+	// return the squared length
+	float result = D3DXVec4LengthSq ( pID );
+	return SDK_RETFLOAT(result); 
+}
+
+DARKSDK void LinearInterpolationVector4 ( int iResult, int iA, int iB, float s )
+{
+	// perform a linear interpolation between 2 vectors
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pA      = NULL;
+	D3DXVECTOR4* pB      = NULL;
+
+			// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "LinearInterpolationVector4 - vector b does not exist" );
+		return;
+	}
+
+	// get the linear interpolation
+	D3DXVec4Lerp ( pResult, pA, pB, s );
+}
+
+DARKSDK void MaximizeVector4 ( int iResult, int iA, int iB )
+{
+	// create a vector that is made up of the largest components of 2 other vectors
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pA      = NULL;
+	D3DXVECTOR4* pB      = NULL;
+
+			// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MaximizeVector4 - vector b does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec4Maximize ( pResult, pA, pB ); 
+}
+
+DARKSDK void MinimizeVector4 ( int iResult, int iA, int iB )
+{
+	// create a vector that is made up of the smallest components of 2 other vectors
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pA      = NULL;
+	D3DXVECTOR4* pB      = NULL;
+
+			// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iA, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iB, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get vector a
+	if ( ! ( pA = ( D3DXVECTOR4* ) m_DataManager.GetData ( iA ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector4 - vector a does not exist" );
+		return;
+	}
+
+	// get vector b
+	if ( ! ( pB = ( D3DXVECTOR4* ) m_DataManager.GetData ( iB ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "MinimizeVector4 - vector b does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec4Minimize ( pResult, pA, pB ); 
+}
+
+DARKSDK void NormalizeVector4 ( int iResult, int iSource )
+{
+	// get the normalized vector
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pSource = NULL;
+
+			// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "NormalizeVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR4* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "NormalizeVector4 - source vector does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec4Normalize ( pResult, pSource ); 
+}
+
+DARKSDK void ScaleVector4 ( int iResult, int iSource, float s )
+{
+	// scales a vector
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pSource = NULL;
+
+				// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR4 )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ScaleVector4 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR4* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "ScaleVector4 - source vector does not exist" );
+		return;
+	}
+
+	// perform the operation
+	D3DXVec4Scale ( pResult, pSource, s ); 
+}
+
+DARKSDK void TransformVector4 ( int iResult, int iSource, int iMatrix )
+{
+	// transforms a vector
+
+	// pointers to vector data
+	D3DXVECTOR4* pResult = NULL;
+	D3DXVECTOR4* pSource = NULL;
+	D3DXMATRIX*  pMatrix = NULL;
+
+	// mike - 220406 - check the operation can be carried out on this type
+	if (
+			!CheckTypeIsValid ( iResult, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iSource, TYPE_VECTOR4 ) ||
+			!CheckTypeIsValid ( iMatrix, TYPE_MATRIX )
+		)
+	{
+		RunTimeError ( RUNTIMEERROR_VECTORNOTEXIST );
+		return;
+	}
+	
+	// get the result vector
+	if ( ! ( pResult = ( D3DXVECTOR4* ) m_DataManager.GetData ( iResult ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates4 - result vector does not exist" );
+		return;
+	}
+
+	// get the source vector
+	if ( ! ( pSource = ( D3DXVECTOR4* ) m_DataManager.GetData ( iSource ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates4 - source vector does not exist" );
+		return;
+	}
+
+	// get the matrix
+	if ( ! ( pMatrix = ( D3DXMATRIX* ) m_DataManager.GetData ( iMatrix ) ) )
+	{
+		if(g_bRTE) { RunTimeError(RUNTIMEERROR_VECTORNOTEXIST); }  Error ( "TransformVectorCoordinates4 - matrix does not exist" );
+		return;
+	}
+
+	// transform the vector by the matrix
+	D3DXVec4Transform ( pResult, pSource, pMatrix );
+}
+
+// U65/6.. new command for users
 
 DARKSDK SDK_FLOAT GetMatrixElement ( int iMatrix, int iElement )
 {
-    Matrix*  pMatrix = GetMatrixPtr ( iMatrix );
-
-    if (!pMatrix)
-    {
+	// request provided by Joey Barfield [barfieldjoey@mapmasterz.com]
+	if ( !CheckTypeIsValid ( iMatrix, TYPE_MATRIX ) )
+	{
 		RunTimeError(RUNTIMEERROR_MATRIX4NOTEXIST);
 		return 0;
 	}
-
-    D3DXMATRIX mat = pMatrix->Get();
-
-    float res = 0.0;
-	if (iElement>=0 && iElement<=15)
-        res = mat[iElement];
-
+	float res = 0.0;
+	D3DXMATRIX mat = GetMatrix(iMatrix);
+	if (iElement>=0 && iElement<=15) res = mat[iElement];
 	return SDK_RETFLOAT(res);
 }
 
