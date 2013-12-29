@@ -370,7 +370,10 @@ DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCodeAkaFastSync )
 
 			// Draw all 3D - all cameras loop
 			g_Camera3D_StartSceneInt ( iMode );
-			do {
+			while(1)
+			{
+				// leeadd - 150306 - u60b3 - sync mask excludes cameras fom rendering
+				bool bDetermineIfNextCameraNeedsRenderTargetPrepared = true;
 				int iThisCamera = 1 + g_Camera3D_GetRenderCamera();
 				if ( iThisCamera <= 32 )
 				{
@@ -378,9 +381,18 @@ DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCodeAkaFastSync )
 					DWORD dwCamBit = 1;
 					if ( iThisCamera > 1 ) dwCamBit = dwCamBit << (DWORD)(iThisCamera-1);
 					dwCamBit = dwCamBit & g_dwSyncMask;
+					int iNextCamera = iThisCamera;
 					if ( dwCamBit==0 ) iThisCamera = 0;
 
-					// 20120313 IanM - Removed incorrect 'prediction' code for next camera rendering.
+					// leefix - 130906 - u63 - discovered when using many SYNC MASKS, a later pass would wipe out camera render targets at the FinishStop
+					DWORD dwNextCamBit = 1;
+					dwNextCamBit = dwNextCamBit << (DWORD)(iNextCamera);
+					dwNextCamBit = dwNextCamBit & g_dwSyncMask;
+					if ( dwNextCamBit==0 )
+					{
+						// the next camera does NOT render anything, so skip preparing the render target for it (at the Finish step)
+						bDetermineIfNextCameraNeedsRenderTargetPrepared=false;
+					}
 				}
 				if ( iThisCamera > 0 )
 				{
@@ -392,7 +404,16 @@ DARKSDK void ExternalDisplaySync ( int iSkipSyncRateCodeAkaFastSync )
 					}
 				}
 				// Next camera or finish..
-			} while (g_Camera3D_FinishSceneEx(false)==0);
+				if(g_Camera3D_FinishSceneEx(bDetermineIfNextCameraNeedsRenderTargetPrepared)==0)
+				{
+					// Another camera view must be rendered, render current one now
+				}
+				else
+				{
+					// No more camera views to render
+					break;
+				}
+			}
 
 			// leeadd - 071107 - U71 - after 3D operations, direct whether SPRITES/2D/IMAGE
 			// drawing is to take place by default (bitmap or camera zero)
