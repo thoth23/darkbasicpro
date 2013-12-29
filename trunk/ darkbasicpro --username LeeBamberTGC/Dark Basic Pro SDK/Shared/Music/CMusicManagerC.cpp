@@ -1,43 +1,108 @@
 // include definition
 #include "cmusicmanagerc.h"
 
-bool CMusicManager::Add ( DBP_Music::BasePlayer* pData, int iID )
+CMusicManager::CMusicManager ( )
 {
-    Delete( iID );
-    m_List.insert( std::make_pair(iID, pData) );
+	
+}
+
+CMusicManager::~CMusicManager ( )
+{
+	
+}
+
+bool CMusicManager::Add ( tagMusicData* pData, int iID )
+{
+		// check if an object already exists //
+	// with the same id, if it does then //
+	// delete it                         //
+	///////////////////////////////////////
+	tagMusicData* ptr = NULL;
+	ptr = ( tagMusicData* ) m_List.Get ( iID );
+			
+	if ( ptr != NULL )
+		m_List.Delete ( iID );
+	///////////////////////////////////////
+
+	///////////////////////////////////////
+	// create a new object and insert in //
+	// the list                          //
+	///////////////////////////////////////
+	tagMusicData* test;
+	test = new tagMusicData;
+
+	memset ( test,     0, sizeof ( test         ) );
+	memcpy ( test, pData, sizeof ( tagMusicData ) );
+
+	m_List.Add ( iID, ( VOID* ) test, 0, 1 );
+	///////////////////////////////////////
+
+
 	return true;
 }
 
 bool CMusicManager::Delete ( int iID )
 {
-    MusicPtr p = m_List.find( iID );
-    if (p != m_List.end())
-    {
-        delete p->second;
-        m_List.erase( p );
-    }
+	tagMusicData* ptr = NULL;
+	ptr = this->GetData ( iID );
+
+	SAFE_RELEASE ( ptr->pMediaPosition );
+	SAFE_RELEASE ( ptr->pBasicAudio );
+	SAFE_RELEASE ( ptr->pMediaSeeking );
+	SAFE_RELEASE ( ptr->pMediaEvent );
+	SAFE_RELEASE ( ptr->pMediaControl );
+	SAFE_RELEASE ( ptr->pGraphBuilder );
+
+	delete ptr;
+
+	m_List.Delete ( iID );
+
 	return true;
 }
 
-DBP_Music::BasePlayer* CMusicManager::GetData ( int iID )
-{
-    MusicPtr p = m_List.find( iID );
-    return p == m_List.end() ? 0 : p->second;
+tagMusicData* CMusicManager::GetData ( int iID )
+{		
+	return ( tagMusicData* ) m_List.Get ( iID );
 }
 
 void CMusicManager::ShutDown ( void )
 {
-    for (MusicPtr p = m_List.begin(); p != m_List.end(); ++p)
-    {
-        delete p->second;
-    }
-    m_List.clear();
+	link* check = m_List.m_start;
+
+	for ( int temp = 0; temp < m_List.m_count; temp++ )
+	{
+		tagMusicData* ptr = NULL;
+		ptr = this->GetData ( check->id );
+
+		if ( ptr == NULL )
+			return;
+
+		SAFE_RELEASE ( ptr->pMediaPosition );
+		SAFE_RELEASE ( ptr->pBasicAudio );
+		SAFE_RELEASE ( ptr->pMediaSeeking );
+		SAFE_RELEASE ( ptr->pMediaEvent );
+		SAFE_RELEASE ( ptr->pMediaControl );
+		SAFE_RELEASE ( ptr->pGraphBuilder );
+
+		delete ptr;
+
+		check = check->next;
+	}
 }
 
 void CMusicManager::Update ( void )
 {
-    for (MusicPtr p = m_List.begin(); p != m_List.end(); ++p)
-    {
-        p->second->Update();
-    }
+	link* check = m_List.m_start;
+
+	for ( int temp = 0; temp < m_List.m_count; temp++ )
+	{
+		tagMusicData* ptr = NULL;
+		ptr = this->GetData ( check->id );
+
+		if ( ptr == NULL )
+			return;
+
+		
+		check = check->next;
+	}
 }

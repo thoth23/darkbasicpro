@@ -75,7 +75,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="olepro32.lib strmiids.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="quartz.lib winmm.lib msacm32.lib olepro32.lib strmiids.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProMusicDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -168,7 +168,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="msvcrt.lib olepro32.lib strmiids.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="quartz.lib msvcrt.lib winmm.lib msacm32.lib olepro32.lib strmiids.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\Dark Basic Pro\Compiler\plugins\DBProMusicDebug.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -829,22 +829,6 @@
 			Name="Music"
 			>
 			<File
-				RelativePath="..\..\Shared\Music\BasePlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Music\BasePlayer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Music\CdPlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Music\CdPlayer.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\Shared\Music\CMusicC.cpp"
 				>
 				<FileConfiguration
@@ -933,6 +917,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Shared\Music\CMusicDataC.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Shared\Music\CMusicManagerC.cpp"
 				>
 				<FileConfiguration
@@ -1018,22 +1006,6 @@
 			</File>
 			<File
 				RelativePath="..\..\Shared\Music\CMusicManagerC.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Music\MidiPlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Music\MidiPlayer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Music\MusicPlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Shared\Music\MusicPlayer.h"
 				>
 			</File>
 		</Filter>
@@ -1127,6 +1099,98 @@
 			<File
 				RelativePath="..\..\Shared\Error\CError.h"
 				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Data"
+			>
+			<File
+				RelativePath="..\..\Shared\Data\CData.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Shared\Data\CDataC.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugFPSC|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugSTEREO|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseX9(WOW)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseWITHINFOFORDEBUG|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;MUSIC_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<File
