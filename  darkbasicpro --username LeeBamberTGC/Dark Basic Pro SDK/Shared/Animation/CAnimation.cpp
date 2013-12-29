@@ -532,7 +532,7 @@ DARKSDK int GetBitDepthFromFormat(D3DFORMAT Format)
 
 DARKSDK BOOL CoreLoadAnimation( int AnimIndex, char* Filename, bool bFromDVD )
 {
-#ifndef DARKSDK_COMPILE
+	// patrick - 291213 r107 - Restored this function (its entire contents had been skipped for DARKSDK_COMPILE)
     HRESULT hr = S_OK;
     CComPtr<IBaseFilter>    pFTR;           // Texture Renderer Filter
     CComPtr<IPin>           pFTRPinIn;      // Texture Renderer Input Pin
@@ -803,10 +803,6 @@ DARKSDK BOOL CoreLoadAnimation( int AnimIndex, char* Filename, bool bFromDVD )
 	}
 	else
 		return FALSE;
-
-#endif
-
-	return FALSE;
 }
 
 /* abandoned code as primary is being blanked for some reason
