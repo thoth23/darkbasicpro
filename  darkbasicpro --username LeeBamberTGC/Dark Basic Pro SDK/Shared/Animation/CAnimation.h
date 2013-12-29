@@ -10,7 +10,20 @@
 #include <atlbase.h>
 #include <stdio.h>
 #include <d3d9types.h>
+
+// patrick - 291213 r106 - Hide DEBUG directive from streams.h, so animation.lib can import
+//                         strmbase.lib (release) instead of the strmbasd.lib (debug). Thus resolving the
+//                         vc60.pdb linker warnings from having an outdated compilation of strmbasd.lib
+//                         without its debug info. Was there really a need to debug the DirectShow library?
+#ifdef DEBUG
+#define DEBUG_TEMP
+#undef DEBUG
+#endif
 #include <streams.h>
+#ifdef DEBUG_TEMP
+#undef DEBUG_TEMP
+#define DEBUG
+#endif
 
 #include <D3D9.h> // DX headers need to go last otherwise common macros interfere with TCHAT and STRSAFE decl.
 #include <D3DX9.h>

@@ -73,9 +73,10 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="&quot;..\..\..\..\Dark Basic Pro SDK\Shared\BaseClasses\strmbasd.lib&quot; winmm.lib"
+				AdditionalDependencies="&quot;..\..\..\..\Dark Basic Pro SDK\Shared\BaseClasses\strmbase.lib&quot; winmm.lib"
 				OutputFile="..\..\Lib\VS9Debug\Animation.lib"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -125,7 +126,7 @@
 				AdditionalIncludeDirectories="&quot;.\..\..\..\..\Dark Basic Pro SDK\Shared\BaseClasses&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;DARKSDK_COMPILE;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
@@ -152,6 +153,7 @@
 				AdditionalDependencies="&quot;..\..\..\..\Dark Basic Pro SDK\Shared\BaseClasses\strmbase.lib&quot; winmm.lib"
 				OutputFile="..\..\Lib\VS9\Animation.lib"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"

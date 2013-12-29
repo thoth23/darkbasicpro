@@ -75,7 +75,8 @@ LPDIRECTSOUNDBUFFER* CSoundManager::LoadOggVorbis ( char* dwFileName, DWORD* pdw
 	}
 
 	// get the size of the PCM file and multiply by 4
-	int iPCMTotalSize = ov_pcm_total ( &OggVorbis ,-1 );
+   // patrick - 291213 r106 - Changed int to ogg_int64_t for iPCMTotalSize, to resolve linker warning
+   ogg_int64_t iPCMTotalSize = ov_pcm_total ( &OggVorbis ,-1 );
 	iSize = iPCMTotalSize * 4;
 
 	// get information about the file

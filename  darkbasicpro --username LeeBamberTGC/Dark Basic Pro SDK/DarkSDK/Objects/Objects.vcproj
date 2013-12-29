@@ -1496,6 +1496,107 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="DebugVR920|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/Objects.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=""
+				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL"
+				GeneratePreprocessedFile="0"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="false"
+				TreatWChar_tAsBuiltInType="false"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\Debug/Objects.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
+				AdditionalDependencies="odbc32.lib odbccp32.lib winmm.lib dxguid.lib d3d9.lib dxerr9.lib"
+				OutputFile="C:\Program Files (x86)\The Game Creators\FPS Creator\DBProBasic3DDebug.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories=""
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\Debug/DBProBasic3DDebug.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary=".\Debug/DBProBasic3DDebug.lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -1647,6 +1748,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1810,6 +1922,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\Objects\CObjectsNewC.h"
@@ -1907,6 +2030,13 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -2053,6 +2183,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2220,6 +2361,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\Objects\CPositionC.h"
@@ -2369,6 +2521,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2543,6 +2706,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\BoxCollision\3DCol.h"
@@ -2688,6 +2862,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2851,6 +3036,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\BoxCollision\CCollision.h"
@@ -2996,6 +3192,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3171,6 +3378,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\ElipsoidCollision\col_step.cpp"
@@ -3312,6 +3530,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3471,6 +3700,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\ElipsoidCollision\Collision.cpp"
@@ -3612,6 +3852,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3780,6 +4031,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\DBOFormat\DBOBlock.h"
@@ -3925,6 +4187,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4088,6 +4361,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\DBOFormat\DBOEffects.h"
@@ -4233,6 +4517,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4396,6 +4691,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\DBOFormat\DBOFile.h"
@@ -4541,6 +4847,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4704,6 +5021,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\DBOFormat\DBOFrame.h"
@@ -4858,6 +5186,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\DBOFormat\DBOMesh.h"
@@ -5003,6 +5342,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5173,6 +5523,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>
@@ -5319,6 +5680,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5482,6 +5854,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\Objects\cLightMaps.h"
@@ -5627,6 +6010,17 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugUSERAPP|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -5794,6 +6188,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Shared\Objects\CSG.h"
@@ -5942,6 +6347,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -6105,6 +6521,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\Compiler\CBSPTree.h"
@@ -6250,6 +6677,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -6417,6 +6855,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\Compiler\CompilerTypes.h"
@@ -6562,6 +7011,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -6725,6 +7185,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\Compiler\CPortals.h"
@@ -6879,6 +7350,17 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\Shared\Objects\Compiler\CVector.h"
@@ -7024,6 +7506,17 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugUSERAPP|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugVR920|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -7201,6 +7694,17 @@
 					BrowseInformation="1"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="DebugVR920|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\..\Shared\Core\globstruct.cpp"
@@ -7351,6 +7855,17 @@
 					BrowseInformation="1"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="DebugVR920|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;OBJECTS_EXPORTS;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="icon.bmp"
@@ -7425,6 +7940,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="DebugUSERAPP|Win32"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="DebugVR920|Win32"
 				>
 				<Tool
 					Name="VCResourceCompilerTool"

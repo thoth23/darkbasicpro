@@ -21,7 +21,8 @@ DWORD m_textureHeight = 0;
 // U75 requires iWear VR920 SDK from VUZIX (free SDK)
 // U76 Temp disable VR920 for GDK
 #ifndef DARKSDK_COMPILE
-#define VR920SUPPORT // static linking and small footprint means we can support this
+// patrick - 291213 r106 - Moved the VR920SUPPORT directive to project settings, after giving the VR920 its own built configuration.
+// #define VR920SUPPORT // static linking and small footprint means we can support this. Comment back in if compiling with the iWear SDK.
 #endif
 
 #ifdef VR920SUPPORT
