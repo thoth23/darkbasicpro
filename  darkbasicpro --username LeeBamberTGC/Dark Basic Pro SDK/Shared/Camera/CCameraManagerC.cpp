@@ -1,8 +1,4 @@
 #include "CCameraManagerc.h"
-#include "CCameraDatac.h"
-
-// 20120311 IanM - Use std::map instead of cData class.
-//               - Removal of dead code.
 
 CCameraManager::CCameraManager ( )
 {
@@ -11,11 +7,17 @@ CCameraManager::CCameraManager ( )
 
 CCameraManager::~CCameraManager ( )
 {
-	for (mitStore p = m_List.begin(); p != m_List.end(); ++p)
+	link* pCheck = m_List.m_start;
+	while(pCheck)
 	{
-		delete p->second;
+		tagCameraData* ptr = NULL;
+		ptr = this->GetData ( pCheck->id );
+		if ( ptr == NULL ) continue;
+
+		delete ptr;
+
+		pCheck = pCheck->next;
 	}
-	m_List.clear();
 }
 
 bool CCameraManager::Add ( tagCameraData* pData, int iID )
@@ -25,22 +27,24 @@ bool CCameraManager::Add ( tagCameraData* pData, int iID )
 	// with the same id, if it does then //
 	// delete it                         //
 	///////////////////////////////////////
-	mitStore p = m_List.find( iID );
-	if (p != m_List.end())
-	{
-		delete p->second;
-		m_List.erase( p );
-	}
-
+	tagCameraData* ptr = NULL;
+	ptr = ( tagCameraData* ) m_List.Get ( iID );
+			
+	if ( ptr != NULL )
+		m_List.Delete ( iID );
 	///////////////////////////////////////
 
 	///////////////////////////////////////
 	// create a new object and insert in //
 	// the list                          //
 	///////////////////////////////////////
-	tagCameraData* test = new tagCameraData;
+	tagCameraData* test;
+	test = new tagCameraData;
+
+	memset ( test,     0, sizeof ( test          ) );
 	memcpy ( test, pData, sizeof ( tagCameraData ) );
-	m_List.insert( std::make_pair( iID, test ) );
+
+	m_List.Add ( iID, ( VOID* ) test, 0, 1 );
 	///////////////////////////////////////
 
 	return true;
@@ -48,34 +52,85 @@ bool CCameraManager::Add ( tagCameraData* pData, int iID )
 
 bool CCameraManager::Delete ( int iID )
 {
-	mitStore p = m_List.find( iID );
-	if (p != m_List.end())
-	{
-		delete p->second;
-		m_List.erase( p );
-	}
+	m_List.Delete ( iID );
 
 	return true;
 }
 
-tagCameraData* CCameraManager::GetData ( int iID )
+void CCameraManager::Sort ( void )
 {
-	mitStore p = m_List.find( iID );
-	if (p != m_List.end())
+	// leeadd - 140906 - u63 - added so cameras can be in index-order
+	link* checka = m_List.m_start;
+	for ( int a = 0; a < m_List.m_count; a++ )
 	{
-		return p->second;
+		tagCameraData* ptra = this->GetData ( checka->id );
+		if ( ptra != NULL )
+		{
+			link* checkb = m_List.m_start;
+			for ( int b = 0; b < m_List.m_count; b++ )
+			{
+				tagCameraData* ptrb = this->GetData ( checkb->id );
+				if ( ptrb != NULL )
+				{
+					if ( a!=b )
+					{
+						if ( checka->id < checkb->id )
+						{
+							// swap 
+							int iStore = checka->id;
+							void* iStoreData = checka->data;
+							checka->id = checkb->id;
+							checka->data = checkb->data;
+							checkb->id = iStore;
+							checkb->data = iStoreData;
+						}
+					}
+				}
+				checkb = checkb->next;
+			}
+		}
+		checka = checka->next;
 	}
+}
 
-	return 0;
+tagCameraData* CCameraManager::GetData ( int iID )
+{		
+	return ( tagCameraData* ) m_List.Get ( iID );
+}
+
+void CCameraManager::Update ( void )
+{
+	link* check = m_List.m_start;
+
+	for ( int temp = 0; temp < m_List.m_count; temp++ )
+	{
+		tagCameraData* ptr = NULL;
+		ptr = this->GetData ( check->id );
+
+		if ( ptr == NULL )
+			return;
+
+		check = check->next;
+	}
 }
 
 int CCameraManager::GetNextID ( int iIDHave )
 {
-	mitStore p = m_List.upper_bound( iIDHave );
-	if (p != m_List.end())
+	int iTemp;
+	link* pCheck = m_List.m_start;
+	for ( iTemp = 0; iTemp < m_List.m_count; iTemp++ )
 	{
-		return p->first;
+		tagCameraData* ptr = NULL;
+		ptr = this->GetData ( pCheck->id );
+		if ( ptr == NULL ) continue;
+		if ( pCheck->id == iIDHave )
+		{
+			if(pCheck->next)
+				return pCheck->next->id;
+			else
+				return -1;
+		}
+		pCheck = pCheck->next;
 	}
-
 	return -1;
 }
