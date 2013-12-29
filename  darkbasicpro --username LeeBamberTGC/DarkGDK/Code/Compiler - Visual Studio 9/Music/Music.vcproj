@@ -240,22 +240,6 @@
 			Name="Music"
 			>
 			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Music\BasePlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Music\BasePlayer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Music\CdPlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Music\CdPlayer.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Music\CMusicC.cpp"
 				>
 				<FileConfiguration
@@ -289,6 +273,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Music\CMusicC.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Music\CMusicDataC.h"
 				>
 			</File>
 			<File
@@ -327,22 +315,6 @@
 				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Music\CMusicManagerC.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Music\MidiPlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Music\MidiPlayer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Music\MusicPlayer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Dark Basic Pro SDK\Shared\Music\MusicPlayer.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Error"
@@ -353,6 +325,46 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Error\CRuntimeErrors.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Data"
+			>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Data\CDataC.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseVR920|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Dark Basic Pro SDK\SHARED\Data\CDataC.h"
 				>
 			</File>
 		</Filter>
