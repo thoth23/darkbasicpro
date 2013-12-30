@@ -35,6 +35,7 @@ void		dbMakeObjectSphere						( int iID, float fRadius );
 void		dbMakeObjectCube						( int iID, float iSize );
 void		dbMakeObjectBox							( int iID, float fWidth, float fHeight, float fDepth );
 void		dbMakeObjectPyramid						( int iID, float fSize );
+void		dbMakeObjectCylinder					( int iID, float fSize, int iSegments ); // patrick - 291213 r109 - Added iSegments for greater user control.
 void		dbMakeObjectCylinder					( int iID, float fSize );
 void		dbMakeObjectCone						( int iID, float fSize );
 void		dbMakeObjectPlane						( int iID, float fWidth, float fHeight );
@@ -125,7 +126,7 @@ void		dbTextureObject							( int iID, int iStage, int iImage );
 void		dbScrollObjectTexture					( int iID, float fU, float fV );
 void		dbScaleObjectTexture					( int iID, float fU, float fV );
 void		dbScaleObjectTexture					( int iID, int iStage, float fU, float fV );
-void		dbSetObjectSmoothing					( int iID, float fAngle );
+// patrick - 291213 r109 - dbSetObjectSmoothing() - the fAngle was erronious, thus was deleted.
 void		dbSetObjectNormals						( int iID );
 void		dbSetObjectTexture						( int iID, int iMode, int iMipGeneration );
 void		dbSetObjectTexture						( int iID, int iStage, int iMode, int iMipGeneration );
@@ -521,7 +522,7 @@ void		dbSetObjectMipMapLODBias				( int iID, int iLimb, float fBias );
 
 void		dbMakeObjectPlain						( int iID, float fWidth, float fHeight );
 void		dbFadeObject							( int iID, int iPercentage );
-void		dbSetObjectSmoothing					( int iID, int iPercentage );
+void		dbSetObjectSmoothing					( int iID, float fPercentage );  // patrick - 291213 r109 - The inner function takes a float, pass on precision to the user.
 void		dbSetObjectAmbient						( int iID, bool bAmbient );
 void		dbUnglueObject							( int iID );
 void		dbSetAlphaMappingOn						( int iID, int iPercentage );
