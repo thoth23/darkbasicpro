@@ -15,6 +15,7 @@ void  dbSaveTerrain					( char* dwFilename, int iID );
 
 void  dbMakeObjectTerrain			( int iID );
 void  dbBuildTerrain				( int iID );
+int   dbTerrainExist				( int iID );   // patrick - 291213 r111 - There had been no dbTerrainExist() function.
 
 void  dbDeleteTerrain				( int iID );
 void  dbDeleteTerrain				( int iID, int iUserData );

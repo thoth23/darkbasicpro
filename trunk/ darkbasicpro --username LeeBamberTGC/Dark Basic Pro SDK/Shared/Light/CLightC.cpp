@@ -74,7 +74,7 @@ DBPRO_GLOBAL GetObjectPFN                   g_Basic3D_GetObject;
 DBPRO_GLOBAL CLightManager					m_LightManager;
 DBPRO_GLOBAL tagLightData*					m_ptr;
 DBPRO_GLOBAL LPDIRECT3DDEVICE9				m_pD3D;
-DBPRO_GLOBAL int							m_iAmbientParcentage;
+DBPRO_GLOBAL int							m_iAmbientPercentage;
 DBPRO_GLOBAL int							m_iAmbientRed;
 DBPRO_GLOBAL int							m_iAmbientGreen;
 DBPRO_GLOBAL int							m_iAmbientBlue;
@@ -122,7 +122,7 @@ DARKSDK void ConstructorD3D ( HINSTANCE hSetup )
 	m_pD3D  = g_GFX_GetDirect3DDevice ( );
 
 	// Default Ambient Settings
-	m_iAmbientParcentage	= 25;
+	m_iAmbientPercentage	= 25;
 	m_iAmbientRed			= 255;
 	m_iAmbientGreen			= 255;
 	m_iAmbientBlue			= 255;
@@ -140,9 +140,9 @@ DARKSDK void ConstructorD3D ( HINSTANCE hSetup )
 		Make ( iID );
 
 		// Set Ambient State
-		float fR = m_iAmbientRed * (m_iAmbientParcentage/100.0f);
-		float fG = m_iAmbientGreen * (m_iAmbientParcentage/100.0f);
-		float fB = m_iAmbientBlue * (m_iAmbientParcentage/100.0f);
+		float fR = m_iAmbientRed * (m_iAmbientPercentage/100.0f);
+		float fG = m_iAmbientGreen * (m_iAmbientPercentage/100.0f);
+		float fB = m_iAmbientBlue * (m_iAmbientPercentage/100.0f);
 		m_pD3D->SetRenderState ( D3DRS_AMBIENT, D3DCOLOR_ARGB ( 255, (DWORD)fR, (DWORD)fG, (DWORD)fB ) );
 
 		// Set Fog State
@@ -854,19 +854,19 @@ DARKSDK void SetNormalizationOff ( void )
 DARKSDK void SetAmbient ( int iPercent )
 {
 	// set global value
-	m_iAmbientParcentage = iPercent;
+	m_iAmbientPercentage = iPercent;
 
 	// Set Ambient State
-	float fR = m_iAmbientRed * (m_iAmbientParcentage/100.0f);
-	float fG = m_iAmbientGreen * (m_iAmbientParcentage/100.0f);
-	float fB = m_iAmbientBlue * (m_iAmbientParcentage/100.0f);
+	float fR = m_iAmbientRed * (m_iAmbientPercentage/100.0f);
+	float fG = m_iAmbientGreen * (m_iAmbientPercentage/100.0f);
+	float fB = m_iAmbientBlue * (m_iAmbientPercentage/100.0f);
 	m_pD3D->SetRenderState ( D3DRS_AMBIENT, D3DCOLOR_ARGB ( 255, (DWORD)fR, (DWORD)fG, (DWORD)fB ) );
 }
 
 DARKSDK int GetAmbient ( void )
 {
 	// 301007 - return ambient light percentage
-	return m_iAmbientParcentage;
+	return m_iAmbientPercentage;
 }
 
 DARKSDK void SetAmbientColor ( DWORD dwColor )
@@ -879,9 +879,9 @@ DARKSDK void SetAmbientColor ( DWORD dwColor )
 	m_iAmbientBlue = iB;
 
 	// Set the ambience
-	float fR = m_iAmbientRed * (m_iAmbientParcentage/100.0f);
-	float fG = m_iAmbientGreen * (m_iAmbientParcentage/100.0f);
-	float fB = m_iAmbientBlue * (m_iAmbientParcentage/100.0f);
+	float fR = m_iAmbientRed * (m_iAmbientPercentage/100.0f);
+	float fG = m_iAmbientGreen * (m_iAmbientPercentage/100.0f);
+	float fB = m_iAmbientBlue * (m_iAmbientPercentage/100.0f);
 	m_pD3D->SetRenderState ( D3DRS_AMBIENT, D3DCOLOR_ARGB ( 255, (DWORD)fR, (DWORD)fG, (DWORD)fB ) );
 }
 
@@ -1316,6 +1316,12 @@ void dbSetNormalizationOff ( void )
 void dbSetAmbientLight ( int iPercent )
 {
 	SetAmbient ( iPercent );
+}
+
+// patrick - 291213 r111 - DarkGDK had no wrapper to GetAmbient().
+int dbGetAmbientLight ( void )
+{
+	return GetAmbient();
 }
 
 void dbColorAmbientLight ( DWORD dwColor )

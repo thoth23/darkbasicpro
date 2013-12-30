@@ -42,7 +42,9 @@ void	dbSetVector3ToParticlesPosition	( int iVector, int iID );
 void	dbRotateParticles				( int iID, int iVector );
 void	dbSetVector3ToParticlesRotation	( int iVector, int iID );
 
-bool	dbParticlesExist				( int iID );
+// patrick - 291213 r111 - Changed return-type from bool to int, to match all other modules' dbExist functions.
+int	dbParticlesExist				( int iID );
+
 float	dbParticlesPositionX			( int iID );
 float	dbParticlesPositionY			( int iID );
 float	dbParticlesPositionZ			( int iID );

@@ -16,6 +16,7 @@ void  SaveTerrain               ( DWORD dwFilename, int iID );
 
 void  MakeObjectTerrain			( int iID );
 void  BuildTerrain				( int iID );
+int   GetTerrainExist         ( int iID );   // patrick - 291213 r111 - New function.
 void  DeleteTerrain				( int iID );
 void  DeleteTerrain				( int iID, int iUserData );
 
@@ -59,6 +60,12 @@ void dbMakeObjectTerrain ( int iID )
 void dbBuildTerrain ( int iID )
 {
 	BuildTerrain ( iID );
+}
+
+// patrick - 291213 r111 - There had been no dbTerrainExist() function.
+int dbTerrainExist ( int iID )
+{
+   return GetTerrainExist ( iID );
 }
 
 void dbDeleteTerrain ( int iID )
