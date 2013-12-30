@@ -514,8 +514,9 @@ DARKSDK_DLL void SmoothNormals ( sMesh* pMesh, float fPercentage )
 	sOffsetMap offsetMap;
 	GetFVFOffsetMap ( pMesh, &offsetMap );
 
-	// assume no more than 32 shared vertex points
-	DWORD dwSharedVertexMax=32;
+   // patrick - 291213 r109 - Changed to 64, was 32 (it's only a function-scope memory allocation)
+	// assume no more than 64 shared vertex points
+	DWORD dwSharedVertexMax=64;
 	DWORD dwNumberOfVertices=pMesh->dwVertexCount;
 	BYTE* NormalCount = new BYTE [ dwNumberOfVertices ];
 	ZeroMemory ( NormalCount, dwNumberOfVertices*sizeof(BYTE) );
@@ -542,7 +543,7 @@ DARKSDK_DLL void SmoothNormals ( sMesh* pMesh, float fPercentage )
 
 					// add normal to table
 					BYTE Index = NormalCount [ iCurrentVertex ];
-					if ( Index < 32 )
+					if ( Index < dwSharedVertexMax )    // patrick - 291213 r109 - the initialized value of dwSharedVertexMax was hard-coded here (memory bounds check).
 					{
 						fNormals [ (iCurrentVertex*dwSharedVertexMax)+Index ] = vecScannedNormal;
 						NormalCount [ iCurrentVertex ] = NormalCount [ iCurrentVertex ] + 1;

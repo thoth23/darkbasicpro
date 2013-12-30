@@ -1984,7 +1984,14 @@ DARKSDK_DLL void MakePyramid ( int iID, float fSize )
 	SetTexture ( iID, 0 );
 }
 
+// patrick - 291213 r109 - Modified the main MakeCylinder() function to include the parameter of iSegments.
+//                         Left the original prototyped function as a wrapper with the original default value.
 DARKSDK_DLL void MakeCylinder ( int iID, float fSize )
+{
+   MakeCylinder (iID, fSize, 30);
+}
+
+DARKSDK_DLL void MakeCylinder ( int iID, float fSize, int iSegments )
 {
 	// attempt to create a new object
 	if ( !CreateNewObject ( iID, "cylinder" ) )
@@ -1992,7 +1999,6 @@ DARKSDK_DLL void MakeCylinder ( int iID, float fSize )
 
 	float fHeight   = fSize;
 	float fRadius   = fSize / 2;
-	int   iSegments = 30;
 
 	// setup general object data
 	sMesh* pMesh         = g_ObjectList [ iID ]->pFrame->pMesh;		// get a pointer to the mesh ( easier to access now )
@@ -8807,6 +8813,12 @@ void dbMakeObjectCylinder ( int iID, float fSize )
 	MakeCylinder ( iID, fSize );
 }
 
+// patrick - 291213 r109 - Added iSegments to function parameter for greater user control.
+void dbMakeObjectCylinder ( int iID, float fSize, int iSegments )
+{
+	MakeCylinder ( iID, fSize, iSegments );
+}
+
 void dbMakeObjectCone ( int iID, float fSize )
 {
 	MakeCone ( iID, fSize );
@@ -9087,9 +9099,10 @@ void dbScaleObjectTexture ( int iID, int iStage, float fU, float fV )
 	ScaleTexture ( iID, iStage, fU, fV );
 }
 
-void dbSetObjectSmoothing ( int iID, float fAngle )
+// patrick - 291213 r109 - fAngle was inaccurate here. It is treated as a percentage.
+void dbSetObjectSmoothing ( int iID, float fPercentage )
 {
-	SetSmoothing ( iID, fAngle );
+	SetSmoothing ( iID, fPercentage );
 }
 
 void dbSetObjectNormals ( int iID )
@@ -10993,7 +11006,7 @@ void dbSetObjectMipMapLODBias ( int iID, int iLimb, float fBias )
 // lee - 300706 - GDK fixes
 void dbMakeObjectPlain ( int iID, float fWidth, float fHeight ) { return dbMakeObjectPlane (iID, fWidth, fHeight); }
 void dbFadeObject ( int iID, int iPercentage ) { return dbFadeObject (iID, (float)iPercentage); }
-void dbSetObjectSmoothing ( int iID, int iPercentage ) { return dbSetObjectSmoothing (iID, (float)iPercentage); }
+// patrick - 291213 r109 - The dbSetObjectSmoothing() wrapper was erronious. fAngle was treated as a percentage, and has thus been deleted.
 void dbUnglueObject	( int iID ) { return dbUnGlueObject (iID); }
 void dbSetAlphaMappingOn ( int iID, int iPercentage ) { return dbSetAlphaMappingOn (iID, (float)iPercentage); }
 void dbSetLimbSmoothing	( int iID, int iLimbID, int iPercentage ) { return dbSetLimbSmoothing (iID, iLimbID, (float)iPercentage); }

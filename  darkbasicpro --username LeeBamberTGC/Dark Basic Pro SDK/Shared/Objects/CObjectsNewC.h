@@ -46,6 +46,7 @@ DARKSDK void MakeCube			( int iID, float iSize );
 DARKSDK void MakeBox			( int iID, float fWidth, float fHeight, float fDepth );
 DARKSDK void MakePyramid		( int iID, float fSize );
 DARKSDK void MakeCylinder		( int iID, float fSize );
+DARKSDK void MakeCylinder		( int iID, float fSize, int iSegments);   // patrick - 291213 r109 - Added iSegments to function parameters.
 DARKSDK void MakeCone			( int iID, float fSize );
 DARKSDK void MakePlane			( int iID, float fWidth, float fHeight );
 DARKSDK void MakePlane			( int iID, float fWidth, float fHeight, int iFlag );
@@ -655,8 +656,8 @@ DARKSDK void SetLegacyMode				( int iUseLegacy );
 	void		dbScrollObjectTexture					( int iID, float fU, float fV );
 	void		dbScaleObjectTexture					( int iID, float fU, float fV );
 	void		dbScaleObjectTexture					( int iID, int iStage, float fU, float fV );
-	void		dbSetObjectSmoothing					( int iID, float fAngle );
-	void		dbSetObjectNormals						( int iID );
+	// patrick - 291213 r109 - dbSetObjectSmoothing() - fAngle was erronious.
+   void		dbSetObjectNormals						( int iID );
 	void		dbSetObjectTexture						( int iID, int iMode, int iMipGeneration );
 	void		dbSetObjectTexture						( int iID, int iStage, int iMode, int iMipGeneration );
 	void		dbSetLightMappingOn						( int iID, int iImage );
@@ -1024,7 +1025,7 @@ DARKSDK void SetLegacyMode				( int iUseLegacy );
 	void		dbSetObjectAmbient						( int iID, bool bAmbient );
 	void		dbMakeObjectPlain						( int iID, float fWidth, float fHeight );
 	void		dbFadeObject							( int iID, int iPercentage );
-	void		dbSetObjectSmoothing					( int iID, int iPercentage );
+	void		dbSetObjectSmoothing					( int iID, float fPercentage );  // patrick - 291213 r109 - fAngle was erronious.
 	void		dbUnglueObject							( int iID );
 	void		dbSetAlphaMappingOn						( int iID, int iPercentage );
 	void		dbSetLimbSmoothing						( int iID, int iLimbID, int iPercentage );
