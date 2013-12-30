@@ -882,6 +882,10 @@ DARKSDK bool SetDBDLLExtCalls(void)
 		g_Basic3D_Destructor				= ( RetVoidFunctionPointerPFN ) DestructorBasic3D;
 		g_Basic3D_SetErrorHandler			= SetErrorHandlerBasic3D;
 		g_Basic3D_PassCoreData				= PassCoreDataBasic3D;
+
+		// patrick - 291213 r108 - After revision (U75 - 080410), this inititialization had been overlooked, rendering dbPlayObject() and dbLoopObject() non-functional.
+		g_Basic3D_UpdateAnimationCycle = ( RetVoidFunctionPointerPFN ) UpdateAnimationCycle;
+
 		g_Basic3D_Update					= ( RetVoidFunctionPointerPFN ) dbUpdateBasic3D;
 		g_Basic3D_UpdateOnce				= ( RetVoidFunctionPointerPFN )	dbUpdateOnce;
 		g_Basic3D_UpdateGhostLayer			= ( RetVoidFunctionPointerPFN )	dbUpdateGhostLayer;
