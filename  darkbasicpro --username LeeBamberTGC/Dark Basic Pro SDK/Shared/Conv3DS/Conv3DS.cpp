@@ -43,6 +43,15 @@ DBPRO_GLOBAL sObject**						g_ObjectList;
 
 DARKSDK int DB_Convert3DSBinary(char* Filename, char* DestFile);
 
+// patrick - 291213 r110 - Added this function to replace strcat(), which searches from the start of a 50MB buffer to find the
+//                         current position for writing, for each and every call. With StringAdd() this is done once per function
+//                         instead of once per strcat(), which was often used within loops and resulted in extremely slow execution.
+inline void StringAdd(char*& dest, char* source)
+{
+   dest += strlen(dest);
+   strcpy(dest, source);
+}
+
 DARKSDK bool GetD3DFromModule ( HINSTANCE hSetup )
 {
 	#ifndef DARKSDK_COMPILE
@@ -225,12 +234,14 @@ CConvBuffer::~CConvBuffer ( )
 
 void CConvBuffer::WriteHeader ( void )
 {
+   char* local_m_szData = m_szData;
+
 	strcpy ( m_szData, "xof 0302txt 0032\n" );
-	strcat ( m_szData, "Header {\n" );
-	strcat ( m_szData, "1;\n" );
-	strcat ( m_szData, "0;\n" );
-	strcat ( m_szData, "1;\n" );
-	strcat ( m_szData, "}\n" );
+	StringAdd( local_m_szData, "Header {\n" );
+	StringAdd( local_m_szData, "1;\n" );
+	StringAdd( local_m_szData, "0;\n" );
+	StringAdd( local_m_szData, "1;\n" );
+	StringAdd( local_m_szData, "}\n" );
 
 	bHeader = true;
 }
@@ -250,9 +261,10 @@ void CConvBuffer::WriteFrameStart ( char* szName )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "Frame " );
-	strcat ( m_szData, szName );
-	strcat ( m_szData, " {\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "Frame " );
+	StringAdd( local_m_szData, szName );
+	StringAdd( local_m_szData, " {\n" );
 }
 
 void CConvBuffer::WriteFrameEnd ( void )
@@ -260,7 +272,8 @@ void CConvBuffer::WriteFrameEnd ( void )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "}\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "}\n" );
 }
 
 void CConvBuffer::WriteMeshMatrix ( float* pMatrix )
@@ -269,23 +282,24 @@ void CConvBuffer::WriteMeshMatrix ( float* pMatrix )
 		return;
 
 	char szTemp [ 256 ];
-
-	strcat ( m_szData, "FrameTransformMatrix {\n" );
+   char* local_m_szData = m_szData;
+   
+	StringAdd( local_m_szData, "FrameTransformMatrix {\n" );
 	
 	for ( int iMatrix = 0; iMatrix < 16; iMatrix++ )
 	{
 		sprintf ( szTemp, "%f", pMatrix [ iMatrix ] );
-		strcat ( m_szData, szTemp );
+		StringAdd( local_m_szData, szTemp );
 
 		if ( iMatrix < 15 )
-			strcat ( m_szData, "," );
+			StringAdd( local_m_szData, "," );
 		else
-			strcat ( m_szData, ";;\n}\n" );
+			StringAdd( local_m_szData, ";;\n}\n" );
 
 		if ( iMatrix < 15 )
 		{
 			if ( ( iMatrix + 1 ) % 4 == 0 )
-				strcat ( m_szData, "\n" );
+				StringAdd( local_m_szData, "\n" );
 		}
 	}
 }
@@ -295,20 +309,23 @@ void CConvBuffer::WriteMeshStart ( char* szName )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "Mesh " );
-	strcat ( m_szData, szName );
-	strcat ( m_szData, " {\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "Mesh " );
+	StringAdd( local_m_szData, szName );
+	StringAdd( local_m_szData, " {\n" );
 }
 
 void CConvBuffer::WriteLine ( char* szString )
 {
-	strcat ( m_szData, szString );
-	strcat ( m_szData, "\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, szString );
+	StringAdd( local_m_szData, "\n" );
 }
 
 void CConvBuffer::WriteString ( char* szString )
 {
-	strcat ( m_szData, szString );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, szString );
 }
 
 void CConvBuffer::WriteMeshEnd ( void )
@@ -316,7 +333,8 @@ void CConvBuffer::WriteMeshEnd ( void )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "}\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "}\n" );
 }
 
 void CConvBuffer::WriteMeshNormalsStart ( void )
@@ -324,8 +342,9 @@ void CConvBuffer::WriteMeshNormalsStart ( void )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "MeshNormals " );
-	strcat ( m_szData, " {\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "MeshNormals " );
+	StringAdd( local_m_szData, " {\n" );
 }
 
 void CConvBuffer::WriteMeshNormalsEnd ( void )
@@ -333,7 +352,8 @@ void CConvBuffer::WriteMeshNormalsEnd ( void )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "}\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "}\n" );
 }
 
 void CConvBuffer::WriteVertexData ( int iNum, float* pfData )
@@ -342,30 +362,32 @@ void CConvBuffer::WriteVertexData ( int iNum, float* pfData )
 		return;
 
 	char szTemp [ 256 ];
+   char* local_m_szData = m_szData;
+
 	sprintf ( szTemp, "%i", iNum );
 
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 
 	int iPos = 0;
 
 	for ( int iVertex = 0; iVertex < iNum; iVertex++ )
 	{
 		sprintf ( szTemp, "%f", pfData [ iPos++ ] );
-		strcat  ( m_szData, szTemp );
-		strcat  ( m_szData, ";" );
+		StringAdd( local_m_szData, szTemp );
+		StringAdd( local_m_szData, ";" );
 
 		sprintf ( szTemp, "%f", pfData [ iPos++ ] );
-		strcat  ( m_szData, szTemp );
-		strcat  ( m_szData, ";" );
+		StringAdd( local_m_szData, szTemp );
+		StringAdd( local_m_szData, ";" );
 
 		sprintf ( szTemp, "%f", pfData [ iPos++ ] );
-		strcat  ( m_szData, szTemp );
+		StringAdd( local_m_szData, szTemp );
 
 		if ( iVertex == iNum - 1 )
-			strcat  ( m_szData, ";;\n" );
+			StringAdd( local_m_szData, ";;\n" );
 		else
-			strcat  ( m_szData, ";,\n" );
+			StringAdd( local_m_szData, ";,\n" );
 	}
 }
 
@@ -374,35 +396,36 @@ void CConvBuffer::WriteFaceData ( int iNum, DWORD* pdwData )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "\n" );
-
 	char szTemp [ 256 ];
+   char* local_m_szData = m_szData;
+
+	StringAdd( local_m_szData, "\n" );
 
 	sprintf ( szTemp, "%i", iNum );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 
 	int iPos = 0;
 
 	for ( int iIndex = 0; iIndex < iNum; iIndex++ )
 	{
-		strcat ( m_szData, "3;" );
+		StringAdd( local_m_szData, "3;" );
 
 		sprintf ( szTemp, "%i", pdwData [ iPos++ ] );
-		strcat  ( m_szData, szTemp );
-		strcat  ( m_szData, "," );
+		StringAdd( local_m_szData, szTemp );
+		StringAdd( local_m_szData, "," );
 
 		sprintf ( szTemp, "%i", pdwData [ iPos++ ] );
-		strcat  ( m_szData, szTemp );
-		strcat  ( m_szData, "," );
+		StringAdd( local_m_szData, szTemp );
+		StringAdd( local_m_szData, "," );
 
 		sprintf ( szTemp, "%i", pdwData [ iPos++ ] );
-		strcat  ( m_szData, szTemp );
+		StringAdd( local_m_szData, szTemp );
 
 		if ( iIndex == iNum - 1 )
-			strcat  ( m_szData, ";;\n" );
+			StringAdd( local_m_szData, ";;\n" );
 		else
-			strcat  ( m_szData, ";,\n" );
+			StringAdd( local_m_szData, ";,\n" );
 	}
 }
 
@@ -416,17 +439,19 @@ void CConvBuffer::WriteMeshMaterialList ( int iMaterialNum, DWORD dwFaceNum, DWO
 {
 	if ( !bHeader ) return;
 
+   char* local_m_szData = m_szData;
+   
 	// materiallist
-	strcat ( m_szData, "MeshMaterialList {\n" );
+	StringAdd( local_m_szData, "MeshMaterialList {\n" );
 
 	// materiallist number of materials and number of faces
 	char szTemp [ 256 ];
 	sprintf ( szTemp, "%i", iMaterialNum );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 	sprintf ( szTemp, "%i", dwFaceNum );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 
 	// list of all material indexes for each face
 	for ( int iIndex = 0; iIndex < (int)dwFaceNum; iIndex++ )
@@ -434,17 +459,17 @@ void CConvBuffer::WriteMeshMaterialList ( int iMaterialNum, DWORD dwFaceNum, DWO
 		if ( g_pMesh_MaterialPerFace )
 		{
 			sprintf ( szTemp, "%i", g_pMesh_MaterialPerFace [ iIndex ] );
-			strcat ( m_szData, szTemp );
+			StringAdd( local_m_szData, szTemp );
 		}
 		else
 		{
 			sprintf ( szTemp, "%i", dwMaterialUsed );
-			strcat ( m_szData, szTemp );
+			StringAdd( local_m_szData, szTemp );
 		}
 		if ( iIndex == (int)dwFaceNum - 1 )
-			strcat ( m_szData, ";;\n" );
+			StringAdd( local_m_szData, ";;\n" );
 		else
-			strcat ( m_szData, ",\n" );
+			StringAdd( local_m_szData, ",\n" );
 	}
 
 	// write all materials from list collected
@@ -461,15 +486,15 @@ void CConvBuffer::WriteMeshMaterialList ( int iMaterialNum, DWORD dwFaceNum, DWO
 					if ( pThisMaterialName [ iChar ] >= '0' && pThisMaterialName [ iChar ] <= '9' ) pThisMaterialName [ iChar ] = 'a' + (pThisMaterialName [ iChar ]-'0');
 					if ( pThisMaterialName [ iChar ] == '-' ) pThisMaterialName [ iChar ] = '_';
 				}
-				strcat ( m_szData, "{" );
-				strcat ( m_szData, pThisMaterialName );
-				strcat ( m_szData, "}\n" );
+				StringAdd( local_m_szData, "{" );
+				StringAdd( local_m_szData, pThisMaterialName );
+				StringAdd( local_m_szData, "}\n" );
 			}
 		}
 	}
 
 	// end materiallist
-	strcat ( m_szData, "}\n" );
+	StringAdd( local_m_szData, "}\n" );
 
 	// free material array 
 	if ( g_pMesh_MaterialPerFace )
@@ -495,24 +520,24 @@ void CConvBuffer::WriteMeshMaterialList ( int iMaterialNum, DWORD dwFaceNum, DWO
 	char szTemp [ 256 ];
 
 	sprintf ( szTemp, "%i", iMaterialNum );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 
 	sprintf ( szTemp, "%i", dwFaceNum );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 
 	for ( int iIndex = 0; iIndex < (int)dwFaceNum; iIndex++ )
 	{
 		sprintf ( szTemp, "%i", dwMaterialUsed );
-		strcat ( m_szData, szTemp );
+		StringAdd( local_m_szData, szTemp );
 
 		
 
 		if ( iIndex == (int)dwFaceNum - 1 )
-			strcat ( m_szData, ";;\n" );
+			StringAdd( local_m_szData, ";;\n" );
 		else
-			strcat ( m_szData, ",\n" );
+			StringAdd( local_m_szData, ",\n" );
 	}
 
 
@@ -531,10 +556,10 @@ void CConvBuffer::WriteMeshMaterialList ( int iMaterialNum, DWORD dwFaceNum, DWO
 	//		szMatName [ iChar ] = '_';
 	//}
 
-	strcat ( m_szData, "{" );
-	strcat ( m_szData, szMatName );
-	strcat ( m_szData, "}\n" );
-	strcat ( m_szData, "}\n" );
+	StringAdd( local_m_szData, "{" );
+	StringAdd( local_m_szData, szMatName );
+	StringAdd( local_m_szData, "}\n" );
+	StringAdd( local_m_szData, "}\n" );
 	*/
 }
 
@@ -547,6 +572,8 @@ void CConvBuffer::WriteMaterialItem ( char* szMaterialName, float diffuse0, floa
 {
 	if ( !bHeader )
 		return;
+   
+   char* local_m_szData = m_szData;
 
 	// change matname if needed - no illegal characters
 	for ( int iChar = 0; iChar < (int)strlen ( szMaterialName ); iChar++ )
@@ -558,61 +585,61 @@ void CConvBuffer::WriteMaterialItem ( char* szMaterialName, float diffuse0, floa
 		if ( szMaterialName [ iChar ] == '-' ) szMaterialName [ iChar ] = '_';
 	}
 
-	strcat ( m_szData, "Material " );
-	strcat ( m_szData, szMaterialName );
-	strcat ( m_szData, " {\n" );
+	StringAdd( local_m_szData, "Material " );
+	StringAdd( local_m_szData, szMaterialName );
+	StringAdd( local_m_szData, " {\n" );
 
 	char szTemp [ 256 ];
 
 	sprintf ( szTemp, "%f", diffuse0 );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, "," );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, "," );
 
 	sprintf ( szTemp, "%f", diffuse1 );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, "," );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, "," );
 
 	sprintf ( szTemp, "%f", diffuse2 );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, "," );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, "," );
 
 	sprintf ( szTemp, "%f", diffuse3 );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";;\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";;\n" );
 
 	sprintf ( szTemp, "%f", power );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 
 	sprintf ( szTemp, "%f", specular0 );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, "," );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, "," );
 
 	sprintf ( szTemp, "%f", specular1 );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, "," );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, "," );
 
 	sprintf ( szTemp, "%f", specular2 );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";;\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";;\n" );
 
 	sprintf ( szTemp, "%f", a );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, "," );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, "," );
 
 	sprintf ( szTemp, "%f", b );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, "," );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, "," );
 
 	sprintf ( szTemp, "%f", c );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";;\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";;\n" );
 
-	strcat ( m_szData, "TextureFilename {\n" );
-	strcat ( m_szData, "\"" );
+	StringAdd( local_m_szData, "TextureFilename {\n" );
+	StringAdd( local_m_szData, "\"" );
 
 	// lee - 040306 - u6rc5 - ensure texture filename does not exceed 255 (related systems need this limit)
-//	strcat ( m_szData, szTextureName );
+//	StringAdd( local_m_szData, szTextureName );
 	int n = 0;
 	char pLimitTextureName [ 256 ];
 	int iRealMax = strlen ( szTextureName );
@@ -622,11 +649,11 @@ void CConvBuffer::WriteMaterialItem ( char* szMaterialName, float diffuse0, floa
 		if ( n==255 ) break;
 	}
 	pLimitTextureName [ n ] = 0;
-	strcat ( m_szData, pLimitTextureName );
+	StringAdd( local_m_szData, pLimitTextureName );
 
-	strcat ( m_szData, "\";\n}\n" );
+	StringAdd( local_m_szData, "\";\n}\n" );
 
-	strcat ( m_szData, "}\n" );
+	StringAdd( local_m_szData, "}\n" );
 }
 
 void CConvBuffer::WriteMeshTextureCoordsStart ( void )
@@ -634,7 +661,8 @@ void CConvBuffer::WriteMeshTextureCoordsStart ( void )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "MeshTextureCoords {\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "MeshTextureCoords {\n" );
 }
 
 void CConvBuffer::WriteTextureCoordsData ( int iNum, float* pfData )
@@ -643,27 +671,28 @@ void CConvBuffer::WriteTextureCoordsData ( int iNum, float* pfData )
 		return;
 
 	char szTemp [ 256 ];
+   char* local_m_szData = m_szData;
 
 	sprintf ( szTemp, "%i", iNum );
-	strcat ( m_szData, szTemp );
-	strcat ( m_szData, ";\n" );
+	StringAdd( local_m_szData, szTemp );
+	StringAdd( local_m_szData, ";\n" );
 
 	int iPos = 0;
 
 	for ( int iIndex = 0; iIndex < iNum; iIndex++ )
 	{
 		sprintf ( szTemp, "%f", pfData [ iPos++ ] );
-		strcat ( m_szData, szTemp );
-		strcat ( m_szData, ";" );
+		StringAdd( local_m_szData, szTemp );
+		StringAdd( local_m_szData, ";" );
 
 		sprintf ( szTemp, "%f", pfData [ iPos++ ] *= - 1);
-		strcat ( m_szData, szTemp );
-		strcat ( m_szData, ";" );
+		StringAdd( local_m_szData, szTemp );
+		StringAdd( local_m_szData, ";" );
 
 		if ( iIndex == iNum - 1 )
-			strcat ( m_szData, ";\n" );
+			StringAdd( local_m_szData, ";\n" );
 		else
-			strcat ( m_szData, ",\n" );
+			StringAdd( local_m_szData, ",\n" );
 	}
 }
 
@@ -672,7 +701,8 @@ void CConvBuffer::WriteMeshTextureCoordsEnd ( void )
 	if ( !bHeader )
 		return;
 
-	strcat ( m_szData, "}\n" );
+   char* local_m_szData = m_szData;
+	StringAdd( local_m_szData, "}\n" );
 }
 
 // DEBUG MACRO SYSTEM
