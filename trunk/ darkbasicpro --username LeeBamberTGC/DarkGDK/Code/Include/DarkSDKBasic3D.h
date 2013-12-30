@@ -498,6 +498,9 @@ void		PassCoreDataBasic3D		( LPVOID pGlobPtr );
 void		RefreshD3DBasic3D			( int iMode );
 void		DestructorBasic3D			( void );
 
+// patrick - 291213 r108 - This function call had been overlooked by revision (U75 - 080410), thus rendering dbPlayObject() and dbLoopObject() non-functional.
+void		UpdateAnimationCycle		(void);
+
 void		dbUpdateBasic3D			( void );
 void		dbUpdateOnce				( void );
 void		dbUpdateGhostLayer			( void );
