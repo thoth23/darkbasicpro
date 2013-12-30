@@ -263,6 +263,20 @@ void DestroyTerrain ( void )
 	}
 }
 
+// patrick - 291213 r111 - No Get Exist function had been created for the Terrain module.
+int GetTerrainExist ( int iID )
+{
+	for ( int i = 0; i <  ( int ) g_Terrain.size ( ); i++ )
+	{
+		// see if we have a match
+		if ( g_Terrain [ i ].iID == iID )
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
 bool GetTerrainData ( int iID )
 {
 	// return the terrain structure for the given ID

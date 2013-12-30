@@ -1032,12 +1032,13 @@ void dbSetVector3ToParticlesRotation ( int iVector, int iID )
 	GetRotationVector3 (  iVector,  iID );
 }
 
-bool dbParticlesExist ( int iID )
+// patrick - 291213 r111 - Changed return-type from bool to int, to match all other modules' dbExist functions.
+int dbParticlesExist ( int iID )
 {
 	if ( GetExist ( iID )==0 )
-		return false;
+		return 0;
 	else
-		return true;
+		return 1;
 }
 
 float dbParticlesPositionX	( int iID )
